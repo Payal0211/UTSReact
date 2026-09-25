@@ -7,7 +7,6 @@ import { pctOf, statusClass, metricStatus } from './sectionMath';
 import moment from 'moment';
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import TickMark from "assets/svg/assignCurrect.svg";
-import  Close  from "assets/svg/close.svg";
 import { Tabs, Select, Table, Modal, Tooltip, Skeleton, message, Dropdown, Menu, Spin, Radio } from "antd";
 import Diamond from "assets/svg/diamond.svg";
 import { HTTPStatusCode } from "constants/network";
@@ -44,7 +43,7 @@ const QUAL_LOG_METRICS = [
     { key: 'lost_RevenueStr', label: 'Post Joining Backouts', stageID: "PJB" },
 ];
 
-const TAB_NAME_MAP = { daily: 'D', weekly: 'W', monthly: 'M', quarterly: 'Q',range:'R' };
+const TAB_NAME_MAP = { daily: 'D', weekly: 'W', monthly: 'M', quarterly: 'Q', range: 'R' };
 
 // Sorted [{row, idx}] list for a qual table — purely a view convenience,
 // local to this component, never sent back to the server.
@@ -88,13 +87,13 @@ function OPSDashboard({ selectedHead }) {
         } else if (dateType === 'quarterly') {
             return `Q${moment(range.from).quarter()}`; // moment's .quarter() returns 1-4 directly
         } else if (dateType === 'range') {
-        // No single "bucket" concept applies to an arbitrary custom span —
-        // unlike W1/M9/Q3, there's no short code that captures both ends.
-        // Sending both boundary dates joined with an underscore, e.g.
-        // "2026-09-02_2026-09-24" — ⚠️ confirm this is the format/delimiter
-        // the backend actually expects for Tab_Value when Tab_Name is "R".
-        return `${moment(range.from).format('YYYY-MM-DD')} to ${moment(range.to).format('YYYY-MM-DD')}`;
-    }
+            // No single "bucket" concept applies to an arbitrary custom span —
+            // unlike W1/M9/Q3, there's no short code that captures both ends.
+            // Sending both boundary dates joined with an underscore, e.g.
+            // "2026-09-02_2026-09-24" — ⚠️ confirm this is the format/delimiter
+            // the backend actually expects for Tab_Value when Tab_Name is "R".
+            return `${moment(range.from).format('YYYY-MM-DD')} to ${moment(range.to).format('YYYY-MM-DD')}`;
+        }
     }
 
     const getPODTableDate = async (podDateType, range) => {
@@ -104,8 +103,8 @@ function OPSDashboard({ selectedHead }) {
             Month: moment(range.from).format('MM'),
             Year: moment(range.from).format('YYYY'),
             Tab_Value: getDateRangeValue(podDateType, range),
-            fromDate:TAB_NAME_MAP[podDateType] === 'R'? getDateRangeValue(podDateType, range).split('to')[0] :"",
-            toDate:TAB_NAME_MAP[podDateType] === 'R'? getDateRangeValue(podDateType, range).split('to')[1] :""
+            FromDateStr: TAB_NAME_MAP[podDateType] === 'R' ? getDateRangeValue(podDateType, range).split('to')[0]?.trim() : "",
+            ToDateStr: TAB_NAME_MAP[podDateType] === 'R' ? getDateRangeValue(podDateType, range).split('to')[1]?.trim() : ""
 
         }
 
@@ -121,11 +120,11 @@ function OPSDashboard({ selectedHead }) {
     }
 
     useEffect(() => {
-if(selectedHead){
-     const range = periodRange(podDateType, podDate);
-        getPODTableDate(podDateType, range)
-}
-       
+        if (selectedHead) {
+            const range = periodRange(podDateType, podDate);
+            getPODTableDate(podDateType, range)
+        }
+
 
     }, [podDate, podDateType, selectedHead]);
 
@@ -158,11 +157,11 @@ if(selectedHead){
     }
 
     useEffect(() => {
-        if(selectedHead){
-              const range = periodRange(pipelineDateType, pipelineDate);
-        getPipelineTableDate(pipelineDateType, range)
+        if (selectedHead) {
+            const range = periodRange(pipelineDateType, pipelineDate);
+            getPipelineTableDate(pipelineDateType, range)
         }
-      
+
         // OpsDashboardDAO.getPipelineDataDAO(range)
         //     .then((res) => setPipeData(res.responseBody))
         //     .finally(() => setPipeLoading(false));
@@ -204,8 +203,8 @@ if(selectedHead){
             Month: moment(range.from).format('MM'),
             Year: moment(range.from).format('YYYY'),
             Tab_Value: getDateRangeValue(performanceDateType, range),
-            fromDate:TAB_NAME_MAP[performanceDateType] === 'R'? getDateRangeValue(performanceDateType, range).split('to')[0] :"",
-            toDate:TAB_NAME_MAP[performanceDateType] === 'R'? getDateRangeValue(performanceDateType, range).split('to')[1] :""
+            FromDateStr: TAB_NAME_MAP[performanceDateType] === 'R' ? getDateRangeValue(performanceDateType, range).split('to')[0]?.trim() : "",
+            ToDateStr: TAB_NAME_MAP[performanceDateType] === 'R' ? getDateRangeValue(performanceDateType, range).split('to')[1]?.trim() : ""
 
         }
 
@@ -221,11 +220,11 @@ if(selectedHead){
     }, [performanceDateType, performanceDate, selectedHead]);
 
     useEffect(() => {
-        if(selectedHead){
+        if (selectedHead) {
             const range = periodRange(performanceDateType, performanceDate);
-            getTAProformanceTableData(performanceDateType, range) 
+            getTAProformanceTableData(performanceDateType, range)
         }
-     
+
         // OpsDashboardDAO.getTeamPerformanceDAO(range)
         //     .then((res) => setTaData(res.responseBody))
         //     .finally(() => setTaLoading(false));
@@ -264,7 +263,7 @@ if(selectedHead){
     }, [wowDateType, wowDate, selectedHead]);
 
     useEffect(() => {
-        if(selectedHead){
+        if (selectedHead) {
             const range = periodRange(wowDateType, wowDate);
             getWOWTableData(wowDateType, range)
         }
@@ -297,8 +296,8 @@ if(selectedHead){
             Month: moment(range.from).format('MM'),
             Year: moment(range.from).format('YYYY'),
             Tab_Value: getDateRangeValue(logDateType, range),
-              fromDate:TAB_NAME_MAP[logDateType] === 'R'? getDateRangeValue(logDateType, range).split('to')[0] :"",
-            toDate:TAB_NAME_MAP[logDateType] === 'R'? getDateRangeValue(logDateType, range).split('to')[1] :""
+            FromDateStr: TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[0]?.trim() : "",
+            ToDateStr: TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[1]?.trim() : ""
         }
 
         setLogLoading(true);
@@ -314,15 +313,15 @@ if(selectedHead){
 
     useEffect(() => {
 
-        if(selectedHead){
-               const range = periodRange(logDateType, logDate);
-        getLogisticsTableData(logDateType, range)
+        if (selectedHead) {
+            const range = periodRange(logDateType, logDate);
+            getLogisticsTableData(logDateType, range)
         }
-     
+
         // OpsDashboardDAO.getLogisticsExperienceDAO(range)
         //     .then((res) => setQualLogData(res.responseBody))
         //     .finally(() => setLogLoading(false));
-    }, [logDate, logDateType,selectedHead]);
+    }, [logDate, logDateType, selectedHead]);
 
     const toggleLogSort = (col) => {
         setLogSortDir((prevDir) => (logSortCol === col ? -prevDir : 1));
@@ -404,7 +403,7 @@ if(selectedHead){
 
 
         if (isTable1Clicked) {
-             if (profileInfo.stage_ID === "R1" || profileInfo.stage_ID === "R2" || profileInfo.stage_ID === "R3") {
+            if (profileInfo.stage_ID === "R1" || profileInfo.stage_ID === "R2" || profileInfo.stage_ID === "R3") {
                 return [
                     {
                         title: <span style={popupSellHeadStyle}>Action Date</span>,
@@ -451,7 +450,7 @@ if(selectedHead){
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
-                   
+
                     {
                         title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
                         dataIndex: "remarks",
@@ -513,7 +512,7 @@ if(selectedHead){
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
-                    
+
                     {
                         title: <span style={popupSellHeadStyle}>Revenue</span>,
                         dataIndex: "revenueStr",
@@ -523,11 +522,11 @@ if(selectedHead){
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
-                     {
+                    {
                         title: <span style={popupSellHeadStyle}>HR Status</span>,
                         dataIndex: "hrStatus",
                         key: "hrStatus",
-                      
+
                         render: (_, param) => {
                             return All_Hiring_Request_Utils.GETHRSTATUS(
                                 param?.hrStatusCode,
@@ -595,7 +594,7 @@ if(selectedHead){
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
-               
+
 
 
 
@@ -651,7 +650,7 @@ if(selectedHead){
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
-                 
+
                     {
                         title: <span style={popupSellHeadStyle}>{profileInfo.stage === "Joined" ? "Revenue" : "Pipeline"}</span>,
                         dataIndex: profileInfo.stage === "Joined" ? "revenueStr" : "hR_PipelineStr",
@@ -663,11 +662,11 @@ if(selectedHead){
                         }
                     },
 
-   {
+                    {
                         title: <span style={popupSellHeadStyle}>HR Status</span>,
                         dataIndex: "hrStatus",
                         key: "hrStatus",
-                       
+
                         render: (_, param) => {
                             return All_Hiring_Request_Utils.GETHRSTATUS(
                                 param?.hrStatusCode,
@@ -717,7 +716,7 @@ if(selectedHead){
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
-            
+
 
                 {
                     title: <span style={popupSellHeadStyle}>{profileInfo.stage === "Joined" ? "Revenue" : "Pipeline"}</span>,
@@ -729,17 +728,17 @@ if(selectedHead){
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
-                    {
-                        title: <span style={popupSellHeadStyle}>HR Status</span>,
-                        dataIndex: "hrStatus",
-                        key: "hrStatus",
-                        render: (_, param) => {
-                            return All_Hiring_Request_Utils.GETHRSTATUS(
-                                param?.hrStatusCode,
-                                param?.hrStatus
-                            );
-                        }
-                    },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Status</span>,
+                    dataIndex: "hrStatus",
+                    key: "hrStatus",
+                    render: (_, param) => {
+                        return All_Hiring_Request_Utils.GETHRSTATUS(
+                            param?.hrStatusCode,
+                            param?.hrStatus
+                        );
+                    }
+                },
                 // {
                 //     title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
                 //     dataIndex: "remarks",
@@ -897,123 +896,123 @@ if(selectedHead){
                 ];
             }
 
-            if(colLabelVal === "R1 Completed" || colLabelVal === "R2 Completed" || colLabelVal === "R2 Completed"){
-                return  [
-                {
-                    title: <span style={popupSellHeadStyle}>Action Date</span>,
-                    dataIndex: "actionDateStr",
-                    key: "actionDateStr",
-                    width: "150px",
-                    render: (text) => {
-                        return <span style={popupSellStyle}>{text}</span>
-                    }
-                }, {
-                    title: <span style={popupSellHeadStyle}>Company</span>,
-                    dataIndex: "company",
-                    key: "company",
-                    width: "150px",
-                      render: (text,result) => {
-                        return <CompanyPopupCell text={text} result={result} /> 
-                    }
-                },
-                {
-                    title: <span style={popupSellHeadStyle}>HR #</span>,
-                    dataIndex: "hR_Number",
-                    key: "hR_Number",
-                    width: "170px",
-                    render: (text, value) => {
-                        return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+            if (colLabelVal === "R1 Completed" || colLabelVal === "R2 Completed" || colLabelVal === "R2 Completed") {
+                return [
+                    {
+                        title: <span style={popupSellHeadStyle}>Action Date</span>,
+                        dataIndex: "actionDateStr",
+                        key: "actionDateStr",
+                        width: "150px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    }, {
+                        title: <span style={popupSellHeadStyle}>Company</span>,
+                        dataIndex: "company",
+                        key: "company",
+                        width: "150px",
+                        render: (text, result) => {
+                            return <CompanyPopupCell text={text} result={result} />
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR #</span>,
+                        dataIndex: "hR_Number",
+                        key: "hR_Number",
+                        width: "170px",
+                        render: (text, value) => {
+                            return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
 
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Title</span>,
+                        dataIndex: "hR_Title",
+                        key: "hR_Title",
+                        width: "200px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>Talent</span>,
+                        dataIndex: "talent",
+                        key: "talent",
+                        width: "100px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+
+                    {
+                        title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
+                        dataIndex: "remarks",
+                        key: "remarks",
+                        width: "350px",
+                        render: (text, result) => {
+                            return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
+                        }
                     }
-                },
-                {
-                    title: <span style={popupSellHeadStyle}>HR Title</span>,
-                    dataIndex: "hR_Title",
-                    key: "hR_Title",
-                    width: "200px",
-                    render: (text) => {
-                        return <span style={popupSellStyle}>{text}</span>
-                    }
-                },
-                {
-                    title: <span style={popupSellHeadStyle}>Talent</span>,
-                    dataIndex: "talent",
-                    key: "talent",
-                    width: "100px",
-                    render: (text) => {
-                        return <span style={popupSellStyle}>{text}</span>
-                    }
-                },
-                 
-                {
-                    title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
-                    dataIndex: "remarks",
-                    key: "remarks",
-                    width: "350px",
-                    render: (text, result) => {
-                        return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
-                    }
-                }
 
 
 
-            ];
+                ];
             }
 
-            
-            if(colLabelVal === "Profile Shipped" || colLabelVal === "Interview Rejects"){
-                return  [
-                {
-                    title: <span style={popupSellHeadStyle}>Action Date</span>,
-                    dataIndex: "actionDateStr",
-                    key: "actionDateStr",
-                    width: "150px",
-                    render: (text) => {
-                        return <span style={popupSellStyle}>{text}</span>
-                    }
-                }, {
-                    title: <span style={popupSellHeadStyle}>Company</span>,
-                    dataIndex: "company",
-                    key: "company",
-                    width: "150px",
-                      render: (text,result) => {
-                        return <CompanyPopupCell text={text} result={result} /> 
-                    }
-                },
-                {
-                    title: <span style={popupSellHeadStyle}>HR #</span>,
-                    dataIndex: "hR_Number",
-                    key: "hR_Number",
-                    width: "170px",
-                    render: (text, value) => {
-                        return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
 
-                    }
-                },
-                {
-                    title: <span style={popupSellHeadStyle}>HR Title</span>,
-                    dataIndex: "hR_Title",
-                    key: "hR_Title",
-                    width: "200px",
-                    render: (text) => {
-                        return <span style={popupSellStyle}>{text}</span>
-                    }
-                },
-                {
-                    title: <span style={popupSellHeadStyle}>Talent</span>,
-                    dataIndex: "talent",
-                    key: "talent",
-                    width: "100px",
-                    render: (text) => {
-                        return <span style={popupSellStyle}>{text}</span>
-                    }
-                },
-                 
-              
+            if (colLabelVal === "Profile Shipped" || colLabelVal === "Interview Rejects") {
+                return [
+                    {
+                        title: <span style={popupSellHeadStyle}>Action Date</span>,
+                        dataIndex: "actionDateStr",
+                        key: "actionDateStr",
+                        width: "150px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    }, {
+                        title: <span style={popupSellHeadStyle}>Company</span>,
+                        dataIndex: "company",
+                        key: "company",
+                        width: "150px",
+                        render: (text, result) => {
+                            return <CompanyPopupCell text={text} result={result} />
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR #</span>,
+                        dataIndex: "hR_Number",
+                        key: "hR_Number",
+                        width: "170px",
+                        render: (text, value) => {
+                            return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Title</span>,
+                        dataIndex: "hR_Title",
+                        key: "hR_Title",
+                        width: "200px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>Talent</span>,
+                        dataIndex: "talent",
+                        key: "talent",
+                        width: "100px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
 
 
 
-            ];
+
+
+                ];
             }
 
             return [
@@ -1062,7 +1061,7 @@ if(selectedHead){
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
-              
+
                 {
                     title: <span style={popupSellHeadStyle}>Revenue</span>,
                     dataIndex: "revenueStr",
@@ -1072,19 +1071,19 @@ if(selectedHead){
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
-               
-  {
-                        title: <span style={popupSellHeadStyle}>HR Status</span>,
-                        dataIndex: "hrStatus",
-                        key: "hrStatus",
-                      
-                        render: (_, param) => {
-                            return All_Hiring_Request_Utils.GETHRSTATUS(
-                                param?.hrStatusCode,
-                                param?.hrStatus
-                            );
-                        }
-                    },
+
+                {
+                    title: <span style={popupSellHeadStyle}>HR Status</span>,
+                    dataIndex: "hrStatus",
+                    key: "hrStatus",
+
+                    render: (_, param) => {
+                        return All_Hiring_Request_Utils.GETHRSTATUS(
+                            param?.hrStatusCode,
+                            param?.hrStatus
+                        );
+                    }
+                },
 
 
             ];
@@ -1137,7 +1136,7 @@ if(selectedHead){
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
-            
+
                 {
                     title: <span style={popupSellHeadStyle}>Revenue</span>,
                     dataIndex: "revenueStr",
@@ -1147,18 +1146,18 @@ if(selectedHead){
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
-                   {
-                        title: <span style={popupSellHeadStyle}>HR Status</span>,
-                        dataIndex: "hrStatus",
-                        key: "hrStatus",
-                        
-                        render: (_, param) => {
-                            return All_Hiring_Request_Utils.GETHRSTATUS(
-                                param?.hrStatusCode,
-                                param?.hrStatus
-                            );
-                        }
-                    },
+                {
+                    title: <span style={popupSellHeadStyle}>HR Status</span>,
+                    dataIndex: "hrStatus",
+                    key: "hrStatus",
+
+                    render: (_, param) => {
+                        return All_Hiring_Request_Utils.GETHRSTATUS(
+                            param?.hrStatusCode,
+                            param?.hrStatus
+                        );
+                    }
+                },
             ];
         }
 
@@ -1181,8 +1180,10 @@ if(selectedHead){
         setShowTalentProfiles(true);
         setInfoforProfile(result);
         setIsTable1Clicked(true)
-
-        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${result.stage_ID}`
+        let FromDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[0]?.trim() : ""
+        let ToDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[1]?.trim() : ""
+        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${result.stage_ID}
+        &ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
 
         setLoadingTalentProfile(true);
         const hrResult = await TaDashboardDAO.getHRTalentsWiseScrumDashboardDAO(query);
@@ -1235,8 +1236,11 @@ if(selectedHead){
         setShowTalentProfiles(true);
         setInfoforProfile(result);
         setIsTable3Clicked(true)
+        let FromDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[0]?.trim() : ""
+        let ToDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[1]?.trim() : ""
 
-        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}`
+        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}
+        &ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
 
         setLoadingTalentProfile(true);
         const hrResult = await TaDashboardDAO.getHRTalentsWiseScrumDashboard3DAO(query);
@@ -1262,7 +1266,11 @@ if(selectedHead){
         setInfoforProfile(result);
         setIsTable5Clicked(true)
 
-        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}`
+        let FromDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[0]?.trim() : ""
+        let ToDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[1]?.trim() : ""
+
+        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}
+        &ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
 
         setLoadingTalentProfile(true);
         const hrResult = await TaDashboardDAO.getHRTalentsWiseScrumDashboard5DAO(query);
@@ -1279,7 +1287,7 @@ if(selectedHead){
         }
     };
 
-      const getTotal = (data, field) => {
+    const getTotal = (data, field) => {
         return data.reduce((total, item) => {
             const value = item[field];
 
@@ -1534,7 +1542,7 @@ if(selectedHead){
                         <DateNav
                             date={podDate}
                             period={podDateType}
-                            periods={['D', 'W', 'M', 'Q','R']}
+                            periods={['D', 'R', 'W', 'M', 'Q']}
                             onDateChange={setPODDate}
                             onPeriodChange={setPODDateType}
                             loading={funnelLoading}
@@ -1645,14 +1653,14 @@ if(selectedHead){
                 </section>
             </div>
 
-            {/* ---------- 2. Team Performance ---------- */}
+            {/* ---------- 3. Team Performance ---------- */}
             <section className="card">
                 <div className="card-head">
                     <div className="htitle"><span className="num">3</span>Team Performance</div>
                     <DateNav
                         date={performanceDate}
                         period={performanceDateType}
-                        periods={['D', 'W', 'M', 'Q','R']}
+                        periods={['D', 'R', 'W', 'M', 'Q']}
                         onDateChange={setPerformanceDate}
                         onPeriodChange={setPerformanceDateType}
                         loading={taLoading}
@@ -1715,7 +1723,7 @@ if(selectedHead){
                         <DateNav
                             date={wowDate}
                             period={wowDateType}
-                            periods={[ 'M']}
+                            periods={['M']}
                             onDateChange={setWowDate}
                             onPeriodChange={setWowDateType}
                             loading={wowLoading}
@@ -1738,8 +1746,8 @@ if(selectedHead){
                                             </th>
                                         );
                                     })}
-                                    <th style={{width:'150px'}}>HR #</th>
-                                    <th style={{width:'80px'}}>Revenue</th>
+                                    <th style={{ width: '150px' }}>HR #</th>
+                                    <th style={{ width: '80px' }}>Revenue</th>
                                     <th>Client</th>
                                 </tr>
                             </thead>
@@ -1777,15 +1785,15 @@ if(selectedHead){
                                                         src={TickMark}
                                                         alt="info"
                                                         style={{ width: "15px", height: "15px", marginLeft: '10px' }}
-                                                    /> :   <img
+                                                    /> : <img
                                                         src={Cross}
                                                         alt="info"
                                                         style={{ width: "15px", height: "15px", marginLeft: '10px' }}
-                                                    /> }
+                                                    />}
                                                 </>}</td>
                                             );
                                         })}
-                                        <td className="datacell" >  <a href={`/allhiringrequest/${row.hR_ID}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{row?.hR_Number ?? ''}</a>  <br /><span>{row?.hR_Title ?`${(row?.hR_Title)}` : ''}</span></td>
+                                        <td className="datacell" >  <a href={`/allhiringrequest/${row.hR_ID}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{row?.hR_Number ?? ''}</a>  <br /><span>{row?.hR_Title ? `${(row?.hR_Title)}` : ''}</span></td>
                                         <td className="datacell">{row?.tA_RevenueStr ?? ''}</td>
                                         <td className="datacell">{row?.company} {row?.companyCategory === "Diamond" ? <img
                                             src={Diamond}
@@ -1811,7 +1819,7 @@ if(selectedHead){
                         <DateNav
                             date={logDate}
                             period={logDateType}
-                            periods={['D', 'W', 'M', 'Q','R']}
+                            periods={['D', 'R', 'W', 'M', 'Q']}
                             onDateChange={setLogDate}
                             onPeriodChange={setLogDateType}
                             loading={logLoading}
@@ -1866,17 +1874,17 @@ if(selectedHead){
                                     </tr>
                                 )))}
 
-                                {qualLogData?.length > 0 &&   <tr key={"totalLogistics"}>
-                                        <td className={"rowlabel"}>Total</td>
-                                        {QUAL_LOG_METRICS.map((m) => {
-                                            // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
-                                            return  <td className="rowlabel datacell">{getTotal(qualLogData, m.key) ?`₹${getTotal(qualLogData, m.key).toLocaleString('en-US')}` : ''}</td> 
-                                            
-                                        })}
+                                {qualLogData?.length > 0 && <tr key={"totalLogistics"}>
+                                    <td className={"rowlabel"}>Total</td>
+                                    {QUAL_LOG_METRICS.map((m) => {
+                                        // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
+                                        return <td className="rowlabel datacell">{getTotal(qualLogData, m.key) ? `₹${getTotal(qualLogData, m.key).toLocaleString('en-US')}` : ''}</td>
 
-                                        <td className="rowlabel datacell">{getTotal(qualLogData, 'total_RevenueStr') ?`₹${getTotal(qualLogData, 'total_RevenueStr').toLocaleString('en-US')}`: ""}</td>
-                                    </tr>}
-                               
+                                    })}
+
+                                    <td className="rowlabel datacell">{getTotal(qualLogData, 'total_RevenueStr') ? `₹${getTotal(qualLogData, 'total_RevenueStr').toLocaleString('en-US')}` : ""}</td>
+                                </tr>}
+
 
                             </tbody>
                         </table>
