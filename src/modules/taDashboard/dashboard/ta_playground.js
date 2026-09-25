@@ -414,6 +414,9 @@ function TAplayground() {
             <td className="datacell">
                 {`$${getTotal(allRows.map(i => ({ grandTotalNBD: addNumbers(i?.existingAll, i?.nbdAll) })), 'grandTotalNBD').toLocaleString('en-US')}`}
             </td>
+              <td className="datacell">
+                {calPercentage(getTotal(allRows.map(i => ({ grandTotalExisting: addNumbers(i?.existing, i?.nbd) })), 'grandTotalExisting'), getTotal(allRows.map(i => ({ grandTotalNBD: addNumbers(i?.existingAll, i?.nbdAll) })), 'grandTotalNBD'))} %
+            </td>
             <td className="datacell">
                 {`$${getTotal(allRows, 'existingMontlyAvg').toLocaleString('en-US')}`}
             </td>
@@ -459,8 +462,11 @@ function TAplayground() {
             <td className="datacell">
                 {`${getTotal(allRows.map(i => ({ grandTotalNBD: addNumbers(i?.existingAll, i?.nbdAll) })), 'grandTotalNBD')}`}
             </td>
+              <td className="datacell">
+                {calPercentage(getTotal(allRows.map(i => ({ grandTotalExisting: addNumbers(i?.existing, i?.nbd) })), 'grandTotalExisting'), getTotal(allRows.map(i => ({ grandTotalNBD: addNumbers(i?.existingAll, i?.nbdAll) })), 'grandTotalNBD'))} %
+            </td>
             <td className="datacell">
-                {`${getTotal(allRows, 'existingMonthlyAvg')}`}
+                {`${getTotal(allRows, 'existingMontlyAvg')}`}
             </td>
 
             <td className="datacell">
@@ -594,7 +600,7 @@ function TAplayground() {
                                                     <th rowSpan={2}>Recruiter</th>
                                                     <th colSpan={3} className={'existingStyle'}>Existing</th>
                                                     <th colSpan={3} className={'ndbStyle'}>NBD</th>
-                                                    <th colSpan={2}>Grand Total</th>
+                                                    <th colSpan={3}>Grand Total</th>
                                                     <th colSpan={2}>Average</th>
                                                 </tr>
                                                 <tr>
@@ -609,6 +615,7 @@ function TAplayground() {
 
                                                     <th>WON</th>
                                                     <th>Play Ground</th>
+                                                    <th>Play Ground %</th>
 
                                                     <th>WON</th>
                                                     <th>Play Ground</th>
@@ -626,7 +633,7 @@ function TAplayground() {
                                                     PLCData.map((groupRow, ind) => {
                                                         return <>
                                                             <tr>
-                                                                <td colSpan="11" className="datacell" style={{ textAlign: 'start', fontWeight: 'bold' }}>
+                                                                <td colSpan="12" className="datacell" style={{ textAlign: 'start', fontWeight: 'bold' }}>
                                                                     {groupRow?.leadName}
                                                                 </td>
                                                             </tr>
@@ -654,6 +661,7 @@ function TAplayground() {
 
                                                                         <td className="datacell">{`${addNumbers(row?.existing, row?.nbd)}`}</td>
                                                                         <td className="datacell">{`${addNumbers(row?.existingAll, row?.nbdAll)}`}</td>
+                                                                        <td className="datacell" >{calPercentage(addNumbers(row?.existing, row?.nbd), addNumbers(row?.existingAll, row?.nbdAll)) ? `${calPercentage(addNumbers(row?.existing, row?.nbd), addNumbers(row?.existingAll, row?.nbdAll))} %` : ''}</td>
 
                                                                         <td className="datacell">{row?.existingMontlyAvg ?? ''}</td>
                                                                         <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td>
@@ -691,7 +699,10 @@ function TAplayground() {
                                                                     {`${getTotal(groupRow?.recruiter.map(i => ({ grandTotalNBD: addNumbers(i?.existingAll, i?.nbdAll) })), 'grandTotalNBD')}`}
                                                                 </td>
                                                                 <td className="datacell">
-                                                                    {`${getTotal(groupRow?.recruiter, 'existingMonthlyAvg')}`}
+                                                                    {calPercentage(getTotal(groupRow?.recruiter.map(i => ({ grandTotalExisting: addNumbers(i?.existing, i?.nbd) })), 'grandTotalExisting'), getTotal(groupRow?.recruiter.map(i => ({ grandTotalNBD: addNumbers(i?.existingAll, i?.nbdAll) })), 'grandTotalNBD'))} %
+                                                                </td>
+                                                                <td className="datacell">
+                                                                    {`${getTotal(groupRow?.recruiter, 'existingMontlyAvg')}`}
                                                                 </td>
 
                                                                 <td className="datacell">
@@ -739,7 +750,7 @@ function TAplayground() {
                                                     <th rowSpan={2}>Recruiter</th>
                                                     <th colSpan={3} className={'existingStyle'}>Existing</th>
                                                     <th colSpan={3} className={'ndbStyle'}>NBD</th>
-                                                    <th colSpan={2}>Grand Total</th>
+                                                    <th colSpan={3}>Grand Total</th>
                                                     <th colSpan={2}>Average</th>
                                                 </tr>
                                                 <tr>
@@ -753,6 +764,7 @@ function TAplayground() {
 
                                                     <th>WON</th>
                                                     <th>Play Ground</th>
+                                                    <th>Play Ground %</th>
 
                                                     <th>WON</th>
                                                     <th>Play Ground</th>
@@ -762,7 +774,7 @@ function TAplayground() {
                                             <tbody>
                                                 {PLVData?.length === 0 ? (
                                                     <tr>
-                                                        <td colSpan="11" className="datacell">
+                                                        <td colSpan="12" className="datacell">
                                                             No data available
                                                         </td>
                                                     </tr>
@@ -799,6 +811,7 @@ function TAplayground() {
 
                                                                         <td className="datacell">{`$${addNumbers(row?.existing, row?.nbd).toLocaleString('en-US')}`}</td>
                                                                         <td className="datacell">{`$${addNumbers(row?.existingAll, row?.nbdAll).toLocaleString('en-US')}`}</td>
+                                                                        <td className="datacell ndbStyle" >{calPercentage(addNumbers(row?.existing, row?.nbd), addNumbers(row?.existingAll, row?.nbdAll)) ? `${calPercentage(addNumbers(row?.existing, row?.nbd), addNumbers(row?.existingAll, row?.nbdAll))} %` : ''}</td>
 
                                                                         <td className="datacell">{row?.existingMontlyAvg ?? ''}</td>
                                                                         <td className="datacell">{row?.nbdMonthlyAVG ?? ''}</td>
@@ -833,6 +846,9 @@ function TAplayground() {
                                                                 </td>
                                                                 <td className="datacell">
                                                                     {`$${getTotal(groupRow?.recruiter.map(i => ({ grandTotalNBD: addNumbers(i?.existingAll, i?.nbdAll) })), 'grandTotalNBD').toLocaleString('en-US')}`}
+                                                                </td>
+                                                                 <td className="datacell">
+                                                                    {calPercentage(getTotal(groupRow?.recruiter.map(i => ({ grandTotalExisting: addNumbers(i?.existing, i?.nbd) })), 'grandTotalExisting'), getTotal(groupRow?.recruiter.map(i => ({ grandTotalNBD: addNumbers(i?.existingAll, i?.nbdAll) })), 'grandTotalNBD'))} %
                                                                 </td>
                                                                 <td className="datacell">
                                                                     {`$${getTotal(groupRow?.recruiter, 'existingMontlyAvg').toLocaleString('en-US')}`}
