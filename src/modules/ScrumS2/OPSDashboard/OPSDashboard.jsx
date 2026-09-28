@@ -28,6 +28,8 @@ const TA_COLUMNS = [
     { key: 'r3InterviewCompleted', label: 'R3 Completed' },
     { key: 'interviewReject', label: 'Interview Rejects' },
     { key: 'selection', label: 'Selection' },
+    { key: 'backout', label: 'Backout' },
+    { key: 'dropout', label: 'Dropout' },
     { key: 'joined', label: 'Joined' },
     { key: 'joinedRevenueStr', label: 'Joined Revenue' },
 ];
@@ -801,6 +803,18 @@ function OPSDashboard({ selectedHead }) {
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Status</span>,
+                        dataIndex: "hrStatus",
+                        key: "hrStatus",
+
+                        render: (_, param) => {
+                            return All_Hiring_Request_Utils.GETHRSTATUS(
+                                param?.hrStatusCode,
+                                param?.hrStatus
+                            );
+                        }
+                    },
                     //  {
                     //     title: <span style={popupSellHeadStyle}>Carry FWD Status</span>,
                     //     dataIndex: "carryFwd_HRStatus",
@@ -879,6 +893,18 @@ function OPSDashboard({ selectedHead }) {
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Status</span>,
+                        dataIndex: "hrStatus",
+                        key: "hrStatus",
+
+                        render: (_, param) => {
+                            return All_Hiring_Request_Utils.GETHRSTATUS(
+                                param?.hrStatusCode,
+                                param?.hrStatus
+                            );
+                        }
+                    },
                     // {
                     //     title: <span style={popupSellHeadStyle}>HR Status</span>,
                     //     dataIndex: "hrStatus",
@@ -896,7 +922,7 @@ function OPSDashboard({ selectedHead }) {
                 ];
             }
 
-            if (colLabelVal === "R1 Completed" || colLabelVal === "R2 Completed" || colLabelVal === "R2 Completed") {
+            if (colLabelVal === "R1 Completed" || colLabelVal === "R2 Completed" || colLabelVal === "R3 Completed") {
                 return [
                     {
                         title: <span style={popupSellHeadStyle}>Action Date</span>,
@@ -953,9 +979,6 @@ function OPSDashboard({ selectedHead }) {
                             return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
                         }
                     }
-
-
-
                 ];
             }
 
@@ -1007,11 +1030,6 @@ function OPSDashboard({ selectedHead }) {
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
-
-
-
-
-
                 ];
             }
 
@@ -1182,8 +1200,7 @@ function OPSDashboard({ selectedHead }) {
         setIsTable1Clicked(true)
         let FromDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[0]?.trim() : ""
         let ToDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[1]?.trim() : ""
-        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${result.stage_ID}
-        &ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
+        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${result.stage_ID}&ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
 
         setLoadingTalentProfile(true);
         const hrResult = await TaDashboardDAO.getHRTalentsWiseScrumDashboardDAO(query);
@@ -1239,8 +1256,7 @@ function OPSDashboard({ selectedHead }) {
         let FromDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[0]?.trim() : ""
         let ToDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[1]?.trim() : ""
 
-        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}
-        &ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
+        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}&ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
 
         setLoadingTalentProfile(true);
         const hrResult = await TaDashboardDAO.getHRTalentsWiseScrumDashboard3DAO(query);
@@ -1487,6 +1503,34 @@ function OPSDashboard({ selectedHead }) {
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
+
+              if (c.key === 'backout') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'B');
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+              if (c.key === 'dropout') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'D');
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
+                }}>{row[c.key]}</span> : ''}</td>
+        }
 
         if (c.key === 'joined') {
             return <td className="datacell" key={c.key}>{row[c.key] ? <span
@@ -1878,11 +1922,17 @@ function OPSDashboard({ selectedHead }) {
                                     <td className={"rowlabel"}>Total</td>
                                     {QUAL_LOG_METRICS.map((m) => {
                                         // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
-                                        return <td className="rowlabel datacell">{getTotal(qualLogData, m.key) ? `₹${getTotal(qualLogData, m.key).toLocaleString('en-US')}` : ''}</td>
+                                        return <td className="rowlabel datacell">{getTotal(qualLogData, m.key) ? `${getTotal(qualLogData, m.key).toLocaleString('en-IN', {
+                                            style: 'currency',
+                                            currency: 'INR'
+                                        })}` : ''}</td>
 
                                     })}
 
-                                    <td className="rowlabel datacell">{getTotal(qualLogData, 'total_RevenueStr') ? `₹${getTotal(qualLogData, 'total_RevenueStr').toLocaleString('en-US')}` : ""}</td>
+                                    <td className="rowlabel datacell">{getTotal(qualLogData, 'total_RevenueStr') ? `${getTotal(qualLogData, 'total_RevenueStr').toLocaleString('en-IN', {
+                                        style: 'currency',
+                                        currency: 'INR'
+                                    })}` : ""}</td>
                                 </tr>}
 
 
