@@ -2478,8 +2478,8 @@ function WeeklyWCGR() {
       }
     }
 
-    if (record?.stage_Title === "SELECTION - PreOnboarding  ·  Leads to Revenue" && record.stage_ID === "J4") {
-
+    if (record.stage_ID === "J4") {
+// record?.stage_Title === "SELECTION - PreOnboarding  ·  Leads to Revenue" 
       return <div >
         {text ? (
           <div
