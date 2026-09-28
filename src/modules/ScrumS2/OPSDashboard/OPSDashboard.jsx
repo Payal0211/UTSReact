@@ -28,6 +28,8 @@ const TA_COLUMNS = [
     { key: 'r3InterviewCompleted', label: 'R3 Completed' },
     { key: 'interviewReject', label: 'Interview Rejects' },
     { key: 'selection', label: 'Selection' },
+    { key: 'backout', label: 'Backout' },
+    { key: 'dropout', label: 'Dropout' },
     { key: 'joined', label: 'Joined' },
     { key: 'joinedRevenueStr', label: 'Joined Revenue' },
 ];
@@ -1501,6 +1503,34 @@ function OPSDashboard({ selectedHead }) {
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
+
+              if (c.key === 'backout') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'B');
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+              if (c.key === 'dropout') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'D');
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
+                }}>{row[c.key]}</span> : ''}</td>
+        }
 
         if (c.key === 'joined') {
             return <td className="datacell" key={c.key}>{row[c.key] ? <span
