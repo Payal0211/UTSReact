@@ -18,16 +18,16 @@ import { downloadToExcel } from "modules/report/reportUtils";
 
 const TA_COLUMNS = [
     { key: 'tA_PipelineStr', label: 'CF Active Pipeline' },
-    { key: 'tA_PreonboardingCarryFwdPipelineStr', label: 'CF Preonboarding Pipeline' },
-    { key: 'tA_ThismonthPipelineStr', label: 'Assigned Pipeline' },
+    { key: 'tA_PreonboardingCarryFwdPipelineStr', label: 'CF Pre. Pipeline' },
+    { key: 'tA_ThismonthPipelineStr', label: 'Assigned' },
     { key: 'tA_TotalPipelineStr', label: 'Total Pipeline' },
     { key: 'tA_TotalActivePipelineStr', label: 'Active Pipeline' },
     { key: 'profilesShared', label: 'Profile Shipped' },
     { key: 'uniqueCalls', label: 'Unique Calls' },
-    { key: 'r1InterviewCompleted', label: 'R1 Completed' },
-    { key: 'r2InterviewCompleted', label: 'R2 Completed' },
-    { key: 'r3InterviewCompleted', label: 'R3 Completed' },
-    { key: 'interviewReject', label: 'Interview Rejects' },
+    { key: 'r1InterviewCompleted', label: 'R1' },
+    { key: 'r2InterviewCompleted', label: 'R2' },
+    { key: 'r3InterviewCompleted', label: 'R3' },
+    { key: 'interviewReject', label: 'Int. Reject' },
     { key: 'selection', label: 'Selection' },
     { key: 'negotiationRevenueStr', label: 'Revenue' },
     { key: 'backout', label: 'Backout' },
@@ -45,7 +45,7 @@ const TA_COLUMNS = [
 const QUAL_WOW_METRICS = [
     { key: 'avgProfileSelectioninDays', label: 'Selection in Days', valKey: 'avgProfileSelection' },
     { key: 'profiletoSelect', label: 'Profile to Select', valKey: 'prtoSelect' },
-    { key: 'interviewtoSelect', label: 'Interview to Select', valKey: 'inttoSelect' },
+    { key: 'interviewtoSelect', label: 'INT. to Select', valKey: 'inttoSelect' },
 ];
 const QUAL_LOG_METRICS = [
     { key: 'dropout_RevenueStr', label: 'Dropouts', stageID: "D" },
@@ -1657,7 +1657,7 @@ function OPSDashboard({ selectedHead }) {
                             <tr>
                                 <th>TA</th>
                                 {TA_COLUMNS.map((c) => <th key={c.key}>{c.label}</th>)}
-                                <th>Achievement %</th>
+                                <th>Achieved %</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1719,7 +1719,7 @@ function OPSDashboard({ selectedHead }) {
 
             <div className="row-pair">
                 {/* ---------- 1. POD Productivity ---------- */}
-                <section className="card">
+                <section className="card" style={{maxWidth:'395px'}}>
                     <div className="card-head">
                         <div className="htitle"><span className="num">1</span>POD Productivity</div>
                         <DateNav
@@ -1772,7 +1772,7 @@ function OPSDashboard({ selectedHead }) {
                 </section>
 
                 {/* ---------- 2. Pipeline & Revenue Summary ---------- */}
-                <section className="card">
+                <section className="card"  style={{maxWidth:'395px'}}>
                     <div className="card-head">
                         <div className="htitle"><span className="num">2</span>Pipeline &amp; Revenue Summary</div>
                         <DateNav
