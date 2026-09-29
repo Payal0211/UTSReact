@@ -1353,7 +1353,9 @@ function OPSDashboard({ selectedHead }) {
         ) {
             return <td className="rowlabel datacell">{totalVal ? `${totalVal?.toLocaleString('en-IN', {
                 style: 'currency',
-                currency: 'INR'
+                currency: 'INR',
+                 minimumFractionDigits: 0,
+    maximumFractionDigits: 0
             })}` : ''}</td>
         }
 
@@ -1361,7 +1363,9 @@ function OPSDashboard({ selectedHead }) {
             let val = getTotal(taData, 'negotiationRevenue') - (getTotal(taData, 'dropoutRevenue') + getTotal(taData, 'backoutRevenue'))
             return <td className="rowlabel datacell">{val ? val?.toLocaleString('en-IN', {
                 style: 'currency',
-                currency: 'INR'
+                currency: 'INR',
+                 minimumFractionDigits: 0,
+    maximumFractionDigits: 0
             }) : ""}</td>
         }
 
@@ -1370,7 +1374,9 @@ function OPSDashboard({ selectedHead }) {
             let val = getTotal(taData, 'joinedRevenue') - getTotal(taData, 'negotiationRevepostJoinedBackoutRevenuenue')
             return <td className="rowlabel datacell">{val ? val?.toLocaleString('en-IN', {
                 style: 'currency',
-                currency: 'INR'
+                currency: 'INR',
+                 minimumFractionDigits: 0,
+    maximumFractionDigits: 0
             }) : ""}</td>
         }
         return <td className="rowlabel datacell">{totalVal ? `${totalVal}` : ''}</td>
@@ -1639,7 +1645,9 @@ function OPSDashboard({ selectedHead }) {
             let val = row.negotiationRevenue - (row.dropoutRevenue + row.backoutRevenue)
             return <td className="datacell" key={c.key}>{val ? val?.toLocaleString('en-IN', {
                 style: 'currency',
-                currency: 'INR'
+                currency: 'INR',
+                 minimumFractionDigits: 0,
+    maximumFractionDigits: 0
             }) : ""}</td>
         }
 
@@ -1648,7 +1656,9 @@ function OPSDashboard({ selectedHead }) {
             let val = row.joinedRevenue - row.postJoinedBackoutRevenue
             return <td className="datacell" key={c.key}>{val ? val?.toLocaleString('en-IN', {
                 style: 'currency',
-                currency: 'INR'
+                currency: 'INR',
+                 minimumFractionDigits: 0,
+    maximumFractionDigits: 0
             }) : ""}</td>
         }
 
