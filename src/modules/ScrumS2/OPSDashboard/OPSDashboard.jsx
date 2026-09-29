@@ -18,24 +18,34 @@ import { downloadToExcel } from "modules/report/reportUtils";
 
 const TA_COLUMNS = [
     { key: 'tA_PipelineStr', label: 'CF Active Pipeline' },
-    { key: 'tA_PreonboardingCarryFwdPipelineStr', label: 'CF Preonboarding Pipeline' },
-    { key: 'tA_ThismonthPipelineStr', label: 'Assigned Pipeline' },
+    { key: 'tA_PreonboardingCarryFwdPipelineStr', label: 'CF Pre. Pipeline' },
+    { key: 'tA_ThismonthPipelineStr', label: 'Assigned' },
     { key: 'tA_TotalPipelineStr', label: 'Total Pipeline' },
+    { key: 'tA_TotalActivePipelineStr', label: 'Active Pipeline' },
     { key: 'profilesShared', label: 'Profile Shipped' },
     { key: 'uniqueCalls', label: 'Unique Calls' },
-    { key: 'r1InterviewCompleted', label: 'R1 Completed' },
-    { key: 'r2InterviewCompleted', label: 'R2 Completed' },
-    { key: 'r3InterviewCompleted', label: 'R3 Completed' },
-    { key: 'interviewReject', label: 'Interview Rejects' },
+    { key: 'r1InterviewCompleted', label: 'R1' },
+    { key: 'r2InterviewCompleted', label: 'R2' },
+    { key: 'r3InterviewCompleted', label: 'R3' },
+    { key: 'interviewReject', label: 'Int. Reject' },
     { key: 'selection', label: 'Selection' },
+    { key: 'negotiationRevenueStr', label: 'Revenue' },
+    { key: 'backout', label: 'Backout' },
+    { key: 'backoutRevenueStr', label: 'Backout Revenue' },
+    { key: 'dropout', label: 'Dropout' },
+    { key: 'dropoutRevenueStr', label: 'Dropout Revenue' },
+    { key: 'net_selection', label: 'Net Selection' },
     { key: 'joined', label: 'Joined' },
     { key: 'joinedRevenueStr', label: 'Joined Revenue' },
+    { key: 'postJoinedBackout', label: 'Post Joined Backout' },
+    { key: 'postJoinedBackoutRevenueStr', label: 'Post Joined Backout Revenue' },
+    { key: 'net_joined', label: 'Net Joined' },
 ];
 
 const QUAL_WOW_METRICS = [
     { key: 'avgProfileSelectioninDays', label: 'Selection in Days', valKey: 'avgProfileSelection' },
     { key: 'profiletoSelect', label: 'Profile to Select', valKey: 'prtoSelect' },
-    { key: 'interviewtoSelect', label: 'Interview to Select', valKey: 'inttoSelect' },
+    { key: 'interviewtoSelect', label: 'INT. to Select', valKey: 'inttoSelect' },
 ];
 const QUAL_LOG_METRICS = [
     { key: 'dropout_RevenueStr', label: 'Dropouts', stageID: "D" },
@@ -801,6 +811,18 @@ function OPSDashboard({ selectedHead }) {
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Status</span>,
+                        dataIndex: "hrStatus",
+                        key: "hrStatus",
+
+                        render: (_, param) => {
+                            return All_Hiring_Request_Utils.GETHRSTATUS(
+                                param?.hrStatusCode,
+                                param?.hrStatus
+                            );
+                        }
+                    },
                     //  {
                     //     title: <span style={popupSellHeadStyle}>Carry FWD Status</span>,
                     //     dataIndex: "carryFwd_HRStatus",
@@ -879,6 +901,18 @@ function OPSDashboard({ selectedHead }) {
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Status</span>,
+                        dataIndex: "hrStatus",
+                        key: "hrStatus",
+
+                        render: (_, param) => {
+                            return All_Hiring_Request_Utils.GETHRSTATUS(
+                                param?.hrStatusCode,
+                                param?.hrStatus
+                            );
+                        }
+                    },
                     // {
                     //     title: <span style={popupSellHeadStyle}>HR Status</span>,
                     //     dataIndex: "hrStatus",
@@ -896,7 +930,7 @@ function OPSDashboard({ selectedHead }) {
                 ];
             }
 
-            if (colLabelVal === "R1 Completed" || colLabelVal === "R2 Completed" || colLabelVal === "R2 Completed") {
+            if (colLabelVal === "R1 Completed" || colLabelVal === "R2 Completed" || colLabelVal === "R3 Completed") {
                 return [
                     {
                         title: <span style={popupSellHeadStyle}>Action Date</span>,
@@ -953,9 +987,6 @@ function OPSDashboard({ selectedHead }) {
                             return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
                         }
                     }
-
-
-
                 ];
             }
 
@@ -1007,11 +1038,6 @@ function OPSDashboard({ selectedHead }) {
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
-
-
-
-
-
                 ];
             }
 
@@ -1182,8 +1208,7 @@ function OPSDashboard({ selectedHead }) {
         setIsTable1Clicked(true)
         let FromDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[0]?.trim() : ""
         let ToDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[1]?.trim() : ""
-        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${result.stage_ID}
-        &ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
+        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${result.stage_ID}&ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
 
         setLoadingTalentProfile(true);
         const hrResult = await TaDashboardDAO.getHRTalentsWiseScrumDashboardDAO(query);
@@ -1239,8 +1264,7 @@ function OPSDashboard({ selectedHead }) {
         let FromDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[0]?.trim() : ""
         let ToDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[1]?.trim() : ""
 
-        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}
-        &ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
+        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}&ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
 
         setLoadingTalentProfile(true);
         const hrResult = await TaDashboardDAO.getHRTalentsWiseScrumDashboard3DAO(query);
@@ -1318,6 +1342,39 @@ function OPSDashboard({ selectedHead }) {
                     setColLabelVal(m.label)
                 }}>{row?.[m.key] ?? ''}</span></td>
         );
+    }
+
+    const RenderTATotalCell = ({ taData, m }) => {
+        let totalVal = getTotal(taData, m.key)
+
+        if (m.key === 'tA_PipelineStr' || m.key === 'tA_PreonboardingCarryFwdPipelineStr' ||
+            m.key === 'tA_ThismonthPipelineStr' || m.key === 'tA_TotalPipelineStr' || m.key === 'tA_TotalActivePipelineStr' ||
+            m.key === 'negotiationRevenueStr' || m.key === 'backoutRevenueStr' || m.key === 'dropoutRevenueStr' || m.key === 'joinedRevenueStr'
+            || m.key === 'postJoinedBackoutRevenueStr'
+        ) {
+            return <td className="rowlabel datacell">{totalVal ? `${totalVal?.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'INR'
+            })}` : ''}</td>
+        }
+
+        if (m.key === 'net_selection') {
+            let val = getTotal(taData, 'negotiationRevenue') - (getTotal(taData, 'dropoutRevenue') + getTotal(taData, 'backoutRevenue'))
+            return <td className="rowlabel datacell">{val ? val?.toLocaleString('en-IN', {
+                style: 'currency',
+                currency: 'INR'
+            }) : ""}</td>
+        }
+
+        if (m.key === 'net_joined') {
+            // const revenueNumber = Number(row.joinedRevenueStr.replace(/[^\d]/g, ""));
+            let val = getTotal(taData, 'joinedRevenue') - getTotal(taData, 'negotiationRevepostJoinedBackoutRevenuenue')
+            return <td className="rowlabel datacell">{val ? val?.toLocaleString('en-IN', {
+                style: 'currency',
+                currency: 'INR'
+            }) : ""}</td>
+        }
+        return <td className="rowlabel datacell">{totalVal ? `${totalVal}` : ''}</td>
     }
 
     const RenderTACell = ({ c, row, idx, performanceDateType, performanceDate }) => {
@@ -1488,6 +1545,34 @@ function OPSDashboard({ selectedHead }) {
         }
 
 
+        if (c.key === 'backout') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'B');
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+        if (c.key === 'dropout') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'D');
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
         if (c.key === 'joined') {
             return <td className="datacell" key={c.key}>{row[c.key] ? <span
                 style={{
@@ -1517,6 +1602,23 @@ function OPSDashboard({ selectedHead }) {
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
+        if (c.key === 'net_selection') {
+            let val = row.negotiationRevenue - (row.dropoutRevenue + row.backoutRevenue)
+            return <td className="datacell" key={c.key}>{val ? val?.toLocaleString('en-IN', {
+                style: 'currency',
+                currency: 'INR'
+            }) : ""}</td>
+        }
+
+        if (c.key === 'net_joined') {
+            // const revenueNumber = Number(row.joinedRevenueStr.replace(/[^\d]/g, ""));
+            let val = row.joinedRevenue - row.postJoinedBackoutRevenue
+            return <td className="datacell" key={c.key}>{val ? val?.toLocaleString('en-IN', {
+                style: 'currency',
+                currency: 'INR'
+            }) : ""}</td>
+        }
+
         return <td className="datacell" key={c.key}>{row[c.key] ? row[c.key] : ''}</td>
     }
 
@@ -1534,15 +1636,96 @@ function OPSDashboard({ selectedHead }) {
                 </div>
             </header>
 
+
+            {/* ---------- 3. Team Performance ---------- */}
+            <section className="card">
+                <div className="card-head">
+                    <div className="htitle"><span className="num">3</span>Team Performance</div>
+                    <DateNav
+                        date={performanceDate}
+                        period={performanceDateType}
+                        periods={['D', 'W', 'M', 'Q','R']}
+                        onDateChange={setPerformanceDate}
+                        onPeriodChange={setPerformanceDateType}
+                        loading={taLoading}
+                    />
+                </div>
+                <div className="table-wrap">
+
+                    <table className="grid ta">
+                        <thead>
+                            <tr>
+                                <th>TA</th>
+                                {TA_COLUMNS.map((c) => <th key={c.key}>{c.label}</th>)}
+                                <th>Achieved %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {taLoading ? (
+                                <tr>
+                                    <td colSpan="25" className="datacell">
+                                        <div className="table-loading">Loading…</div>
+                                    </td>
+                                </tr>
+
+                            ) : (taData.length === 0 ? (
+                                <tr>
+                                    <td colSpan="25" className="datacell">
+                                        No data available
+                                    </td>
+                                </tr>
+                            ) :
+
+
+                                taData.map((row, idx) => {
+                                    const pct = pctOf(row.goal, row.joined);
+                                    return (
+                                        <tr key={idx}>
+                                            <td className="rowlabel">{row.recruiter}</td>
+                                            {TA_COLUMNS.map((c) => (<RenderTACell c={c} row={row} idx={idx} performanceDate={performanceDate} performanceDateType={performanceDateType} />
+
+                                            ))}
+
+                                            <td className={`pct ${statusClass(pct)}`}>
+                                                {/* <div className={`goalvs-readout ${statusClass(pct)}`}> */}
+                                                {row.pipelinetoJoinedPerStr ? `${row.pipelinetoJoinedPerStr} %` : ''}
+                                                {/* </div> */}
+                                            </td>
+
+                                        </tr>
+                                    );
+                                }))
+
+                            }
+
+                            {taData?.length > 0 && <tr key={"totalLogistics"}>
+                                <td className={"rowlabel"}>Total</td>
+                                {TA_COLUMNS.map((m) => {
+                                    // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
+                                    return <RenderTATotalCell taData={taData} m={m} />
+
+                                })}
+                                <td className="rowlabel datacell"></td>
+                                {/* <td className="rowlabel datacell">{getTotal(qualLogData, 'total_RevenueStr') ? `${getTotal(qualLogData, 'total_RevenueStr').toLocaleString('en-IN', {
+                                        style: 'currency',
+                                        currency: 'INR'
+                                    })}` : ""}</td> */}
+                            </tr>}
+                        </tbody>
+                    </table>
+
+                </div>
+            </section>
+
             <div className="row-pair">
                 {/* ---------- 1. POD Productivity ---------- */}
-                <section className="card">
+                <section className="card" style={{maxWidth:'395px'}}>
                     <div className="card-head">
                         <div className="htitle"><span className="num">1</span>POD Productivity</div>
                         <DateNav
                             date={podDate}
                             period={podDateType}
-                            periods={['D', 'R', 'W', 'M', 'Q']}
+                            periods={['D', 'W', 'M', 'Q','R']}
                             onDateChange={setPODDate}
                             onPeriodChange={setPODDateType}
                             loading={funnelLoading}
@@ -1589,7 +1772,7 @@ function OPSDashboard({ selectedHead }) {
                 </section>
 
                 {/* ---------- 2. Pipeline & Revenue Summary ---------- */}
-                <section className="card">
+                <section className="card"  style={{maxWidth:'395px'}}>
                     <div className="card-head">
                         <div className="htitle"><span className="num">2</span>Pipeline &amp; Revenue Summary</div>
                         <DateNav
@@ -1651,71 +1834,7 @@ function OPSDashboard({ selectedHead }) {
 
                     </div>
                 </section>
-            </div>
 
-            {/* ---------- 3. Team Performance ---------- */}
-            <section className="card">
-                <div className="card-head">
-                    <div className="htitle"><span className="num">3</span>Team Performance</div>
-                    <DateNav
-                        date={performanceDate}
-                        period={performanceDateType}
-                        periods={['D', 'R', 'W', 'M', 'Q']}
-                        onDateChange={setPerformanceDate}
-                        onPeriodChange={setPerformanceDateType}
-                        loading={taLoading}
-                    />
-                </div>
-                <div className="table-wrap">
-
-                    <table className="grid ta">
-                        <thead>
-                            <tr>
-                                <th>TA</th>
-                                {TA_COLUMNS.map((c) => <th key={c.key}>{c.label}</th>)}
-                                <th>Achievement %</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {taLoading ? (
-                                <tr>
-                                    <td colSpan="15" className="datacell">
-                                        <div className="table-loading">Loading…</div>
-                                    </td>
-                                </tr>
-
-                            ) : (taData.length === 0 ? (
-                                <tr>
-                                    <td colSpan="15" className="datacell">
-                                        No data available
-                                    </td>
-                                </tr>
-                            ) :
-                                taData.map((row, idx) => {
-                                    const pct = pctOf(row.goal, row.joined);
-                                    return (
-                                        <tr key={idx}>
-                                            <td className="rowlabel">{row.recruiter}</td>
-                                            {TA_COLUMNS.map((c) => (<RenderTACell c={c} row={row} idx={idx} performanceDate={performanceDate} performanceDateType={performanceDateType} />
-
-                                            ))}
-
-                                            <td className={`pct ${statusClass(pct)}`}>
-                                                {/* <div className={`goalvs-readout ${statusClass(pct)}`}> */}
-                                                {row.pipelinetoJoinedPerStr ? `${row.pipelinetoJoinedPerStr} %` : ''}
-                                                {/* </div> */}
-                                            </td>
-
-                                        </tr>
-                                    );
-                                }))}
-                        </tbody>
-                    </table>
-
-                </div>
-            </section>
-
-            <div className="row-pair">
                 {/* ---------- 4. Customer Experience (WOW Factor) ---------- */}
                 <section className="card">
                     <div className="card-head">
@@ -1811,9 +1930,14 @@ function OPSDashboard({ selectedHead }) {
                         <span className="legend-note">🟢 met/beat goal · tap a header to sort</span>
                     </div> */}
                 </section>
+            </div>
+
+
+            {/* <div className="row-pair"> */}
+
 
                 {/* ---------- 5. Customer Experience (Logistics) ---------- */}
-                <section className="card">
+                {/* <section className="card">
                     <div className="card-head">
                         <div className="htitle"><span className="num">5</span>Customer Experience (Logistics)</div>
                         <DateNav
@@ -1841,7 +1965,7 @@ function OPSDashboard({ selectedHead }) {
                                     })}
                                     <th>Revenue</th>
                                 </tr>
-                            </thead>
+                            </thead> */}
                             {/* <tr className="goal-row">
                                     <td className="rowlabel">Goal</td>
                                     {QUAL_LOG_METRICS.map((m) => (
@@ -1849,7 +1973,7 @@ function OPSDashboard({ selectedHead }) {
                                     ))}
                                     <td className="datacell"></td>
                                 </tr> */}
-                            <tbody>
+                            {/* <tbody>
 
                                 {logLoading ? (
                                     <td colSpan="5">
@@ -1878,23 +2002,29 @@ function OPSDashboard({ selectedHead }) {
                                     <td className={"rowlabel"}>Total</td>
                                     {QUAL_LOG_METRICS.map((m) => {
                                         // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
-                                        return <td className="rowlabel datacell">{getTotal(qualLogData, m.key) ? `₹${getTotal(qualLogData, m.key).toLocaleString('en-US')}` : ''}</td>
+                                        return <td className="rowlabel datacell">{getTotal(qualLogData, m.key) ? `${getTotal(qualLogData, m.key).toLocaleString('en-IN', {
+                                            style: 'currency',
+                                            currency: 'INR'
+                                        })}` : ''}</td>
 
                                     })}
 
-                                    <td className="rowlabel datacell">{getTotal(qualLogData, 'total_RevenueStr') ? `₹${getTotal(qualLogData, 'total_RevenueStr').toLocaleString('en-US')}` : ""}</td>
+                                    <td className="rowlabel datacell">{getTotal(qualLogData, 'total_RevenueStr') ? `${getTotal(qualLogData, 'total_RevenueStr').toLocaleString('en-IN', {
+                                        style: 'currency',
+                                        currency: 'INR'
+                                    })}` : ""}</td>
                                 </tr>}
 
 
                             </tbody>
                         </table>
 
-                    </div>
+                    </div> */}
                     {/* <div className="row-actions">
                         <span className="legend-note">🟢 met/beat goal · tap a header to sort</span>
                     </div> */}
-                </section>
-            </div>
+                {/* </section>
+            </div> */}
 
             {/* <footer>
                 Use ‹ › to browse previous/next periods · each panel's Daily / Weekly / Monthly / Quarterly view refetches from the server

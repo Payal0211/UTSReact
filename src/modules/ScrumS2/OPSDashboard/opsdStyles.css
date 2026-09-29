@@ -46,7 +46,7 @@
   .row-pair td.pct{font-size:10.5px;}
 
   /* --- table styling, close to the original screenshots --- */
-  .table-wrap{overflow-x:auto;}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .table-loading{padding:16px;text-align:center;color:var(--ink-faint);font-size:11px;}
 
 .quarter-popover{
@@ -186,6 +186,36 @@ table.grid th.ndbStyle {background:#e2f1fb !important}
   table.ta th{white-space:normal;line-height:1.15;vertical-align:bottom;word-break:break-word;}
   table.ta td.rowlabel{white-space:normal;}
   table.ta td.name-cell{background:var(--surface);}
+
+/* --- Team Performance table: many columns (~25) — let it size itself and
+   scroll horizontally instead of squeezing every column to fit the card,
+   which was wrapping currency values onto 2 lines and making them hard to
+   read. Only applies to the plain .ta table, NOT the .qual-split ones
+   (WOW/Logistics), which are narrow enough to stay as-is. */
+table.ta:not(.qual-split){
+  table-layout:auto;
+  width:max-content;
+  min-width:100%;
+}
+table.ta:not(.qual-split) th,
+table.ta:not(.qual-split) td{
+  white-space:nowrap;
+  min-width:88px;
+}
+/* Sticky first column (TA name) so the row identity stays visible while
+   scrolling right through all the metric columns. */
+table.ta:not(.qual-split) th:first-child,
+table.ta:not(.qual-split) td:first-child{
+  position:sticky;
+  left:0;
+  z-index:3;
+  min-width:120px;
+  box-shadow:2px 0 4px -2px rgba(0,0,0,.15);
+}
+table.ta:not(.qual-split) td.rowlabel:first-child{
+  background:var(--surface-2);
+}
+
   select.cell-select{appearance:none;-webkit-appearance:none;background:#fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="6"><path d="M0 0l4 6 4-6z" fill="%2363706A"/></svg>') no-repeat right 4px center;padding-right:12px !important;cursor:pointer;font-size:9px !important;}
   table.ta input.name-input{
     width:100%;border:none;background:transparent;padding:4px 5px;font-family:var(--font-body);
