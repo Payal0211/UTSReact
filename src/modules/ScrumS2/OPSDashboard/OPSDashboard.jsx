@@ -1644,7 +1644,7 @@ function OPSDashboard({ selectedHead }) {
                     <DateNav
                         date={performanceDate}
                         period={performanceDateType}
-                        periods={['D', 'R', 'W', 'M', 'Q']}
+                        periods={['D', 'W', 'M', 'Q','R']}
                         onDateChange={setPerformanceDate}
                         onPeriodChange={setPerformanceDateType}
                         loading={taLoading}
@@ -1725,7 +1725,7 @@ function OPSDashboard({ selectedHead }) {
                         <DateNav
                             date={podDate}
                             period={podDateType}
-                            periods={['D', 'R', 'W', 'M', 'Q']}
+                            periods={['D', 'W', 'M', 'Q','R']}
                             onDateChange={setPODDate}
                             onPeriodChange={setPODDateType}
                             loading={funnelLoading}
