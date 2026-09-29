@@ -1293,8 +1293,7 @@ function OPSDashboard({ selectedHead }) {
         let FromDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[0]?.trim() : ""
         let ToDateStr = TAB_NAME_MAP[logDateType] === 'R' ? getDateRangeValue(logDateType, range).split('to')[1]?.trim() : ""
 
-        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}
-        &ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
+        let query = `?TAHeadUserID=${selectedHead}&FilterTab=${TAB_NAME_MAP[DateType] || DateType}&FilterValue=${getDateRangeValue(DateType, range)}&FilterMonth=${moment(range.from).format('MM')}&FilterYear=${moment(range.from).format('YYYY')}&Stage_Id=${stageID}&TAUserID=${result.tA_UserID}&ToDateStr=${ToDateStr}&FromDateStr=${FromDateStr}`
 
         setLoadingTalentProfile(true);
         const hrResult = await TaDashboardDAO.getHRTalentsWiseScrumDashboard5DAO(query);
@@ -1352,7 +1351,7 @@ function OPSDashboard({ selectedHead }) {
             m.key === 'negotiationRevenueStr' || m.key === 'backoutRevenueStr' || m.key === 'dropoutRevenueStr' || m.key === 'joinedRevenueStr'
             || m.key === 'postJoinedBackoutRevenueStr'
         ) {
-            return <td className="rowlabel datacell">{totalVal ? `${totalVal?.toLocaleString('en-US', {
+            return <td className="rowlabel datacell">{totalVal ? `${totalVal?.toLocaleString('en-IN', {
                 style: 'currency',
                 currency: 'INR'
             })}` : ''}</td>
@@ -1530,7 +1529,7 @@ function OPSDashboard({ selectedHead }) {
         }
 
 
-        if (c.key === 'selection') {
+        if (c.key === 'selection' || c.key === 'negotiationRevenueStr') {
             return <td className="datacell" key={c.key}>{row[c.key] ? <span
                 style={{
                     fontWeight: "bold",
@@ -1600,6 +1599,40 @@ function OPSDashboard({ selectedHead }) {
                     setColTextVal(row[c.key])
                     setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
+        }
+
+       
+
+        if(c.key === 'backoutRevenueStr'){
+
+              return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {                 
+                   getTalentProfilesDetailsfromTable5(row, performanceDateType, performanceDate, 'B');
+                    setColTextVal(row?.[c.key])
+                    setColLabelVal(c.label)
+                }}>{row[c.key]}</span> : ''}</td>
+             
+        }
+
+          if(c.key === 'dropoutRevenueStr'){
+
+              return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {                 
+                   getTalentProfilesDetailsfromTable5(row, performanceDateType, performanceDate, 'D');
+                    setColTextVal(row?.[c.key])
+                    setColLabelVal(c.label)
+                }}>{row[c.key]}</span> : ''}</td>
+             
         }
 
         if (c.key === 'net_selection') {
@@ -1772,7 +1805,7 @@ function OPSDashboard({ selectedHead }) {
                 </section>
 
                 {/* ---------- 2. Pipeline & Revenue Summary ---------- */}
-                <section className="card"  style={{maxWidth:'395px'}}>
+                <section className="card"  style={{maxWidth:'410px'}}>
                     <div className="card-head">
                         <div className="htitle"><span className="num">2</span>Pipeline &amp; Revenue Summary</div>
                         <DateNav
