@@ -179,6 +179,10 @@ function NewAddCompany() {
   {
     id: 176,
     value: 'partnership',
+  },
+  {
+    id: 454,
+    value: 'Founder Led Branding',
   }
   ];
 
@@ -2011,6 +2015,8 @@ function NewAddCompany() {
                             }
                             else if (companySectionData?.LeadType === 176) {
                               return val.employeeId === "UP1831"
+                            } else if (companySectionData?.LeadType === 454) {
+                              return val.employeeId === "UP2632"
                             } else {
                               return val.userTypeId === 11
                             }
