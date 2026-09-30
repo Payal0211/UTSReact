@@ -32,7 +32,7 @@ function CompanySection({
   showFetchATButton,
   setShowFetchAIButton,
   filtersList,
-  resetField,unregister,fields,hooksProps,engagementDetails,hiringDetailsFromGetDetails
+  resetField, unregister, fields, hooksProps, engagementDetails, hiringDetailsFromGetDetails
 }) {
   const [getUploadFileData, setUploadFileData] = useState("");
   const [base64Image, setBase64Image] = useState("");
@@ -51,10 +51,10 @@ function CompanySection({
     linkValidation: "",
   });
 
-    const [controlledLeadTypeValue, setControlledLeadTypeValue] = useState("");
-    const [controlledLeadUserValue, setControlledLeadUserValue] = useState("");
-    const [controlledCategoryValue, setControlledCategoryValue] = useState("None");
-    const [controlledGeoValue, setControlledGeoValue] = useState("");
+  const [controlledLeadTypeValue, setControlledLeadTypeValue] = useState("");
+  const [controlledLeadUserValue, setControlledLeadUserValue] = useState("");
+  const [controlledCategoryValue, setControlledCategoryValue] = useState("None");
+  const [controlledGeoValue, setControlledGeoValue] = useState("");
 
   const leadTypeOptions = [{
     id: 12,
@@ -71,8 +71,12 @@ function CompanySection({
   {
     id: 176,
     value: 'partnership',
+  },
+  {
+    id: 454,
+    value: 'Founder Led Branding',
   }
-];
+  ];
 
   useEffect(() => {
     companyDetails?.companyLogo && setUploadFileData(companyDetails?.companyLogo)
@@ -104,10 +108,10 @@ function CompanySection({
     setControlledLeadTypeValue(companyDetails?.leadUserType)
     setValue("LeadUser", companyDetails?.leadUserID);
     setControlledLeadUserValue(companyDetails?.leadUserName)
-    setControlledCategoryValue(companyDetails?.companyCategory ? companyDetails?.companyCategory :  'None')
-    setValue('Category',companyDetails?.companyCategory ? companyDetails?.companyCategory : 'None')
-     setControlledGeoValue(companyDetails?.companyGeo ? companyDetails?.companyGeo :  '')
-    setValue('Geo',companyDetails?.companyGeo ? companyDetails?.companyGeo : '')
+    setControlledCategoryValue(companyDetails?.companyCategory ? companyDetails?.companyCategory : 'None')
+    setValue('Category', companyDetails?.companyCategory ? companyDetails?.companyCategory : 'None')
+    setControlledGeoValue(companyDetails?.companyGeo ? companyDetails?.companyGeo : '')
+    setValue('Geo', companyDetails?.companyGeo ? companyDetails?.companyGeo : '')
   }, [companyDetails]);
 
 
@@ -155,7 +159,7 @@ function CompanySection({
         filesToUpload.append("Files", fileData);
         filesToUpload.append("IsCompanyLogo", true);
         filesToUpload.append("IsCultureImage", false);
-        filesToUpload.append("type","company_logo")
+        filesToUpload.append("type", "company_logo")
 
         let Result = await allCompanyRequestDAO.uploadImageDAO(filesToUpload);
 
@@ -232,8 +236,8 @@ function CompanySection({
     setShowFetchAIButton(false);
     // clearErrors("companyURL");
     setIsViewCompanyurl(false);
-    
-    if(!watch("companyName")){
+
+    if (!watch("companyName")) {
       setError("companyURL", {
         type: "manual",
         message: 'Company Name / Website URL can not be blank to fetch the company logo',
@@ -241,12 +245,12 @@ function CompanySection({
     }
     if (watch("companyURL")) {
       let linkedInPattern = /linkedin\.com/i;
-      if(linkedInPattern.test(watch("companyURL"))){
+      if (linkedInPattern.test(watch("companyURL"))) {
         setError("companyURL", {
           type: "manual",
           message: 'Entered value does not match url format',
         });
-        return 
+        return
       }
 
       if (ValidateFieldURL(watch("companyURL"), "website")) {
@@ -297,18 +301,18 @@ function CompanySection({
   const base64ToBlob = (base64Data, contentType = '') => {
     const byteString = atob(base64Data.split(',')[1]);
     const byteArrays = [];
-  
+
     for (let i = 0; i < byteString.length; i++) {
       byteArrays.push(byteString.charCodeAt(i));
     }
-  
+
     return new Blob([new Uint8Array(byteArrays)], { type: contentType });
   };
 
   const base64ToFile = async (base64, filename) => {
     const mimeType = base64.match(/data:(.*?);base64/)[1]; // Extract MIME type
     const blob = base64ToBlob(base64, mimeType);
-    const file = new File([blob], filename, { type: mimeType });  
+    const file = new File([blob], filename, { type: mimeType });
     return file;
   };
 
@@ -316,11 +320,11 @@ function CompanySection({
     let content = watch("aboutCompany")
     const imgTags = content?.match(/<img[^>]*>/g) || [];
     const list = [];
-    const base64Srcs = []; 
-    
+    const base64Srcs = [];
+
     for (const imgTag of imgTags) {
       if (!imgTag) continue;
-  
+
       const srcMatch = imgTag.match(/src="([^"]+)"/);
       if (srcMatch && srcMatch[1]) {
         const src = srcMatch[1];
@@ -335,21 +339,21 @@ function CompanySection({
         }
       }
     }
-  
-    if(list.length>0){
+
+    if (list.length > 0) {
       const formData = new FormData();
       list.forEach(file => formData.append("Files", file));
       formData.append('IsCompanyLogo', false);
       formData.append('IsCultureImage', true);
       formData.append("Type", "culture_images");
-    
+
       let Result = await allCompanyRequestDAO.uploadImageDAO(formData);
       const uploadedUrls = Result?.responseBody || [];
-    
+
       let updatedContent = content;
       base64Srcs.forEach((src, index) => {
         if (uploadedUrls[index]) {
-          const escapedSrc = src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); 
+          const escapedSrc = src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
           const regex = new RegExp(`src="${escapedSrc}"`, 'g');
           updatedContent = updatedContent.replace(regex, `src="${uploadedUrls[index]}"`);
         }
@@ -447,11 +451,11 @@ function CompanySection({
                     </div>
                   </div>
 
-                 {loadingCompanyDetails && <div className={AddNewClientStyle.colMd12}>
-                     <p style={{ fontWeight: "bold", color: "green" }}>
-                        Fetching  Company Logo From AI ... <img src={spinGif} alt="loadgif"  width={16} />
-                     </p>
-                  </div>} 
+                  {loadingCompanyDetails && <div className={AddNewClientStyle.colMd12}>
+                    <p style={{ fontWeight: "bold", color: "green" }}>
+                      Fetching  Company Logo From AI ... <img src={spinGif} alt="loadgif" width={16} />
+                    </p>
+                  </div>}
                 </div>
 
                 <div className={AddNewClientStyle.row}>
@@ -504,37 +508,37 @@ function CompanySection({
                         </p>
                       </>
                     ) : ( */}
-                      <>
-                        <HRInputField
-                          register={register}
-                          errors={errors}
-                          label="Company Website URL"
-                          name="companyURL"
-                          type={InputType.TEXT}
-                          validationSchema={{
-                            required: "Please enter the Company Website link.",
-                            validate: (value) => {
-                             
-                              if (ValidateFieldURL(value, "website")) {
-                                return true;
-                              }else {
-                                return "Entered value does not match url format";
-                              }
-                            },
-                          }}
-                          placeholder="Enter website url"
-                          required
-                          onBlurHandler={() => validateCompanyURL()}
-                          // disabled={disableCompanyURL}
-                        />
-                        <div
-                          className={AddNewClientStyle.formPanelAction}
-                          style={{
-                            padding: "0 0 20px",
-                            justifyContent: "flex-start",
-                          }}
-                        >
-                          {/* {showFetchATButton && (
+                    <>
+                      <HRInputField
+                        register={register}
+                        errors={errors}
+                        label="Company Website URL"
+                        name="companyURL"
+                        type={InputType.TEXT}
+                        validationSchema={{
+                          required: "Please enter the Company Website link.",
+                          validate: (value) => {
+
+                            if (ValidateFieldURL(value, "website")) {
+                              return true;
+                            } else {
+                              return "Entered value does not match url format";
+                            }
+                          },
+                        }}
+                        placeholder="Enter website url"
+                        required
+                        onBlurHandler={() => validateCompanyURL()}
+                      // disabled={disableCompanyURL}
+                      />
+                      <div
+                        className={AddNewClientStyle.formPanelAction}
+                        style={{
+                          padding: "0 0 20px",
+                          justifyContent: "flex-start",
+                        }}
+                      >
+                        {/* {showFetchATButton && (
                             <div>
                               <button
                                 className={AddNewClientStyle.btnPrimary}
@@ -550,16 +554,16 @@ function CompanySection({
                               </p>
                             </div>
                           )} */}
-                          {isViewCompanyurl && watch("companyName") && (
-                            <button
-                              className={AddNewClientStyle.btnPrimary}
-                              onClick={() => setIsPreviewModal(true)}
-                            >
-                              View Company
-                            </button>
-                          )}
-                        </div>
-                      </>
+                        {isViewCompanyurl && watch("companyName") && (
+                          <button
+                            className={AddNewClientStyle.btnPrimary}
+                            onClick={() => setIsPreviewModal(true)}
+                          >
+                            View Company
+                          </button>
+                        )}
+                      </div>
+                    </>
                     {/* )} */}
                   </div>
 
@@ -569,7 +573,7 @@ function CompanySection({
                       errors={errors}
                       validationSchema={{
                         // required: "please enter the company linkedin URL.",
-                         required: false,
+                        required: false,
                         validate: (value) => {
                           try {
                             if (ValidateFieldURL(value, "linkedin")) {
@@ -629,76 +633,78 @@ function CompanySection({
                 />
 
                 <div className={AddNewClientStyle.row}>
-                 <div className={AddNewClientStyle.colMd6}>
-                      <HRSelectField
-                                    controlledValue={controlledLeadTypeValue}
-                                    setControlledValue={val=>{
-                                      setControlledLeadTypeValue(val)
-                                      setControlledLeadUserValue('')
-                                      resetField("LeadUser")
-                                    }}
-                                    isControlled={true}
-                                    register={register}
-                                     errors={errors}
-                                     isError={
-                                      errors['LeadType'] && errors['LeadType']
-                                    }
-                                    errorMsg="Please select lead type."
-                                    setValue={setValue}
-                                    label="Lead Type"
-                                    name="LeadType"
-                                    mode={"value"}
-                                    defaultValue="Select"
-                                    // searchable={true}
-                                    //  isError={errors["foundedIn"] && errors["foundedIn"]}
-                                    required
-                                    //  errorMsg={"Please select Founded in"}
-                                    options={leadTypeOptions}
-                                  />
+                  <div className={AddNewClientStyle.colMd6}>
+                    <HRSelectField
+                      controlledValue={controlledLeadTypeValue}
+                      setControlledValue={val => {
+                        setControlledLeadTypeValue(val)
+                        setControlledLeadUserValue('')
+                        resetField("LeadUser")
+                      }}
+                      isControlled={true}
+                      register={register}
+                      errors={errors}
+                      isError={
+                        errors['LeadType'] && errors['LeadType']
+                      }
+                      errorMsg="Please select lead type."
+                      setValue={setValue}
+                      label="Lead Type"
+                      name="LeadType"
+                      mode={"value"}
+                      defaultValue="Select"
+                      // searchable={true}
+                      //  isError={errors["foundedIn"] && errors["foundedIn"]}
+                      required
+                      //  errorMsg={"Please select Founded in"}
+                      options={leadTypeOptions}
+                    />
                   </div>
 
                   <div className={AddNewClientStyle.colMd6}>
-                       <HRSelectField
-                                    controlledValue={controlledLeadUserValue}
-                                    setControlledValue={setControlledLeadUserValue}
-                                    isControlled={true}
-                                    register={register}
-                                     errors={errors}
-                                     isError={
-                                      errors['LeadUser'] && errors['LeadUser']
-                                    }
-                                    errorMsg="Please select a user."
-                                    setValue={setValue}
-                                    label="Lead User"
-                                    name="LeadUser"
-                                    mode={"id"}
-                                    defaultValue="Select"
-                                    searchable={true}
-                                    //  isError={errors["foundedIn"] && errors["foundedIn"]}
-                                    required
-                                    //  errorMsg={"Please select Founded in"}
-                                    options={filtersList?.LeadUsers?.filter(val => {
-                                      if(watch('LeadType') === 'inbound'){
-                                        return val.userTypeId === 12
-                                      }
-                                      else if(watch('LeadType') === 'referral'){
-                                        return val.userTypeId === 4
-                                      }
-                                      else if(watch('LeadType') === 'partnership'){
-                                        return val.employeeId === "UP1831"
-                                      }else{
-                                        return val.userTypeId === 11
-                                      }
-                                    }).map(item=> ({
-                                      id: item.id,
-                                      value: item.fullName,
-                                    }))}
-                                  />
+                    <HRSelectField
+                      controlledValue={controlledLeadUserValue}
+                      setControlledValue={setControlledLeadUserValue}
+                      isControlled={true}
+                      register={register}
+                      errors={errors}
+                      isError={
+                        errors['LeadUser'] && errors['LeadUser']
+                      }
+                      errorMsg="Please select a user."
+                      setValue={setValue}
+                      label="Lead User"
+                      name="LeadUser"
+                      mode={"id"}
+                      defaultValue="Select"
+                      searchable={true}
+                      //  isError={errors["foundedIn"] && errors["foundedIn"]}
+                      required
+                      //  errorMsg={"Please select Founded in"}
+                      options={filtersList?.LeadUsers?.filter(val => {
+                        if (watch('LeadType') === 'inbound') {
+                          return val.userTypeId === 12
+                        }
+                        else if (watch('LeadType') === 'referral') {
+                          return val.userTypeId === 4
+                        }
+                        else if (watch('LeadType') === 'partnership') {
+                          return val.employeeId === "UP1831"
+                        } else if (watch('LeadType') === 'Founder Led Branding') {
+                          return val.employeeId === "UP2632"
+                        } else {
+                          return val.userTypeId === 11
+                        }
+                      }).map(item => ({
+                        id: item.id,
+                        value: item.fullName,
+                      }))}
+                    />
                   </div>
-                  </div>
+                </div>
 
                 <div className={AddNewClientStyle.row}>
-                 
+
 
                   <div className={AddNewClientStyle.colMd6}>
                     <HRInputField
@@ -785,61 +791,61 @@ function CompanySection({
                         // debounceDuplicateCompanyName(e.target.value);
                       }}
                       placeholder="Search location"
-                      // required
+                    // required
                     />
                   </div>
 
                   <div className={AddNewClientStyle.colMd3}>
-                           <HRSelectField
-                              controlledValue={controlledCategoryValue}
-                              setControlledValue={setControlledCategoryValue}
-                              isControlled={true}
-                              register={register}
-                              errors={errors}
-                              isError={
-                                errors['Category'] && errors['Category']
-                              }
-                              errorMsg="Please select category."
-                              setValue={setValue}
-                              label="Category"
-                              name="Category"
-                              mode={"value"}
-                              defaultValue="Select"              
-                              required              
-                              options={[{
-                                id: 'Diamond',
-                                value: 'Diamond',
-                              },
-                              {
-                                id: 'None',
-                                value: 'None',
-                              },
-                             ]}
-                          />  </div>
+                    <HRSelectField
+                      controlledValue={controlledCategoryValue}
+                      setControlledValue={setControlledCategoryValue}
+                      isControlled={true}
+                      register={register}
+                      errors={errors}
+                      isError={
+                        errors['Category'] && errors['Category']
+                      }
+                      errorMsg="Please select category."
+                      setValue={setValue}
+                      label="Category"
+                      name="Category"
+                      mode={"value"}
+                      defaultValue="Select"
+                      required
+                      options={[{
+                        id: 'Diamond',
+                        value: 'Diamond',
+                      },
+                      {
+                        id: 'None',
+                        value: 'None',
+                      },
+                      ]}
+                    />  </div>
 
-                           <div className={AddNewClientStyle.colMd3}>
-   <HRSelectField
-                              controlledValue={controlledGeoValue}
-                              setControlledValue={setControlledGeoValue}
-                              isControlled={true}
-                              register={register}
-                              errors={errors}
-                              isError={
-                                errors['Geo'] && errors['Geo']
-                              }
-                              errorMsg="Please select Geo."
-                              setValue={setValue}
-                              label="Geo"
-                              name="Geo"
-                              mode={"value"}
-                              defaultValue="Select"              
-                              required              
-                              options={filtersList?.Geo?.map(item=> ({
-                                      id: item.text,
-                                      value: item.value,
-                                    }))}
-                          /> 
-                           </div>          
+                  <div className={AddNewClientStyle.colMd3}>
+                    <HRSelectField
+                      controlledValue={controlledGeoValue}
+                      setControlledValue={setControlledGeoValue}
+                      isControlled={true}
+                      register={register}
+                      errors={errors}
+                      isError={
+                        errors['Geo'] && errors['Geo']
+                      }
+                      errorMsg="Please select Geo."
+                      setValue={setValue}
+                      label="Geo"
+                      name="Geo"
+                      mode={"value"}
+                      defaultValue="Select"
+                      required
+                      options={filtersList?.Geo?.map(item => ({
+                        id: item.text,
+                        value: item.value,
+                      }))}
+                    />
+                  </div>
                 </div>
 
                 <div className={AddNewClientStyle.row}>
@@ -862,8 +868,9 @@ function CompanySection({
                       onChange={(val) => {
                         let sanitizedContent = sanitizeLinks(val);
                         // let _updatedVal = sanitizedContent?.replace(/<img\b[^>]*>/gi, '');
-                        setValue("aboutCompany", sanitizedContent)}}
-                      onBlur={()=>{onHandleBlurImage()}}
+                        setValue("aboutCompany", sanitizedContent)
+                      }}
+                      onBlur={() => { onHandleBlurImage() }}
                     />
                     {aboutCompanyError && (
                       <p className={AddNewClientStyle.error}>

@@ -930,7 +930,7 @@ function OPSDashboard({ selectedHead }) {
                 ];
             }
 
-            if (colLabelVal === "R1 Completed" || colLabelVal === "R2 Completed" || colLabelVal === "R3 Completed") {
+            if (colLabelVal === "R1" || colLabelVal === "R2" || colLabelVal === "R3") {
                 return [
                     {
                         title: <span style={popupSellHeadStyle}>Action Date</span>,
@@ -991,7 +991,7 @@ function OPSDashboard({ selectedHead }) {
             }
 
 
-            if (colLabelVal === "Profile Shipped" || colLabelVal === "Interview Rejects") {
+            if (colLabelVal === "Profile Shipped" || colLabelVal === 'Int. Reject') {
                 return [
                     {
                         title: <span style={popupSellHeadStyle}>Action Date</span>,

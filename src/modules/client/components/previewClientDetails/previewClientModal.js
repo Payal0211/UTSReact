@@ -589,6 +589,10 @@ const [error, setRefError] = useState({});
   {
     id: 176,
     value: 'partnership',
+  },
+    {
+    id: 454,
+    value: 'Founder Led Branding',
   }
 ];
 
@@ -4254,6 +4258,8 @@ const subCategoryOptions = [
                 }
                 else if(watch('LeadType') === 'partnership'){
                   return val.employeeId === "UP1831"
+                } else if(watch('LeadType') === 'Founder Led Branding'){
+                  return val.employeeId === "UP2632"
                 }else{
                   return val.userTypeId === 11
                 }
