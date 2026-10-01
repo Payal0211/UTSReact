@@ -285,6 +285,7 @@ function QOQOverview() {
             NASA: "NASA",
             Phoenix: "Phoenix",
             METEOROID: "METEOROID",
+            Apex:"METEOROID",
             India: "Shivam",
             Shivam: "Shivam",
             NOVA: "NOVA",
@@ -385,7 +386,7 @@ function QOQOverview() {
                                 },
                             };
                         }
-                        return <AddNoteComp text={text} record={record} keyPar={`${quarterPrefix}_${dataKey}Str`} month={record?.startMonth} index={index} />;
+                        return text ? <AddNoteComp text={text} record={record} keyPar={`${quarterPrefix}_${dataKey}Str`} month={record?.startMonth} index={index} /> : '';
                     },
                 });
             });
