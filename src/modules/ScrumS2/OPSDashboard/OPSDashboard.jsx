@@ -7,7 +7,7 @@ import { pctOf, statusClass, metricStatus } from './sectionMath';
 import moment from 'moment';
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import TickMark from "assets/svg/assignCurrect.svg";
-import { Tabs, Select, Table, Modal, Tooltip, Skeleton, message, Dropdown, Menu, Spin, Radio } from "antd";
+import { Tabs, Select, Table, Modal, Tooltip, Skeleton, message, Dropdown, Menu, Spin, Radio, Checkbox } from "antd";
 import Diamond from "assets/svg/diamond.svg";
 import { HTTPStatusCode } from "constants/network";
 import { All_Hiring_Request_Utils } from "shared/utils/all_hiring_request_util";
@@ -17,29 +17,121 @@ import { downloadToExcel } from "modules/report/reportUtils";
 
 
 const TA_COLUMNS = [
-    { key: 'tA_PipelineStr', label: <>CF Active <br /> Pipeline</> },
-    { key: 'tA_PreonboardingCarryFwdPipelineStr', label: <>CF Pre. <br /> Pipeline</> },
-    { key: 'tA_ThismonthPipelineStr', label: <>Assigned</> },
-    { key: 'tA_TotalPipelineStr', label: <>Total <br /> Pipeline</> },
-    { key: 'tA_TotalActivePipelineStr', label: <>Active <br /> Pipeline</> },
-    { key: 'profilesShared', label: <>Profile <br /> Shipped</> },
-    { key: 'uniqueCalls', label: <>Unique <br /> Calls</> },
-    { key: 'r1InterviewCompleted', label: <>R1</> },
-    { key: 'r2InterviewCompleted', label: <>R2</> },
-    { key: 'r3InterviewCompleted', label: <>R3</> },
-    { key: 'interviewReject', label: <>Int. <br /> Reject</> },
-    { key: 'selection', label: <>Selection</> },
-    { key: 'negotiationRevenueStr', label: <>Selection <br/>Revenue</> },
-    { key: 'backout', label: <>Backout</> },
-    { key: 'backoutRevenueStr', label: <>Backout <br /> Revenue</> },
-    { key: 'dropout', label: <>Dropout</> },
-    { key: 'dropoutRevenueStr', label: <>Dropout <br /> Revenue</> },
-    { key: 'net_selection', label: <>Net <br /> Selection</> },
-    { key: 'joined', label: <>Joined</> },
-    { key: 'joinedRevenueStr', label: <>Joined <br /> Revenue</> },
-    { key: 'postJoinedBackout', label: <>Post Joined <br /> Backout</> },
-    { key: 'postJoinedBackoutRevenueStr', label: <>Post Joined <br />Backout  Revenue</> },
-    { key: 'net_joined', label: <>Net <br /> Joined</> },
+    {
+        key: 'tA_PipelineStr',
+        label: 'CF Active Pipeline',
+        labelTag: <>CF Active <br /> Pipeline</>
+    },
+    {
+        key: 'tA_PreonboardingCarryFwdPipelineStr',
+        label: 'CF Pre. Pipeline',
+        labelTag: <>CF Pre. <br /> Pipeline</>
+    },
+    {
+        key: 'tA_ThismonthPipelineStr',
+        label: 'Assigned',
+        labelTag: <>Assigned</>
+    },
+    {
+        key: 'tA_TotalPipelineStr',
+        label: 'Total Pipeline',
+        labelTag: <>Total <br /> Pipeline</>
+    },
+    {
+        key: 'tA_TotalActivePipelineStr',
+        label: 'Active Pipeline',
+        labelTag: <>Active <br /> Pipeline</>
+    },
+    {
+        key: 'profilesShared',
+        label: 'Profile Shipped',
+        labelTag: <>Profile <br /> Shipped</>
+    },
+    {
+        key: 'uniqueCalls',
+        label: 'Unique Calls',
+        labelTag: <>Unique <br /> Calls</>
+    },
+    {
+        key: 'r1InterviewCompleted',
+        label: 'R1',
+        labelTag: <>R1</>
+    },
+    {
+        key: 'r2InterviewCompleted',
+        label: 'R2',
+        labelTag: <>R2</>
+    },
+    {
+        key: 'r3InterviewCompleted',
+        label: 'R3',
+        labelTag: <>R3</>
+    },
+    {
+        key: 'interviewReject',
+        label: 'Int. Reject',
+        labelTag: <>Int. <br /> Reject</>
+    },
+    {
+        key: 'selection',
+        label: 'Selection',
+        labelTag: <>Selection</>
+    },
+    {
+        key: 'negotiationRevenueStr',
+        label: 'Selection Revenue',
+        labelTag: <>Selection <br /> Revenue</>
+    },
+    {
+        key: 'backout',
+        label: 'Backout',
+        labelTag: <>Backout</>
+    },
+    {
+        key: 'backoutRevenueStr',
+        label: 'Backout Revenue',
+        labelTag: <>Backout <br /> Revenue</>
+    },
+    {
+        key: 'dropout',
+        label: 'Dropout',
+        labelTag: <>Dropout</>
+    },
+    {
+        key: 'dropoutRevenueStr',
+        label: 'Dropout Revenue',
+        labelTag: <>Dropout <br /> Revenue</>
+    },
+    {
+        key: 'net_selection',
+        label: 'Net Selection',
+        labelTag: <>Net <br /> Selection</>
+    },
+    {
+        key: 'joined',
+        label: 'Joined',
+        labelTag: <>Joined</>
+    },
+    {
+        key: 'joinedRevenueStr',
+        label: 'Joined Revenue',
+        labelTag: <>Joined <br /> Revenue</>
+    },
+    {
+        key: 'postJoinedBackout',
+        label: 'Post Joined Backout',
+        labelTag: <>Post Joined <br /> Backout</>
+    },
+    {
+        key: 'postJoinedBackoutRevenueStr',
+        label: 'Post Joined Backout Revenue',
+        labelTag: <>Post Joined <br /> Backout Revenue</>
+    },
+    {
+        key: 'net_joined',
+        label: 'Net Joined',
+        labelTag: <>Net <br /> Joined</>
+    },
 ];
 
 const QUAL_WOW_METRICS = [
@@ -205,6 +297,40 @@ function OPSDashboard({ selectedHead }) {
     const [isTable5Clicked, setIsTable5Clicked] = useState(false)
     const [revenueColumn, setRevenueColumn] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+
+    const [taColumns, setTAColumns] = useState([])
+
+    useEffect(() => {
+        setTAColumns(TA_COLUMNS.map(i => i.key))
+    }, [])
+
+    const toggleColumn = (key) => {
+        setTAColumns((prev) =>
+            prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key]
+        );
+    };
+    const selectAllColumns = () => setTAColumns(TA_COLUMNS.map((c) => c.key));
+    const clearAllColumns = () => setTAColumns([]);
+
+    const columnPickerOverlay = (
+        <div className="column-picker-panel">
+            <div className="column-picker-actions">
+                <button type="button" onClick={selectAllColumns}>Select all</button>
+                <button type="button" onClick={clearAllColumns}>Clear all</button>
+            </div>
+            <div className="column-picker-list">
+                {TA_COLUMNS.map((c) => (
+                    <label key={c.key} className="column-picker-item">
+                        <Checkbox
+                            checked={taColumns.includes(c.key)}
+                            onChange={() => toggleColumn(c.key)}
+                        />
+                        <span>{c.label}</span>
+                    </label>
+                ))}
+            </div>
+        </div>
+    );
 
     const getTAProformanceTableData = useCallback(async (performanceDateType, range) => {
         let pl = {
@@ -475,7 +601,7 @@ function OPSDashboard({ selectedHead }) {
 
                 ];
             }
-            if (profileInfo.stage === "Selection / Preonboarding" || profileInfo.stage === "Joined") {
+            if (profileInfo.stage === "Selection / Preonboarding" || profileInfo.stage === "Joined" || profileInfo.stage ===  "Net Selection" ||  profileInfo.stage === 'Net Joined' ) {
                 return [
                     {
                         title: <span style={popupSellHeadStyle}>Action Date</span>,
@@ -613,7 +739,7 @@ function OPSDashboard({ selectedHead }) {
 
 
         if (isTable2Clicked) {
-            if (profileInfo.stage === "Joined") {
+            if (profileInfo.stage === "Net Joined" || profileInfo.stage === "Net Selection" || profileInfo.stage === "Selection") {
                 return [
                     {
                         title: <span style={popupSellHeadStyle}>Action Date</span>,
@@ -662,9 +788,9 @@ function OPSDashboard({ selectedHead }) {
                     },
 
                     {
-                        title: <span style={popupSellHeadStyle}>{profileInfo.stage === "Joined" ? "Revenue" : "Pipeline"}</span>,
-                        dataIndex: profileInfo.stage === "Joined" ? "revenueStr" : "hR_PipelineStr",
-                        key: profileInfo.stage === "Joined" ? "revenueStr" : "hR_PipelineStr",
+                        title: <span style={popupSellHeadStyle}>Revenue</span>,
+                        dataIndex:  "revenueStr",
+                        key: "revenueStr" ,
                         width: "100px",
                         render: (text, result) => {
 
@@ -729,9 +855,9 @@ function OPSDashboard({ selectedHead }) {
 
 
                 {
-                    title: <span style={popupSellHeadStyle}>{profileInfo.stage === "Joined" ? "Revenue" : "Pipeline"}</span>,
-                    dataIndex: profileInfo.stage === "Joined" ? "revenueStr" : "hR_PipelineStr",
-                    key: profileInfo.stage === "Joined" ? "revenueStr" : "hR_PipelineStr",
+                    title: <span style={popupSellHeadStyle}>Pipeline</span>,
+                    dataIndex: "hR_PipelineStr",
+                    key: "hR_PipelineStr",
                     width: "100px",
                     render: (text, result) => {
 
@@ -823,6 +949,15 @@ function OPSDashboard({ selectedHead }) {
                             );
                         }
                     },
+                    //   {
+                    //     title: <span style={popupSellHeadStyle}># Open Since</span>,
+                    //     dataIndex: "openSince",
+                    //     key: "openSince",
+
+                    //     render: (text, param) => {
+                    //         return <span style={popupSellStyle}>{text}</span>
+                    //     }
+                    // },
                     //  {
                     //     title: <span style={popupSellHeadStyle}>Carry FWD Status</span>,
                     //     dataIndex: "carryFwd_HRStatus",
@@ -913,6 +1048,15 @@ function OPSDashboard({ selectedHead }) {
                             );
                         }
                     },
+                    //   {
+                    //     title: <span style={popupSellHeadStyle}># Open Since</span>,
+                    //     dataIndex: "openSince",
+                    //     key: "openSince",
+
+                    //     render: (text, param) => {
+                    //         return <span style={popupSellStyle}>{text}</span>
+                    //     }
+                    // },
                     // {
                     //     title: <span style={popupSellHeadStyle}>HR Status</span>,
                     //     dataIndex: "hrStatus",
@@ -930,7 +1074,7 @@ function OPSDashboard({ selectedHead }) {
                 ];
             }
 
-            if (colLabelVal === "R1" || colLabelVal === "R2" || colLabelVal === "R3") {
+            if (colLabelVal === "R1" || colLabelVal === "R2" || colLabelVal === "R3" || colLabelVal === 'Int. Reject') {
                 return [
                     {
                         title: <span style={popupSellHeadStyle}>Action Date</span>,
@@ -991,7 +1135,7 @@ function OPSDashboard({ selectedHead }) {
             }
 
 
-            if (colLabelVal === "Profile Shipped" || colLabelVal === 'Int. Reject') {
+            if (colLabelVal === "Profile Shipped" ) {
                 return [
                     {
                         title: <span style={popupSellHeadStyle}>Action Date</span>,
@@ -1110,7 +1254,15 @@ function OPSDashboard({ selectedHead }) {
                         );
                     }
                 },
+//   {
+//                         title: <span style={popupSellHeadStyle}># Open Since</span>,
+//                         dataIndex: "openSince",
+//                         key: "openSince",
 
+//                         render: (text, param) => {
+//                             return <span style={popupSellStyle}>{text}</span>
+//                         }
+//                     },
 
             ];
         }
@@ -1354,8 +1506,8 @@ function OPSDashboard({ selectedHead }) {
             return <td className="rowlabel datacell">{totalVal ? `${totalVal?.toLocaleString('en-IN', {
                 style: 'currency',
                 currency: 'INR',
-                 minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
             })}` : ''}</td>
         }
 
@@ -1364,8 +1516,8 @@ function OPSDashboard({ selectedHead }) {
             return <td className="rowlabel datacell">{val ? val?.toLocaleString('en-IN', {
                 style: 'currency',
                 currency: 'INR',
-                 minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
             }) : ""}</td>
         }
 
@@ -1375,33 +1527,13 @@ function OPSDashboard({ selectedHead }) {
             return <td className="rowlabel datacell">{val ? val?.toLocaleString('en-IN', {
                 style: 'currency',
                 currency: 'INR',
-                 minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
             }) : ""}</td>
         }
         return <td className="rowlabel datacell">{totalVal ? `${totalVal}` : ''}</td>
     }
 
-    const getLabelString = (label) => {
-    if (typeof label === 'string' || typeof label === 'number') {
-        return String(label);
-    }
-
-    if (React.isValidElement(label)) {
-        return React.Children.toArray(label.props.children)
-            .map(child => {
-                if (React.isValidElement(child)) {
-                    return getLabelString(child);
-                }
-                return child;
-            })
-            .join(' ')
-            .replace(/\s+/g, ' ')
-            .trim();
-    }
-
-    return '';
-};
 
     const RenderTACell = ({ c, row, idx, performanceDateType, performanceDate }) => {
         if (c.key === 'tA_PipelineStr') {
@@ -1414,8 +1546,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'CFP');
                     setColTextVal(row[c.key])
-                    console.log(c.label,c,`${c.label}`.replace(/<[^>]*>/g, ""),getLabelString(c.label))
-                    setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                     setIsCarryForwardPipelineClicked(true);
 
                 }}>{row[c.key]}</span> : ''}</td>
@@ -1431,7 +1562,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'CFPP');
                     setColTextVal(row[c.key])
-                    setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                     setIsCarryForwardPipelineClicked(true);
                     setIsPipelineClicked(true);
                 }}>{row[c.key]}</span> : ''}</td>
@@ -1447,11 +1578,29 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TP');
                     setColTextVal(row[c.key])
-                    setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                     setIsCarryForwardPipelineClicked(true);
                     setIsPipelineClicked(true);
                 }}>{row[c.key]}</span> : ''}</td>
         }
+
+         if (c.key === 'tA_TotalActivePipelineStr') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TAP');
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
+                    setIsCarryForwardPipelineClicked(true);
+                    setIsPipelineClicked(true);
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+        
 
         if (c.key === 'tA_ThismonthPipelineStr') {
             return <td className="datacell" key={c.key}>{row[c.key] ? <span
@@ -1463,7 +1612,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TMP');
                     setColTextVal(row[c.key])
-                    setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                     setIsCarryForwardPipelineClicked(true);
                     setIsPipelineClicked(true);
                 }}>{row[c.key]}</span> : ''}</td>
@@ -1479,7 +1628,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TP');
                     setColTextVal(row[c.key])
-                    setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                     setIsCarryForwardPipelineClicked(true);
                     setIsPipelineClicked(true);
                 }}>{row[c.key]}</span> : ''}</td>
@@ -1495,7 +1644,22 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'PS');
                     setColTextVal(row[c.key])
-                    setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
+                }}>{row[c.key]}</span> : ''}</td>
+        }
+
+           if (c.key === 'postJoinedBackoutRevenueStr') {
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
+                style={{
+                    fontWeight: "bold",
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                }}
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'PJB');
+                    setColTextVal(row[c.key])
+                    setColLabelVal(c.label)
+                   
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1509,7 +1673,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'R1');
                     setColTextVal(row[c.key])
-                   setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1523,7 +1687,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'R2');
                     setColTextVal(row[c.key])
-                    setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1537,7 +1701,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'R3');
                     setColTextVal(row[c.key])
-                   setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1552,7 +1716,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'IR');
                     setColTextVal(row[c.key])
-                    setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1567,7 +1731,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'SEL');
                     setColTextVal(row[c.key])
-                   setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1582,7 +1746,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'B');
                     setColTextVal(row[c.key])
-                   setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1596,7 +1760,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'D');
                     setColTextVal(row[c.key])
-                   setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1610,7 +1774,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'JOIN');
                     setColTextVal(row[c.key])
-                    setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1625,42 +1789,42 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'JR');
                     setColTextVal(row[c.key])
-                   setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
-       
 
-        if(c.key === 'backoutRevenueStr'){
 
-              return <td className="datacell" key={c.key}>{row[c.key] ? <span
+        if (c.key === 'backoutRevenueStr') {
+
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
                 style={{
                     fontWeight: "bold",
                     textDecoration: "underline",
                     cursor: "pointer",
                 }}
-                onClick={() => {                 
-                   getTalentProfilesDetailsfromTable5(row, performanceDateType, performanceDate, 'B');
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable5(row, performanceDateType, performanceDate, 'B');
                     setColTextVal(row?.[c.key])
-                  setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
-             
+
         }
 
-          if(c.key === 'dropoutRevenueStr'){
+        if (c.key === 'dropoutRevenueStr') {
 
-              return <td className="datacell" key={c.key}>{row[c.key] ? <span
+            return <td className="datacell" key={c.key}>{row[c.key] ? <span
                 style={{
                     fontWeight: "bold",
                     textDecoration: "underline",
                     cursor: "pointer",
                 }}
-                onClick={() => {                 
-                   getTalentProfilesDetailsfromTable5(row, performanceDateType, performanceDate, 'D');
+                onClick={() => {
+                    getTalentProfilesDetailsfromTable5(row, performanceDateType, performanceDate, 'D');
                     setColTextVal(row?.[c.key])
-                   setColLabelVal(getLabelString(c.label))
+                    setColLabelVal(c.label)
                 }}>{row[c.key]}</span> : ''}</td>
-             
+
         }
 
         if (c.key === 'net_selection') {
@@ -1668,8 +1832,8 @@ function OPSDashboard({ selectedHead }) {
             return <td className="datacell" key={c.key}>{val ? val?.toLocaleString('en-IN', {
                 style: 'currency',
                 currency: 'INR',
-                 minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
             }) : ""}</td>
         }
 
@@ -1679,8 +1843,8 @@ function OPSDashboard({ selectedHead }) {
             return <td className="datacell" key={c.key}>{val ? val?.toLocaleString('en-IN', {
                 style: 'currency',
                 currency: 'INR',
-                 minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
             }) : ""}</td>
         }
 
@@ -1706,14 +1870,19 @@ function OPSDashboard({ selectedHead }) {
             <section className="card">
                 <div className="card-head">
                     <div className="htitle"><span className="num">3</span>Team Performance</div>
-                    <DateNav
-                        date={performanceDate}
-                        period={performanceDateType}
-                        periods={['D', 'W', 'M', 'Q','R']}
-                        onDateChange={setPerformanceDate}
-                        onPeriodChange={setPerformanceDateType}
-                        loading={taLoading}
-                    />
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <Dropdown dropdownRender={() => columnPickerOverlay} trigger={['click']} placement="bottomRight">
+                            <button type="button" className="btn-ghost">Show / Hide Columns ▾</button>
+                        </Dropdown>
+                        <DateNav
+                            date={performanceDate}
+                            period={performanceDateType}
+                            periods={['D', 'W', 'M', 'Q', 'R']}
+                            onDateChange={setPerformanceDate}
+                            onPeriodChange={setPerformanceDateType}
+                            loading={taLoading}
+                        />
+                    </div>
                 </div>
                 <div className="table-wrap">
 
@@ -1721,7 +1890,7 @@ function OPSDashboard({ selectedHead }) {
                         <thead>
                             <tr>
                                 <th>TA</th>
-                                {TA_COLUMNS.map((c) => <th key={c.key}>{c.label}</th>)}
+                                {TA_COLUMNS.filter(c => taColumns.includes(c.key)).map((c) => <th key={c.key}>{c.labelTag}</th>)}
                                 <th>Achieved %</th>
                             </tr>
                         </thead>
@@ -1747,7 +1916,7 @@ function OPSDashboard({ selectedHead }) {
                                     return (
                                         <tr key={idx}>
                                             <td className="rowlabel">{row.recruiter}</td>
-                                            {TA_COLUMNS.map((c) => (<RenderTACell c={c} row={row} idx={idx} performanceDate={performanceDate} performanceDateType={performanceDateType} />
+                                            {TA_COLUMNS.filter(c => taColumns.includes(c.key)).map((c) => (<RenderTACell c={c} row={row} idx={idx} performanceDate={performanceDate} performanceDateType={performanceDateType} />
 
                                             ))}
 
@@ -1765,7 +1934,7 @@ function OPSDashboard({ selectedHead }) {
 
                             {taData?.length > 0 && <tr key={"totalLogistics"}>
                                 <td className={"rowlabel"}>Total</td>
-                                {TA_COLUMNS.map((m) => {
+                                {TA_COLUMNS.filter(c => taColumns.includes(c.key)).map((m) => {
                                     // const cls = metricStatus(qualLogData.goals?.[m.key], row[m.key]);
                                     return <RenderTATotalCell taData={taData} m={m} />
 
@@ -1784,13 +1953,13 @@ function OPSDashboard({ selectedHead }) {
 
             <div className="row-pair">
                 {/* ---------- 1. POD Productivity ---------- */}
-                <section className="card" style={{maxWidth:'395px'}}>
+                <section className="card" style={{ maxWidth: '395px' }}>
                     <div className="card-head">
                         <div className="htitle"><span className="num">1</span>POD Productivity</div>
                         <DateNav
                             date={podDate}
                             period={podDateType}
-                            periods={['D', 'W', 'M', 'Q','R']}
+                            periods={['D', 'W', 'M', 'Q', 'R']}
                             onDateChange={setPODDate}
                             onPeriodChange={setPODDateType}
                             loading={funnelLoading}
@@ -1837,7 +2006,7 @@ function OPSDashboard({ selectedHead }) {
                 </section>
 
                 {/* ---------- 2. Pipeline & Revenue Summary ---------- */}
-                <section className="card"  style={{maxWidth:'410px'}}>
+                <section className="card" style={{ maxWidth: '410px' }}>
                     <div className="card-head">
                         <div className="htitle"><span className="num">2</span>Pipeline &amp; Revenue Summary</div>
                         <DateNav
@@ -1907,7 +2076,7 @@ function OPSDashboard({ selectedHead }) {
                         <DateNav
                             date={wowDate}
                             period={wowDateType}
-                            periods={['M','Q']}
+                            periods={['M', 'Q']}
                             onDateChange={setWowDate}
                             onPeriodChange={setWowDateType}
                             loading={wowLoading}
@@ -1922,7 +2091,7 @@ function OPSDashboard({ selectedHead }) {
                                     {QUAL_WOW_METRICS.map((m) => {
                                         // const arrow = wowSortCol === m.key ? (wowSortDir === 1 ? '▲' : '▼') : '';
                                         return (
-                                            <th key={m.key} style={{ width: m?.valKey === 'avgProfileSelection' ?'75px' : '' }} className="sortable"
+                                            <th key={m.key} style={{ width: m?.valKey === 'avgProfileSelection' ? '75px' : '' }} className="sortable"
                                             // onClick={() => toggleWowSort(m.key)}
                                             >
                                                 {m.label}
@@ -1932,7 +2101,7 @@ function OPSDashboard({ selectedHead }) {
                                     })}
                                     <th style={{ width: '120px' }}>HR #</th>
                                     <th style={{ width: '70px' }}>Revenue</th>
-                                     <th >Talent<br/>Status</th>
+                                    <th >Talent<br />Status</th>
                                     <th>Client</th>
                                 </tr>
                             </thead>
@@ -1980,7 +2149,7 @@ function OPSDashboard({ selectedHead }) {
                                         })}
                                         <td className="datacell" >  <a href={`/allhiringrequest/${row.hR_ID}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{row?.hR_Number ?? ''}</a>  <br /><span>{row?.hR_Title ? `${(row?.hR_Title)}` : ''}</span></td>
                                         <td className="datacell">{row?.tA_RevenueStr ?? ''}</td>
-                                         <td className="datacell">{row?.talent ?? ''} <br/><strong>{row?.talentStatus}</strong></td>
+                                        <td className="datacell">{row?.talent ?? ''} <br /><strong>{row?.talentStatus}</strong></td>
                                         <td className="datacell">{row?.company} {row?.companyCategory === "Diamond" ? <img
                                             src={Diamond}
                                             alt="info"
@@ -2003,8 +2172,8 @@ function OPSDashboard({ selectedHead }) {
             {/* <div className="row-pair"> */}
 
 
-                {/* ---------- 5. Customer Experience (Logistics) ---------- */}
-                {/* <section className="card">
+            {/* ---------- 5. Customer Experience (Logistics) ---------- */}
+            {/* <section className="card">
                     <div className="card-head">
                         <div className="htitle"><span className="num">5</span>Customer Experience (Logistics)</div>
                         <DateNav
@@ -2033,14 +2202,14 @@ function OPSDashboard({ selectedHead }) {
                                     <th>Revenue</th>
                                 </tr>
                             </thead> */}
-                            {/* <tr className="goal-row">
+            {/* <tr className="goal-row">
                                     <td className="rowlabel">Goal</td>
                                     {QUAL_LOG_METRICS.map((m) => (
                                         <td className="datacell" key={m.key}>{row?.[m.key] ?? '—'}</td>
                                     ))}
                                     <td className="datacell"></td>
                                 </tr> */}
-                            {/* <tbody>
+            {/* <tbody>
 
                                 {logLoading ? (
                                     <td colSpan="5">
@@ -2087,10 +2256,10 @@ function OPSDashboard({ selectedHead }) {
                         </table>
 
                     </div> */}
-                    {/* <div className="row-actions">
+            {/* <div className="row-actions">
                         <span className="legend-note">🟢 met/beat goal · tap a header to sort</span>
                     </div> */}
-                {/* </section>
+            {/* </section>
             </div> */}
 
             {/* <footer>

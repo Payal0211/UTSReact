@@ -2515,6 +2515,7 @@ function ScrumStructure2() {
             cellStyle: { textAlign: 'center' },
             width: 100,
             filter: MultiConditionTextFilter,
+             filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.activeTR)))?.map(v => ({ data: v })) },
         },
 
         {
@@ -2609,6 +2610,7 @@ function ScrumStructure2() {
             width: 170,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
+             filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.talent_AnnualCTC_Budget_INRValueStr)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -2620,6 +2622,7 @@ function ScrumStructure2() {
             width: 100,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
+             filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.uplersFeesPer)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -2631,6 +2634,7 @@ function ScrumStructure2() {
             width: 170,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
+             filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.totalRevenue_NoofTalentStr)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -2642,6 +2646,7 @@ function ScrumStructure2() {
             width: 80,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
+             filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.days)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -3067,6 +3072,7 @@ function ScrumStructure2() {
             cellStyle: { textAlign: 'center' },
             width: 100,
             filter: MultiConditionTextFilter,
+                filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.activeTR)))?.map(v => ({ data: v })) },
         },
 
 
@@ -3080,6 +3086,7 @@ function ScrumStructure2() {
             width: 170,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
+                filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.talent_AnnualCTC_Budget_INRValueStr)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -3091,6 +3098,7 @@ function ScrumStructure2() {
             width: 100,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
+                filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.uplersFeesPer)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -3102,6 +3110,7 @@ function ScrumStructure2() {
             width: 170,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
+                filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.totalRevenue_NoofTalentStr)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -3113,6 +3122,7 @@ function ScrumStructure2() {
             width: 80,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
+                filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.days)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
