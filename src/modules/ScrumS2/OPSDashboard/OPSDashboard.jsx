@@ -601,7 +601,7 @@ function OPSDashboard({ selectedHead }) {
 
                 ];
             }
-            if (profileInfo.stage === "Selection / Preonboarding" || profileInfo.stage === "Joined" || profileInfo.stage ===  "Net Selection" ||  profileInfo.stage === 'Net Joined' ) {
+            if (profileInfo.stage === "Selection / Preonboarding" || profileInfo.stage === "Joined" || profileInfo.stage === "Net Selection" || profileInfo.stage === 'Net Joined') {
                 return [
                     {
                         title: <span style={popupSellHeadStyle}>Action Date</span>,
@@ -662,12 +662,21 @@ function OPSDashboard({ selectedHead }) {
                         title: <span style={popupSellHeadStyle}>HR Status</span>,
                         dataIndex: "hrStatus",
                         key: "hrStatus",
-
+                        width: "170px",
                         render: (_, param) => {
                             return All_Hiring_Request_Utils.GETHRSTATUS(
                                 param?.hrStatusCode,
                                 param?.hrStatus
                             );
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}># Open Since</span>,
+                        dataIndex: "openDays",
+                        key: "openDays",
+                        width: "100px",
+                        render: (text, param) => {
+                            return <span style={popupSellStyle}>{text}</span>
                         }
                     },
                     // {
@@ -789,8 +798,8 @@ function OPSDashboard({ selectedHead }) {
 
                     {
                         title: <span style={popupSellHeadStyle}>Revenue</span>,
-                        dataIndex:  "revenueStr",
-                        key: "revenueStr" ,
+                        dataIndex: "revenueStr",
+                        key: "revenueStr",
                         width: "100px",
                         render: (text, result) => {
 
@@ -802,7 +811,7 @@ function OPSDashboard({ selectedHead }) {
                         title: <span style={popupSellHeadStyle}>HR Status</span>,
                         dataIndex: "hrStatus",
                         key: "hrStatus",
-
+                        width: "170px",
                         render: (_, param) => {
                             return All_Hiring_Request_Utils.GETHRSTATUS(
                                 param?.hrStatusCode,
@@ -810,7 +819,15 @@ function OPSDashboard({ selectedHead }) {
                             );
                         }
                     },
-
+                    {
+                        title: <span style={popupSellHeadStyle}># Open Since</span>,
+                        dataIndex: "openDays",
+                        key: "openDays",
+                        width: "100px",
+                        render: (text, param) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
 
                 ];
             }
@@ -941,7 +958,7 @@ function OPSDashboard({ selectedHead }) {
                         title: <span style={popupSellHeadStyle}>HR Status</span>,
                         dataIndex: "hrStatus",
                         key: "hrStatus",
-
+                        width: "170px",
                         render: (_, param) => {
                             return All_Hiring_Request_Utils.GETHRSTATUS(
                                 param?.hrStatusCode,
@@ -949,15 +966,7 @@ function OPSDashboard({ selectedHead }) {
                             );
                         }
                     },
-                    //   {
-                    //     title: <span style={popupSellHeadStyle}># Open Since</span>,
-                    //     dataIndex: "openSince",
-                    //     key: "openSince",
 
-                    //     render: (text, param) => {
-                    //         return <span style={popupSellStyle}>{text}</span>
-                    //     }
-                    // },
                     //  {
                     //     title: <span style={popupSellHeadStyle}>Carry FWD Status</span>,
                     //     dataIndex: "carryFwd_HRStatus",
@@ -1040,7 +1049,7 @@ function OPSDashboard({ selectedHead }) {
                         title: <span style={popupSellHeadStyle}>HR Status</span>,
                         dataIndex: "hrStatus",
                         key: "hrStatus",
-
+                        width: "170px",
                         render: (_, param) => {
                             return All_Hiring_Request_Utils.GETHRSTATUS(
                                 param?.hrStatusCode,
@@ -1048,15 +1057,7 @@ function OPSDashboard({ selectedHead }) {
                             );
                         }
                     },
-                    //   {
-                    //     title: <span style={popupSellHeadStyle}># Open Since</span>,
-                    //     dataIndex: "openSince",
-                    //     key: "openSince",
 
-                    //     render: (text, param) => {
-                    //         return <span style={popupSellStyle}>{text}</span>
-                    //     }
-                    // },
                     // {
                     //     title: <span style={popupSellHeadStyle}>HR Status</span>,
                     //     dataIndex: "hrStatus",
@@ -1135,7 +1136,7 @@ function OPSDashboard({ selectedHead }) {
             }
 
 
-            if (colLabelVal === "Profile Shipped" ) {
+            if (colLabelVal === "Profile Shipped") {
                 return [
                     {
                         title: <span style={popupSellHeadStyle}>Action Date</span>,
@@ -1179,6 +1180,15 @@ function OPSDashboard({ selectedHead }) {
                         key: "talent",
                         width: "100px",
                         render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}># Open Since</span>,
+                        dataIndex: "openDays",
+                        key: "openDays",
+                        width: "100px",
+                        render: (text, param) => {
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
@@ -1246,7 +1256,7 @@ function OPSDashboard({ selectedHead }) {
                     title: <span style={popupSellHeadStyle}>HR Status</span>,
                     dataIndex: "hrStatus",
                     key: "hrStatus",
-
+                    width: "170px",
                     render: (_, param) => {
                         return All_Hiring_Request_Utils.GETHRSTATUS(
                             param?.hrStatusCode,
@@ -1254,15 +1264,15 @@ function OPSDashboard({ selectedHead }) {
                         );
                     }
                 },
-//   {
-//                         title: <span style={popupSellHeadStyle}># Open Since</span>,
-//                         dataIndex: "openSince",
-//                         key: "openSince",
-
-//                         render: (text, param) => {
-//                             return <span style={popupSellStyle}>{text}</span>
-//                         }
-//                     },
+                {
+                    title: <span style={popupSellHeadStyle}># Open Since</span>,
+                    dataIndex: "openDays",
+                    key: "openDays",
+                    width: "100px",
+                    render: (text, param) => {
+                        return <span style={popupSellStyle}>{text}</span>
+                    }
+                },
 
             ];
         }
@@ -1584,7 +1594,7 @@ function OPSDashboard({ selectedHead }) {
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
-         if (c.key === 'tA_TotalActivePipelineStr') {
+        if (c.key === 'tA_TotalActivePipelineStr') {
             return <td className="datacell" key={c.key}>{row[c.key] ? <span
                 style={{
                     fontWeight: "bold",
@@ -1600,7 +1610,7 @@ function OPSDashboard({ selectedHead }) {
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
-        
+
 
         if (c.key === 'tA_ThismonthPipelineStr') {
             return <td className="datacell" key={c.key}>{row[c.key] ? <span
@@ -1648,7 +1658,7 @@ function OPSDashboard({ selectedHead }) {
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
-           if (c.key === 'postJoinedBackoutRevenueStr') {
+        if (c.key === 'postJoinedBackoutRevenueStr') {
             return <td className="datacell" key={c.key}>{row[c.key] ? <span
                 style={{
                     fontWeight: "bold",
@@ -1659,7 +1669,7 @@ function OPSDashboard({ selectedHead }) {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'PJB');
                     setColTextVal(row[c.key])
                     setColLabelVal(c.label)
-                   
+
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
