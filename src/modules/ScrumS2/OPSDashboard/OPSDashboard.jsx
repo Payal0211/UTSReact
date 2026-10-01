@@ -17,29 +17,29 @@ import { downloadToExcel } from "modules/report/reportUtils";
 
 
 const TA_COLUMNS = [
-    { key: 'tA_PipelineStr', label: 'CF Active Pipeline' },
-    { key: 'tA_PreonboardingCarryFwdPipelineStr', label: 'CF Pre. Pipeline' },
-    { key: 'tA_ThismonthPipelineStr', label: 'Assigned' },
-    { key: 'tA_TotalPipelineStr', label: 'Total Pipeline' },
-    { key: 'tA_TotalActivePipelineStr', label: 'Active Pipeline' },
-    { key: 'profilesShared', label: 'Profile Shipped' },
-    { key: 'uniqueCalls', label: 'Unique Calls' },
-    { key: 'r1InterviewCompleted', label: 'R1' },
-    { key: 'r2InterviewCompleted', label: 'R2' },
-    { key: 'r3InterviewCompleted', label: 'R3' },
-    { key: 'interviewReject', label: 'Int. Reject' },
-    { key: 'selection', label: 'Selection' },
-    { key: 'negotiationRevenueStr', label: 'Revenue' },
-    { key: 'backout', label: 'Backout' },
-    { key: 'backoutRevenueStr', label: 'Backout Revenue' },
-    { key: 'dropout', label: 'Dropout' },
-    { key: 'dropoutRevenueStr', label: 'Dropout Revenue' },
-    { key: 'net_selection', label: 'Net Selection' },
-    { key: 'joined', label: 'Joined' },
-    { key: 'joinedRevenueStr', label: 'Joined Revenue' },
-    { key: 'postJoinedBackout', label: 'Post Joined Backout' },
-    { key: 'postJoinedBackoutRevenueStr', label: 'Post Joined Backout Revenue' },
-    { key: 'net_joined', label: 'Net Joined' },
+    { key: 'tA_PipelineStr', label: <>CF Active <br /> Pipeline</> },
+    { key: 'tA_PreonboardingCarryFwdPipelineStr', label: <>CF Pre. <br /> Pipeline</> },
+    { key: 'tA_ThismonthPipelineStr', label: <>Assigned</> },
+    { key: 'tA_TotalPipelineStr', label: <>Total <br /> Pipeline</> },
+    { key: 'tA_TotalActivePipelineStr', label: <>Active <br /> Pipeline</> },
+    { key: 'profilesShared', label: <>Profile <br /> Shipped</> },
+    { key: 'uniqueCalls', label: <>Unique <br /> Calls</> },
+    { key: 'r1InterviewCompleted', label: <>R1</> },
+    { key: 'r2InterviewCompleted', label: <>R2</> },
+    { key: 'r3InterviewCompleted', label: <>R3</> },
+    { key: 'interviewReject', label: <>Int. <br /> Reject</> },
+    { key: 'selection', label: <>Selection</> },
+    { key: 'negotiationRevenueStr', label: <>Selection <br/>Revenue</> },
+    { key: 'backout', label: <>Backout</> },
+    { key: 'backoutRevenueStr', label: <>Backout <br /> Revenue</> },
+    { key: 'dropout', label: <>Dropout</> },
+    { key: 'dropoutRevenueStr', label: <>Dropout <br /> Revenue</> },
+    { key: 'net_selection', label: <>Net <br /> Selection</> },
+    { key: 'joined', label: <>Joined</> },
+    { key: 'joinedRevenueStr', label: <>Joined <br /> Revenue</> },
+    { key: 'postJoinedBackout', label: <>Post Joined <br /> Backout</> },
+    { key: 'postJoinedBackoutRevenueStr', label: <>Post Joined <br />Backout  Revenue</> },
+    { key: 'net_joined', label: <>Net <br /> Joined</> },
 ];
 
 const QUAL_WOW_METRICS = [
@@ -321,17 +321,17 @@ function OPSDashboard({ selectedHead }) {
 
     }, [logDateType, logDate, selectedHead]);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        if (selectedHead) {
-            const range = periodRange(logDateType, logDate);
-            getLogisticsTableData(logDateType, range)
-        }
+    //     if (selectedHead) {
+    //         const range = periodRange(logDateType, logDate);
+    //         getLogisticsTableData(logDateType, range)
+    //     }
 
-        // OpsDashboardDAO.getLogisticsExperienceDAO(range)
-        //     .then((res) => setQualLogData(res.responseBody))
-        //     .finally(() => setLogLoading(false));
-    }, [logDate, logDateType, selectedHead]);
+    //     // OpsDashboardDAO.getLogisticsExperienceDAO(range)
+    //     //     .then((res) => setQualLogData(res.responseBody))
+    //     //     .finally(() => setLogLoading(false));
+    // }, [logDate, logDateType, selectedHead]);
 
     const toggleLogSort = (col) => {
         setLogSortDir((prevDir) => (logSortCol === col ? -prevDir : 1));
@@ -1382,6 +1382,27 @@ function OPSDashboard({ selectedHead }) {
         return <td className="rowlabel datacell">{totalVal ? `${totalVal}` : ''}</td>
     }
 
+    const getLabelString = (label) => {
+    if (typeof label === 'string' || typeof label === 'number') {
+        return String(label);
+    }
+
+    if (React.isValidElement(label)) {
+        return React.Children.toArray(label.props.children)
+            .map(child => {
+                if (React.isValidElement(child)) {
+                    return getLabelString(child);
+                }
+                return child;
+            })
+            .join(' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    return '';
+};
+
     const RenderTACell = ({ c, row, idx, performanceDateType, performanceDate }) => {
         if (c.key === 'tA_PipelineStr') {
             return <td className="datacell" key={c.key}>{row[c.key] ? <span
@@ -1393,7 +1414,8 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'CFP');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                    console.log(c.label,c,`${c.label}`.replace(/<[^>]*>/g, ""),getLabelString(c.label))
+                    setColLabelVal(getLabelString(c.label))
                     setIsCarryForwardPipelineClicked(true);
 
                 }}>{row[c.key]}</span> : ''}</td>
@@ -1409,7 +1431,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'CFPP');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                    setColLabelVal(getLabelString(c.label))
                     setIsCarryForwardPipelineClicked(true);
                     setIsPipelineClicked(true);
                 }}>{row[c.key]}</span> : ''}</td>
@@ -1425,7 +1447,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TP');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                    setColLabelVal(getLabelString(c.label))
                     setIsCarryForwardPipelineClicked(true);
                     setIsPipelineClicked(true);
                 }}>{row[c.key]}</span> : ''}</td>
@@ -1441,7 +1463,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TMP');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                    setColLabelVal(getLabelString(c.label))
                     setIsCarryForwardPipelineClicked(true);
                     setIsPipelineClicked(true);
                 }}>{row[c.key]}</span> : ''}</td>
@@ -1457,7 +1479,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'TP');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                    setColLabelVal(getLabelString(c.label))
                     setIsCarryForwardPipelineClicked(true);
                     setIsPipelineClicked(true);
                 }}>{row[c.key]}</span> : ''}</td>
@@ -1473,7 +1495,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'PS');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                    setColLabelVal(getLabelString(c.label))
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1487,7 +1509,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'R1');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                   setColLabelVal(getLabelString(c.label))
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1501,7 +1523,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'R2');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                    setColLabelVal(getLabelString(c.label))
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1515,7 +1537,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'R3');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                   setColLabelVal(getLabelString(c.label))
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1530,7 +1552,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'IR');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                    setColLabelVal(getLabelString(c.label))
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1545,7 +1567,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'SEL');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                   setColLabelVal(getLabelString(c.label))
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1560,7 +1582,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'B');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                   setColLabelVal(getLabelString(c.label))
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1574,7 +1596,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'D');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                   setColLabelVal(getLabelString(c.label))
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1588,7 +1610,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'JOIN');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                    setColLabelVal(getLabelString(c.label))
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1603,7 +1625,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {
                     getTalentProfilesDetailsfromTable3(row, performanceDateType, performanceDate, 'JR');
                     setColTextVal(row[c.key])
-                    setColLabelVal(c.label)
+                   setColLabelVal(getLabelString(c.label))
                 }}>{row[c.key]}</span> : ''}</td>
         }
 
@@ -1620,7 +1642,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {                 
                    getTalentProfilesDetailsfromTable5(row, performanceDateType, performanceDate, 'B');
                     setColTextVal(row?.[c.key])
-                    setColLabelVal(c.label)
+                  setColLabelVal(getLabelString(c.label))
                 }}>{row[c.key]}</span> : ''}</td>
              
         }
@@ -1636,7 +1658,7 @@ function OPSDashboard({ selectedHead }) {
                 onClick={() => {                 
                    getTalentProfilesDetailsfromTable5(row, performanceDateType, performanceDate, 'D');
                     setColTextVal(row?.[c.key])
-                    setColLabelVal(c.label)
+                   setColLabelVal(getLabelString(c.label))
                 }}>{row[c.key]}</span> : ''}</td>
              
         }
@@ -1885,7 +1907,7 @@ function OPSDashboard({ selectedHead }) {
                         <DateNav
                             date={wowDate}
                             period={wowDateType}
-                            periods={['M']}
+                            periods={['M','Q']}
                             onDateChange={setWowDate}
                             onPeriodChange={setWowDateType}
                             loading={wowLoading}
@@ -1900,7 +1922,7 @@ function OPSDashboard({ selectedHead }) {
                                     {QUAL_WOW_METRICS.map((m) => {
                                         // const arrow = wowSortCol === m.key ? (wowSortDir === 1 ? '▲' : '▼') : '';
                                         return (
-                                            <th key={m.key} className="sortable"
+                                            <th key={m.key} style={{ width: m?.valKey === 'avgProfileSelection' ?'75px' : '' }} className="sortable"
                                             // onClick={() => toggleWowSort(m.key)}
                                             >
                                                 {m.label}
@@ -1908,8 +1930,9 @@ function OPSDashboard({ selectedHead }) {
                                             </th>
                                         );
                                     })}
-                                    <th style={{ width: '150px' }}>HR #</th>
-                                    <th style={{ width: '80px' }}>Revenue</th>
+                                    <th style={{ width: '120px' }}>HR #</th>
+                                    <th style={{ width: '70px' }}>Revenue</th>
+                                     <th >Talent<br/>Status</th>
                                     <th>Client</th>
                                 </tr>
                             </thead>
@@ -1924,13 +1947,13 @@ function OPSDashboard({ selectedHead }) {
                             <tbody>
 
                                 {wowLoading ? (
-                                    <td colSpan="7">
+                                    <td colSpan="8">
                                         <div className="table-loading">Loading…</div>
                                     </td>
 
                                 ) : qualWowData?.length === 0 ? (
                                     <tr>
-                                        <td colSpan="7" className="datacell">
+                                        <td colSpan="8" className="datacell">
                                             No data available
                                         </td>
                                     </tr>
@@ -1957,6 +1980,7 @@ function OPSDashboard({ selectedHead }) {
                                         })}
                                         <td className="datacell" >  <a href={`/allhiringrequest/${row.hR_ID}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{row?.hR_Number ?? ''}</a>  <br /><span>{row?.hR_Title ? `${(row?.hR_Title)}` : ''}</span></td>
                                         <td className="datacell">{row?.tA_RevenueStr ?? ''}</td>
+                                         <td className="datacell">{row?.talent ?? ''} <br/><strong>{row?.talentStatus}</strong></td>
                                         <td className="datacell">{row?.company} {row?.companyCategory === "Diamond" ? <img
                                             src={Diamond}
                                             alt="info"
