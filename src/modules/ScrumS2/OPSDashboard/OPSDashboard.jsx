@@ -297,12 +297,16 @@ function OPSDashboard({ selectedHead }) {
     const [isTable5Clicked, setIsTable5Clicked] = useState(false)
     const [revenueColumn, setRevenueColumn] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const parsedLocalTaColumns = JSON.parse(localStorage.getItem('taTableColumns'))
+    const [taColumns, setTAColumns] = useState(parsedLocalTaColumns ?? TA_COLUMNS.map(i => i.key))
 
-    const [taColumns, setTAColumns] = useState([])
+    // useEffect(() => {
+    //     setTAColumns(TA_COLUMNS.map(i => i.key))
+    // }, [])
 
-    useEffect(() => {
-        setTAColumns(TA_COLUMNS.map(i => i.key))
-    }, [])
+    useEffect(()=>{
+        localStorage.setItem('taTableColumns',JSON.stringify(taColumns))
+    },[taColumns])
 
     const toggleColumn = (key) => {
         setTAColumns((prev) =>
@@ -966,7 +970,15 @@ function OPSDashboard({ selectedHead }) {
                             );
                         }
                     },
-
+  {
+                        title: <span style={popupSellHeadStyle}># Open Since</span>,
+                        dataIndex: "openDays",
+                        key: "openDays",
+                        width: "100px",
+                        render: (text, param) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
                     //  {
                     //     title: <span style={popupSellHeadStyle}>Carry FWD Status</span>,
                     //     dataIndex: "carryFwd_HRStatus",
@@ -1057,7 +1069,15 @@ function OPSDashboard({ selectedHead }) {
                             );
                         }
                     },
-
+  {
+                        title: <span style={popupSellHeadStyle}># Open Since</span>,
+                        dataIndex: "openDays",
+                        key: "openDays",
+                        width: "100px",
+                        render: (text, param) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
                     // {
                     //     title: <span style={popupSellHeadStyle}>HR Status</span>,
                     //     dataIndex: "hrStatus",
