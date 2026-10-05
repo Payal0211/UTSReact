@@ -223,7 +223,7 @@ function MOMOverview() {
         const headDataIndexMap = {
             NASA: "NASA",
             Phoenix: "Phoenix",
-            METEOROID: "METEOROID",
+            Apex: "METEOROID",
             India: "Shivam",
             Shivam: "Shivam",
             NOVA: "NOVA",
@@ -333,7 +333,7 @@ function MOMOverview() {
                             };
                         }
 
-                        return <AddNoteComp text={text} record={record} keyPar={`${monthPrefix}_${dataKey}`} month={record?.[monthPrefix]} index={index} />;
+                        return text ? <AddNoteComp text={text} record={record} keyPar={`${monthPrefix}_${dataKey}`} month={record?.[monthPrefix]} index={index} /> : '';
                     },
                 });
             });
