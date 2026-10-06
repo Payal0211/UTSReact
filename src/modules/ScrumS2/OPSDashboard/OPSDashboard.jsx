@@ -304,9 +304,9 @@ function OPSDashboard({ selectedHead }) {
     //     setTAColumns(TA_COLUMNS.map(i => i.key))
     // }, [])
 
-    useEffect(()=>{
-        localStorage.setItem('taTableColumns',JSON.stringify(taColumns))
-    },[taColumns])
+    useEffect(() => {
+        localStorage.setItem('taTableColumns', JSON.stringify(taColumns))
+    }, [taColumns])
 
     const toggleColumn = (key) => {
         setTAColumns((prev) =>
@@ -599,8 +599,19 @@ function OPSDashboard({ selectedHead }) {
                         render: (text, result) => {
                             return <div style={popupSellStyle} dangerouslySetInnerHTML={{ __html: text?.replace(/\n/g, "<br/>") }}></div>
                         }
-                    }
-
+                    },
+                    {
+                        title: <span style={popupSellHeadStyle}>HR Status</span>,
+                        dataIndex: "hrStatus",
+                        key: "hrStatus",
+                        width: "170px",
+                        render: (_, param) => {
+                            return All_Hiring_Request_Utils.GETHRSTATUS(
+                                param?.hrStatusCode,
+                                param?.hrStatus
+                            );
+                        }
+                    },
 
 
                 ];
@@ -744,7 +755,18 @@ function OPSDashboard({ selectedHead }) {
                     }
                 },
 
-
+                {
+                    title: <span style={popupSellHeadStyle}>HR Status</span>,
+                    dataIndex: "hrStatus",
+                    key: "hrStatus",
+                    width: "170px",
+                    render: (_, param) => {
+                        return All_Hiring_Request_Utils.GETHRSTATUS(
+                            param?.hrStatusCode,
+                            param?.hrStatus
+                        );
+                    }
+                },
 
 
             ];
@@ -913,6 +935,78 @@ function OPSDashboard({ selectedHead }) {
 
         if (isTable3Clicked) {
             if (isPipelineClicked) {
+                  if (colLabelVal === "Active Pipeline") {
+                    return [
+                        {
+                            title: <span style={popupSellHeadStyle}>Created Date</span>,
+                            dataIndex: "actionDateStr",
+                            key: "actionDateStr",
+                            width: "150px",
+                            render: (text) => {
+                                return <span style={popupSellStyle}>{text}</span>
+                            }
+                        }, {
+                            title: <span style={popupSellHeadStyle}>Company</span>,
+                            dataIndex: "company",
+                            key: "company",
+                            width: "150px",
+                            render: (text) => {
+                                return <span style={popupSellStyle}>{text}</span>
+                            }
+                        },
+                        {
+                            title: <span style={popupSellHeadStyle}>HR #</span>,
+                            dataIndex: "hR_Number",
+                            key: "hR_Number",
+                            width: "170px",
+                            render: (text, value) => {
+                                return <a href={`/allhiringrequest/${value.hR_ID}`} style={{ textDecoration: 'underline', ...popupSellStyle }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+                            }
+                        },
+                        {
+                            title: <span style={popupSellHeadStyle}>HR Title</span>,
+                            dataIndex: "hR_Title",
+                            key: "hR_Title",
+                            width: "200px",
+                            render: (text) => {
+                                return <span style={popupSellStyle}>{text}</span>
+                            }
+                        },
+                        {
+                            title: <span style={popupSellHeadStyle}>HR Pipeline</span>,
+                            dataIndex: "hR_PipelineStr",
+                            key: "hR_PipelineStr",
+                            width: "170px",
+                            render: (text) => {
+                                return <span style={popupSellStyle}>{text}</span>
+                            }
+                        },
+                        {
+                            title: <span style={popupSellHeadStyle}>HR Status</span>,
+                            dataIndex: "hrStatus",
+                            key: "hrStatus",
+                            width: "170px",
+                            render: (_, param) => {
+                                return All_Hiring_Request_Utils.GETHRSTATUS(
+                                    param?.hrStatusCode,
+                                    param?.hrStatus
+                                );
+                            }
+                        },
+
+                        {
+                            title: <span style={popupSellHeadStyle}># Open Since</span>,
+                            dataIndex: "openDays",
+                            key: "openDays",
+                            width: "100px",
+                            render: (text, param) => {
+                                return <span style={popupSellStyle}>{text}</span>
+                            }
+                        },
+
+                    ];
+                }
                 return [
                     {
                         title: <span style={popupSellHeadStyle}>Created Date</span>,
@@ -970,7 +1064,19 @@ function OPSDashboard({ selectedHead }) {
                             );
                         }
                     },
-  {
+                    {
+                        title: <span style={popupSellHeadStyle}>Carry Forward Status</span>,
+                        dataIndex: "carryFwd_HRStatus",
+                        key: "carryFwd_HRStatus",
+                        width: "170px",
+                        render: (_, param) => {
+                            return All_Hiring_Request_Utils.GETHRSTATUS(
+                                param?.carryFwd_HRStatusCode,
+                                param?.carryFwd_HRStatus
+                            );
+                        }
+                    },
+                    {
                         title: <span style={popupSellHeadStyle}># Open Since</span>,
                         dataIndex: "openDays",
                         key: "openDays",
@@ -1010,6 +1116,8 @@ function OPSDashboard({ selectedHead }) {
 
 
             if (isCarryForwardPipelineClicked) {
+
+              
 
                 return [
                     {
@@ -1069,7 +1177,19 @@ function OPSDashboard({ selectedHead }) {
                             );
                         }
                     },
-  {
+                    {
+                        title: <span style={popupSellHeadStyle}>Carry Forward Status</span>,
+                        dataIndex: "carryFwd_HRStatus",
+                        key: "carryFwd_HRStatus",
+                        width: "170px",
+                        render: (_, param) => {
+                            return All_Hiring_Request_Utils.GETHRSTATUS(
+                                param?.carryFwd_HRStatusCode,
+                                param?.carryFwd_HRStatus
+                            );
+                        }
+                    },
+                    {
                         title: <span style={popupSellHeadStyle}># Open Since</span>,
                         dataIndex: "openDays",
                         key: "openDays",
