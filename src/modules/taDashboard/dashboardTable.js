@@ -1726,52 +1726,6 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         return <span style={{ fontSize: '10px', color: colorCode, textAlign: 'center', display: 'flex', justifyContent: 'center' }} >{value}</span>;
       },
     },
-   
-    {
-      headerName: "Yesterday's Submission Target",
-      field: 'profile_Shared_Target',
-      width: 100,
-      cellStyle: { textAlign: 'center' },
-      filter: MultiConditionTextFilter,
-      filterParams: {
-        type: 'number',
-        fields: [
-          'profile_Shared_Target',
-          'profile_Shared_Achieved',
-          'interview_Scheduled_Target',
-        ],
-      },
-
-    },
-
-    {
-      headerName: "Today's Interview Schedule",
-      field: 'interview_Scheduled_Target',
-      width: 220,
-      filter: MultiConditionTextFilter,
-      filterParams: {
-        type: 'number',
-
-        // Filter will check all these fields
-        fields: [
-          'profile_Shared_Target',
-          'profile_Shared_Achieved',
-          'interview_Scheduled_Target',
-        ],
-      },
-      cellRenderer: (props) => {
-        const { data, ind } = props;
-        const rowIndex = getRowIndex(data);
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return (
-          <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-            {data.interview_Scheduled_Target ?? "NA"}
-          </div>
-        );
-      },
-    },
     {
       headerName: '# Rounds',
       field: 'no_of_InterviewRounds',
@@ -1968,46 +1922,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       // },
     },
 
-    {
-      headerName: "Yesterday's Target Achieved",
-      field: 'profile_Shared_Achieved',
-      cellStyle: { textAlign: 'center' },
-      width: 150,
-      filterParams: { type: 'number' },
-      filter: MultiConditionTextFilter,
-      // cellRenderer: ProfileSharedTargetCell,
-      cellRenderer: (props) => {
-        const { value, data } = props
-        if (props.node.rowPinned) {
-          return value;
-        }
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return <p
-          style={{ color: 'blue', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer', margin: 0, textAlign: "center" }}
-          onClick={() => {
-            getTalentProfilesDetailsfromGoalsTable({
-              result: data,
-              statusID: 2,
-              stageID: '',
-              isToday: false
-            })
-          }}
-        >
-          {value}
-        </p>
-      }
-    },
-    {
-      headerName: "Today's Submission Target",
-      field: 'todayProfile_Shared_Target',
-      width: 160,
-      filterParams: { type: 'number' },
-      cellStyle: { textAlign: 'center' },
-      filter: MultiConditionTextFilter,
-      cellRenderer: ProfileSharedTargetCell,
-    },
+  
 
     {
       headerName: "Task for AM's",
