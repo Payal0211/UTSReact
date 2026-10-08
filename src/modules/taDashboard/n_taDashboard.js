@@ -156,6 +156,9 @@ function NewTADashboard() {
     const [newTRAllData, setTRAllData] = useState({});
     const [allTAUsersList, setAllTAUsersList] = useState([]);
     const [isEditNewTask, setEditNewTask] = useState(false);
+const [TabTitle, setTabTitle] = useState('A')
+    const today = new Date();
+      const [monthDate, setMonthDate] = useState(today);
 
     useEffect(() => {
         const getUserResult = async () => {
@@ -1633,6 +1636,29 @@ function NewTADashboard() {
 
                             </div>}
 
+                            {activeTable ==='Dashboard' &&   <div className={stylesOBj.calendarFilter} style={{ height: '35px', marginLeft: 'auto', width: '130px', minWidth: '130px' }}>
+                                      <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
+                                      <DatePicker
+                                        style={{ backgroundColor: "red" }}
+                                        size='small'
+                                        onKeyDown={(e) => {
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                        }}
+                                        className={stylesOBj.dateFilter}
+                                        placeholderText="Month - Year"
+                                        selected={monthDate}
+                                        onChange={date => {
+                                          setTabTitle('A')
+                                          setMonthDate(date)
+                            
+                                        }}
+                                        dateFormat="MM-yyyy"
+                                        maxDate={today}
+                                        showMonthYearPicker
+                                      />
+                                    </div> }
+
                            
                             {userData?.showTADashboardDropdowns && activeTable === 'Dashboard' && (
                                 <button
@@ -1652,7 +1678,7 @@ function NewTADashboard() {
 
                         {activeTable === 'Dashboard' && <DashboardTableComp selectedHead={selectedHead} searchText={searchText} tableFilteredState={tableFilteredState} filtersList={filtersList} AddComment={AddComment}
                             hooks={{ setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails,setStartTargetDate,setShowProfileTarget, editTAforTask,handleRemoveTask ,TaskStatusComp,
-                                getTalentProfilesDetailsfromTable,setTalentToMove,setProfileStatusID,setHRTalentListFourCount,startTargetDate,setGoalList,setLoadingTalentProfile,getTalentProfilesDetailsfromGoalsTable
+                                getTalentProfilesDetailsfromTable,setTalentToMove,setProfileStatusID,setHRTalentListFourCount,startTargetDate,setGoalList,setLoadingTalentProfile,getTalentProfilesDetailsfromGoalsTable, today,setMonthDate,monthDate,TabTitle, setTabTitle
                             }}
                             userData={userData} startDate={startDate}
                         />}
