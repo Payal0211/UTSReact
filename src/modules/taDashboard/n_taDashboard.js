@@ -1636,7 +1636,23 @@ const [TabTitle, setTabTitle] = useState('A')
 
                             </div>}
 
-                            {activeTable ==='Dashboard' &&   <div className={stylesOBj.calendarFilter} style={{ height: '35px', marginLeft: 'auto', width: '130px', minWidth: '130px' }}>
+                        
+
+                           
+                            {userData?.showTADashboardDropdowns && activeTable === 'Dashboard' && (
+                                <button
+                                    className={stylesOBj.btnPrimary}
+                                    onClick={() => {
+                                        setIsAddNewRow(true);
+                                        setNewTAHeadUserValue(selectedHead);
+                                    }}
+                                    style={{height:'25px', padding:'4px 12px',  marginLeft: 'auto'}}
+                                >
+                                    Add New Task
+                                </button>
+                            )}
+
+                                {activeTable ==='Dashboard' &&   <div className={stylesOBj.calendarFilter} style={{ height: '27px',marginLeft:'10px', width: '130px', minWidth: '130px' }}>
                                       <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
                                       <DatePicker
                                         style={{ backgroundColor: "red" }}
@@ -1658,20 +1674,6 @@ const [TabTitle, setTabTitle] = useState('A')
                                         showMonthYearPicker
                                       />
                                     </div> }
-
-                           
-                            {userData?.showTADashboardDropdowns && activeTable === 'Dashboard' && (
-                                <button
-                                    className={stylesOBj.btnPrimary}
-                                    onClick={() => {
-                                        setIsAddNewRow(true);
-                                        setNewTAHeadUserValue(selectedHead);
-                                    }}
-                                    style={{height:'25px', padding:'4px 12px'}}
-                                >
-                                    Add New Task
-                                </button>
-                            )}
                         </div>
 
                     
