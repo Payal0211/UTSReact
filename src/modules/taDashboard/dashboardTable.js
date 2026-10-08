@@ -35,7 +35,8 @@ const { Option } = Select;
 function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filtersList, AddComment, hooks, userData, startDate }) {
   const navigate = useNavigate()
   const { setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails, startTargetDate, setStartTargetDate, setShowProfileTarget,
-    editTAforTask, handleRemoveTask, getTalentProfilesDetailsfromTable, setTalentToMove, setProfileStatusID, setHRTalentListFourCount, setGoalList, setLoadingTalentProfile, getTalentProfilesDetailsfromGoalsTable
+    editTAforTask, handleRemoveTask, getTalentProfilesDetailsfromTable, setTalentToMove, setProfileStatusID, setHRTalentListFourCount, setGoalList, setLoadingTalentProfile, getTalentProfilesDetailsfromGoalsTable,
+    today,setMonthDate,monthDate,TabTitle, setTabTitle
   } = hooks;
   const [TaListData, setTaListData] = useState([]);
   const [isLoading, setIsLoading] = useState(false)
@@ -52,14 +53,14 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     clearErrors,
     formState: { errors },
   } = useForm();
-  const [TabTitle, setTabTitle] = useState('A')
+  // const [TabTitle, setTabTitle] = useState('A')
   const [targetValue, setTargetValue] = useState(5);
 
   const [showAlertDetailModal, setShowAlertDetailModal] = useState(false);
   const [alertDetailData, setAlertDetailData] = useState({});
 
-  const today = new Date();
-  const [monthDate, setMonthDate] = useState(today);
+  // const today = new Date();
+  // const [monthDate, setMonthDate] = useState(today);
   const isHistory = useMemo(
     () => moment(monthDate).isBefore(moment(), 'month'),
     [monthDate]
@@ -1702,19 +1703,6 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         );
       },
     },
-
-    {
-      headerName: 'Alerts',
-      field: 'hrAlert',
-      width: 200,
-      pinned: 'left',
-      suppressMovable: true,
-      cellRenderer: HrAlertCell,
-      filter: false,
-      // tooltipField: 'hrTitle',
-
-    },
-
     {
       headerName: 'Status',
       field: 'taskStatus',
@@ -1738,26 +1726,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         return <span style={{ fontSize: '10px', color: colorCode, textAlign: 'center', display: 'flex', justifyContent: 'center' }} >{value}</span>;
       },
     },
-    {
-      headerName: 'Priority',
-      field: 'task_Priority',
-
-      suppressMovable: true,
-      filterParams: { type: 'status', list: filtersList?.priority?.map(i => ({ ...i, data: i.text })) },
-      filter: MultiConditionTextFilter,
-      width: 100,
-      cellRenderer: (props) => {
-        const { value, data } = props;
-        const ind = getRowIndex(data);
-        if (props.node.rowPinned === "bottom") {
-          return "";
-        }
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return <span style={{ textAlign: 'center', display: 'flex', justifyContent: 'center' }} >{value}</span>;
-      },
-    },
+   
     {
       headerName: "Yesterday's Submission Target",
       field: 'profile_Shared_Target',
@@ -2932,7 +2901,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         >
           Lost
         </button>
-        {!(isHistory) && <>
+       
           <button
             onClick={() => setTabTitle('HW')}
             style={{
@@ -2963,31 +2932,6 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
           >
             HR Lost
           </button>
-
-        </>}
-
-        <div className={stylesOBj.calendarFilter} style={{ height: '35px', marginLeft: 'auto', width: '130px', minWidth: '130px' }}>
-          <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
-          <DatePicker
-            style={{ backgroundColor: "red" }}
-            size='small'
-            onKeyDown={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-            className={stylesOBj.dateFilter}
-            placeholderText="Month - Year"
-            selected={monthDate}
-            onChange={date => {
-              setTabTitle('A')
-              setMonthDate(date)
-
-            }}
-            dateFormat="MM-yyyy"
-            maxDate={today}
-            showMonthYearPicker
-          />
-        </div>
       </div>
       <div className={`${taStylesNew["table-container"]} ${gridStyles["grid-wrapper"]}`} style={{ marginTop: '20px' }}>
         {isLoading ? <TableSkeleton /> : <div style={{ height: 500 }} ><AgGridReact
