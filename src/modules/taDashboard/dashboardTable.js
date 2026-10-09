@@ -1940,14 +1940,6 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       // },
     },
 
-  
-
-    {
-      headerName: "Task for AM's",
-      field: 'amTask',
-      width: 160,
-      filter: MultiConditionTextFilter,
-    },
 
   ];
 
