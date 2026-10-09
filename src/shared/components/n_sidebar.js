@@ -225,7 +225,7 @@ export default function N_sidebar() {
                             <li><Link to={UTSRoutes.TADASHBOARD_PG} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.TADASHBOARD_PG) ? stylesOBj['active'] : ''}`}>Contract TA Dashboard</Link></li>
                             <li><Link to={UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT) ? stylesOBj['active'] : ''}`}>Recruiter Dashboard</Link></li>
                             <li><Link to={UTSRoutes.DAILYSNAPSHOT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.DAILYSNAPSHOT) ? stylesOBj['active'] : ''}`}>Daily Snapshot</Link></li>
-                            <li><Link to={UTSRoutes.RECRUITERREPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.RECRUITERREPORT) ? stylesOBj['active'] : ''}`}>Recruiter</Link></li>
+                            {/* <li><Link to={UTSRoutes.RECRUITERREPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.RECRUITERREPORT) ? stylesOBj['active'] : ''}`}>Recruiter</Link></li> */}
                             
                             {/* <li><Link to={UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT} className={`${stylesOBj['nav-subitem']}`}>Recruiter Multi-Month Dashboard</Link></li> */}
                             <li><Link to={UTSRoutes.IMMEDIATEJOINER} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.IMMEDIATEJOINER) ? stylesOBj['active'] : ''}`}>Talent Joining</Link></li>
