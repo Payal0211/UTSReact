@@ -530,14 +530,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isVisible: isAccess(usertypeID, 'DailySnapshot'),
 					isChildren : false					
 				}),
-				new SideBarModels({
-					id: 'Recruiter',
-					title: 'Recruiter',
-					isActive: false,
-					navigateTo: UTSRoutes.RECRUITERREPORT,
-					isVisible: isAccess(usertypeID, 'Recruiter'),
-					isChildren : false					
-				}),
+				// new SideBarModels({
+				// 	id: 'Recruiter',
+				// 	title: 'Recruiter',
+				// 	isActive: false,
+				// 	navigateTo: UTSRoutes.RECRUITERREPORT,
+				// 	isVisible: isAccess(usertypeID, 'Recruiter'),
+				// 	isChildren : false					
+				// }),
 				
 				// 	new SideBarModels({
 				// 	id: 'RecruiterDashboardMM',
