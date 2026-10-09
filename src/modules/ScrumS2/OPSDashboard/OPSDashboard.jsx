@@ -1911,7 +1911,8 @@ function OPSDashboard({ selectedHead }) {
 
         if (m.key === 'net_joined') {
             // const revenueNumber = Number(row.joinedRevenueStr.replace(/[^\d]/g, ""));
-            let val = getTotal(taData, 'joinedRevenue') - getTotal(taData, 'negotiationRevepostJoinedBackoutRevenuenue')
+            //   let val = row.joinedRevenue - row.postJoinedBackoutRevenue
+            let val = getTotal(taData, 'joinedRevenue') - getTotal(taData, 'postJoinedBackoutRevenue')
             return <td className="rowlabel datacell">{val ? val?.toLocaleString('en-IN', {
                 style: 'currency',
                 currency: 'INR',
@@ -2374,7 +2375,9 @@ function OPSDashboard({ selectedHead }) {
                                 ) : funnelData.map(row => <tr key={row.key}>
                                     <td className="rowlabel">{row.stage}</td>
                                     <td className="datacell">{row.goalStr ?? ''}</td>
-                                    <td className="datacell"><span
+                                    <td className="datacell">{
+                                       ( row.stage_ID === "NJC" || row.stage_ID ===  "NPRC") ? row.achievedValueStr ?? '' :
+                                       <span
                                         style={{
                                             fontWeight: "bold",
                                             textDecoration: "underline",
@@ -2382,7 +2385,8 @@ function OPSDashboard({ selectedHead }) {
                                         }} onClick={() => {
                                             getTalentProfilesDetailsfromTable(row, podDateType, podDate);
                                             setColTextVal(row.achievedValueStr)
-                                        }} >{row.achievedValueStr ?? ''}</span></td>
+                                        }} >{row.achievedValueStr ?? ''}</span>
+                                        }</td>
                                     <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '' : `${row.achievedPer}`}</td>
                                 </tr>)
 
@@ -2437,7 +2441,8 @@ function OPSDashboard({ selectedHead }) {
                                         return (
                                             <tr key={row.stage_ID}>
                                                 <td className="rowlabel">{row.stage}</td>
-                                                <td className="datacell"><span
+                                                <td className="datacell">
+                                                    {( row.stage_ID === "NJ12" || row.stage_ID ===  "NS") ? row.achievedValueStr ?? '' : <span
                                                     style={{
                                                         fontWeight: "bold",
                                                         textDecoration: "underline",
@@ -2446,7 +2451,7 @@ function OPSDashboard({ selectedHead }) {
                                                         getTalentProfilesDetailsfromTable2(row, pipelineDateType, pipelineDate);
                                                         setColTextVal(row.achievedValueStr)
 
-                                                    }} >{row.achievedValueStr ?? ''}</span></td>
+                                                    }} >{row.achievedValueStr ?? ''}</span>}</td>
                                                 <td className={`pct ${statusClass(row.achievedPer)}`}>{row.achievedPer === null ? '' : `${row.achievedPer}`}</td>
                                             </tr>
                                         );
