@@ -16,6 +16,7 @@ import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import { HTTPStatusCode } from "constants/network";
 import UTSRoutes from 'constants/routes';
 import { IconContext } from "react-icons";
+import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { IoIosRemoveCircle } from "react-icons/io";
 import { GrEdit } from "react-icons/gr";
 import { InputType } from "constants/application";
@@ -1847,6 +1848,23 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         return data.totalRevenue_NoofTalentStr
       }
     },
+     {
+      headerName: 'HR Status',
+      field: 'tA_HR_Status',
+      width: 110,
+      filter: MultiConditionTextFilter,
+       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.tA_HR_Status)))?.map(v => ({ data: v })) },
+      cellStyle: (params) => ({
+        textAlign: 'center',
+      }),
+      cellRenderer: (props) => {
+        const { data } = props;
+        if (data?.isTotalRow) {
+          return null;
+        }
+        return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusColorCode, data?.tA_HR_Status)}</div>;
+      },
+    },
     {
       headerName: 'Active TRs',
       field: 'activeTR',
@@ -1922,14 +1940,6 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       // },
     },
 
-  
-
-    {
-      headerName: "Task for AM's",
-      field: 'amTask',
-      width: 160,
-      filter: MultiConditionTextFilter,
-    },
 
   ];
 
@@ -2411,6 +2421,23 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
           />
         );
       }
+    },
+      {
+      headerName: 'HR Status',
+      field: 'tA_HR_Status',
+      width: 110,
+      filter: MultiConditionTextFilter,
+       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.tA_HR_Status)))?.map(v => ({ data: v })) },
+      cellStyle: (params) => ({
+        textAlign: 'center',
+      }),
+      cellRenderer: (props) => {
+        const { data } = props;
+        if (data?.isTotalRow) {
+          return null;
+        }
+        return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status)}</div>;
+      },
     },
     {
       headerName: 'Active TRs',
