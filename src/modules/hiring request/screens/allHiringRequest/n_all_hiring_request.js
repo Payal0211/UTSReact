@@ -1127,7 +1127,19 @@ const ClientStatusTag = ({ status }) => {
                                                     <td>
                                                         <div className={`${stylesOBj["category-cell-wrapper"]}`} style={{ width: '100px' }}>
                                                             <div className={`${stylesOBj["category-left"]}`}>
-                                                                <button className={`${stylesOBj["diamond-toggle"]}`} data-tooltip={data?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond"} onClick={() => {
+                                                                {data?.companyCategory === 'VC POC' ? <button className={`${stylesOBj["diamond-toggle"]}`} data-tooltip={'VC POC'} onClick={() => {
+                                                                    // if (data?.companyCategory === "Diamond") {
+                                                                    //     setShowDiamondRemark(true);
+                                                                    //     setCompanyIdForRemark({ ...data, index: index });
+                                                                    // } else {
+                                                                    //     setShowAddDiamondRemark(true);
+                                                                    //     setCompanyIdForRemark({ ...data, index: index });
+
+                                                                    // }
+                                                                }}>
+                                                                   <img src="images/diamond-blue.svg" alt="Diamond Active" className={`${stylesOBj["diamond-icon"]} ${stylesOBj["diamond-active"]}`} />
+                                                                     
+                                                                </button> :  <button className={`${stylesOBj["diamond-toggle"]}`} data-tooltip={data?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond"} onClick={() => {
                                                                     if (data?.companyCategory === "Diamond") {
                                                                         setShowDiamondRemark(true);
                                                                         setCompanyIdForRemark({ ...data, index: index });
@@ -1138,7 +1150,8 @@ const ClientStatusTag = ({ status }) => {
                                                                     }
                                                                 }}>
                                                                     {data?.companyCategory === "Diamond" ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${stylesOBj["diamond-icon"]} ${stylesOBj["diamond-active"]}`} /> : <img src="images/diamond-ic.svg" alt="Diamond" className={`${stylesOBj["diamond-icon"]} ${stylesOBj["diamond-inactive"]}`} />}
-                                                                </button>
+                                                                </button> }
+                                                               
                                                             </div>
                                                             <div className={`${stylesOBj["category-divider"]}`}></div>
                                                             <MamoedCategoryRightComponent data={data} index={index} handleHRRequest={handleHRRequestWithoutAPI} tableFilteredState={tableFilteredState} />

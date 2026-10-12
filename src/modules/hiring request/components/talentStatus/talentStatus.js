@@ -15,7 +15,7 @@ import { hiringRequestDAO } from 'core/hiringRequest/hiringRequestDAO';
 import { InterviewDAO } from 'core/interview/interviewDAO';
 import LockIcon from 'assets/svg/smallLockIcon.svg'
 
-const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiData,ActionKey}) => {
+const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiData,ActionKey,updatingNORejection}) => {
 	const {
 		register,
 		handleSubmit,
@@ -292,7 +292,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 						<div className={TalentStatusStyle.colMd12}>
 							<HRSelectField
 								controlledValue={controllCreditBaseTalentStatus}
-								setControlledValue={setControllCreditBaseTalentStatus}
+								setControlledValue={val=>{setControllCreditBaseTalentStatus(val);setIsRejectReason(1)}}
 							 	isControlled={true}
 								mode={'id/value'}
 								setValue={setValue}
