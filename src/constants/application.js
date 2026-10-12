@@ -137,6 +137,7 @@ export class TalentOnboardStatus {
 	static SCHEDULE_INTERVIEW = 'ScheduleInterview';
 	static RESCHEDULE_INTERVIEW = 'RescheduleInterview';
 	static TALENT_STATUS = 'TalentStatus';
+	static UPDATE_REJ_REASON = "UpdateRejectReason"
 	static INTERVIEW_STATUS = 'InterviewStatus';	
 	static UPDATE_TALENT_ON_BOARD_STATUS = 'UpdateTalentOnBoardStatus';
 	static REPLACE_TALENT = 'ReplaceTalent';	
