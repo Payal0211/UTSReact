@@ -37,6 +37,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 	const [talentStatus, setTalentStatus] = useState([]);
 	const [talentStatusCreditBase, setTalentStatusCreditBase] = useState([]);
 	const [radioValue, setRadioValue] = useState('Before Interview');
+	const [isRejectReason, setIsRejectReason] = useState(1);
 	const [controllCreditBaseTalentStatus, setControllCreditBaseTalentStatus] =
     useState("Select Talent Status");
 	const [controllCreditBaseRejectReason, setControllCreditBaseRejectReason] =
@@ -120,7 +121,8 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 					cancelReasonID: _isNull(d.cancelReason?.id) ? 0 : d.cancelReason?.id,
 					otherReason: d?.OtherRejectReason ? d?.OtherRejectReason : null,
 					remark: d.onHoldRemark || d.lossRemark,
-					ContactTalentPriorityID: talentStatus?.Data?.ContactTalentPriorityID
+					ContactTalentPriorityID: talentStatus?.Data?.ContactTalentPriorityID,
+					IsRejectReason:isRejectReason
 				};
 
 				const clientFeedback = {
@@ -174,7 +176,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 					rejectReasonID :_isNull(d?.rejectReasonID?.id) ? 0 : d?.rejectReasonID?.id,
 					profileRejectionStage : _isNull(d?.profileRejectionStage) ? "" : d?.profileRejectionStage,
 					remark: d.onHoldRemark || d.lossRemark,
-				}
+				}		
 				let response = await TalentStatusDAO.updateTalentaStatusCreditBaseRequestDAO(
 					talentStatusObject,
 				);
@@ -192,7 +194,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 				await saveTalentNotesWhenRejected(note);
 			}
 		},
-		[callAPI, getHrUserData,hrId, talentInfo?.HiringDetailID, talentInfo?.TalentID,talentStatus,apiData?.IsPayPerCredit,apiData?.IsPayPerHire,talentStatusCreditBase],
+		[callAPI, getHrUserData,hrId, talentInfo?.HiringDetailID, talentInfo?.TalentID,talentStatus,apiData?.IsPayPerCredit,apiData?.IsPayPerHire,talentStatusCreditBase,isRejectReason],
 	);
 
 	const saveTalentNotesWhenRejected = async(notes) => {
@@ -473,7 +475,29 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 						)}
 						{watch('talentStatus')?.id === 7 && (
 						<>
-						<div className={TalentStatusStyle.colMd12}>
+						<div className={TalentStatusStyle.colMd12} style={{display:'flex',flexDirection:'column', marginBottom:'15px'}}>
+						<p className={TalentStatusStyle.formLabel} >Rejection Reason</p>
+
+						<Radio.Group
+										className={TalentStatusStyle.radioGroup}
+										onChange={e=> {
+											resetField('rejectReasonParentID')
+											resetField('rejectReason')
+											resetField('OtherRejectReason')
+											clearErrors(['OtherRejectReason','rejectReason','rejectReasonParentID'])
+											unregister(['OtherRejectReason','rejectReason','rejectReasonParentID'])
+											setIsRejectReason(e.target.value)}}
+										value={isRejectReason}>
+										<Radio value={1}>
+										Yes
+										</Radio>
+										<Radio value={0}>
+										No
+										</Radio>
+									</Radio.Group>
+					</div>
+
+					{isRejectReason === 1 && 	<div className={TalentStatusStyle.colMd12}>
 							<HRSelectField
 								// controlledValue={controllCreditBaseRejectReason}
 								// setControlledValue={setControllCreditBaseRejectReason}
@@ -482,11 +506,11 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 								setValue={setValue}
 								register={register}
 								name="rejectReasonParentID"
-								label="Rejection Reason"
+								label="Reason"
 								defaultValue="Please Select"
-								options={getParentRejectedReasons(talentStatus?.Data?.TalentRejectReason)}
-								required
-								isError={errors['rejectReasonParentID'] && errors['rejectReasonParentID']}
+								options={getParentRejectedReasons(talentStatus?.Data?.TalentRejectReason?.filter(i=> (i.talentStatusId === 5 || i.talentStatusId === null)))}
+								required={isRejectReason === 1}
+								isError={(errors['rejectReasonParentID'] && isRejectReason === 1) && errors['rejectReasonParentID']}
 								errorMsg="Please select Reject Reason."
 								onValueChange={()=>{
 									resetField("rejectReason")
@@ -500,7 +524,8 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									alt="lock-icon" />
 									This rejection reason wont be shared with the candidate.
 								</div>
-							</div>
+							</div>}
+					
 							{watch('rejectReasonParentID')?.id && <div className={TalentStatusStyle.colMd12}>
 								<HRSelectField
 									controlledValue={controllCreditBaseRejectReason}
@@ -513,8 +538,8 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									label="Detailed Rejection Sub Category"
 									defaultValue="Please Select"
 									options={getRejectedReasons(talentStatus?.Data?.TalentRejectReason)}
-									required
-									isError={errors['rejectReason'] && errors['rejectReason']}
+									required={isRejectReason === 1}
+									isError={(errors['rejectReason'] && isRejectReason === 1) && errors['rejectReason']}
 									errorMsg="Please select Category."
 									onValueChange={async (e,val)=>{
 										// setIsLoading(true);         
@@ -545,12 +570,12 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									register={register}
 									errors={errors}
 									label={'Rejection message for the candidate'}
-									required
+									required={isRejectReason === 1}
 									name="OtherRejectReason"
 									type={InputType.TEXT}
 									placeholder="please enter rejection message"	
 									validationSchema={{
-										required: 'please enter rejection message.',
+										required: isRejectReason === 1 ? 'please enter rejection message.' : false,
 									}}								
 								/>
 								<div className={TalentStatusStyle.rejectCandNote}>
