@@ -122,7 +122,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 					otherReason: d?.OtherRejectReason ? d?.OtherRejectReason : null,
 					remark: d.onHoldRemark || d.lossRemark,
 					ContactTalentPriorityID: talentStatus?.Data?.ContactTalentPriorityID,
-					IsRejectReason:isRejectReason
+					IsRejectReason:isRejectReason === 1 ? true : false
 				};
 
 				const clientFeedback = {
