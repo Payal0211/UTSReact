@@ -600,6 +600,10 @@ const categoryOptions = [{
     id: 'Diamond',
     value: 'Diamond',
   },
+   {
+    id: 'VC POC',
+    value: 'VC POC',
+  },
   {
     id: 'None',
     value: 'None',

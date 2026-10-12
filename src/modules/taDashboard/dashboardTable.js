@@ -1807,7 +1807,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         if (data?.isTotalRow) {
           return (
             <strong>
-              {data.revenue_On10PerCTCStr?.toLocaleString("en-US")}
+              {data.revenue_On10PerCTCStr ? `$${data.revenue_On10PerCTCStr?.toLocaleString("en-US")}` : ''}
             </strong>
           );
         }
@@ -1821,7 +1821,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         ) || 0;
         const computedNRUSD = billRate - talentPayRate;
 
-        return computedNRUSD
+        return computedNRUSD ? `$${computedNRUSD?.toLocaleString("en-US")}` : ''
       },
     },
     {
@@ -1845,7 +1845,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
           );
         }
 
-        return data.totalRevenue_NoofTalentStr
+        return  data.totalRevenue_NoofTalentStr
       }
     },
      {

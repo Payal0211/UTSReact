@@ -75,6 +75,7 @@ import MoveToAssessment from './moveToAssessment';
 import DatePicker from 'react-datepicker';
 import { ReactComponent as CalenderSVG } from 'assets/svg/calender.svg';
 import EngagementEnd from 'modules/engagement/screens/endEngagement/endEngagement';
+import UpdateRejectReason from '../talentStatus/updateRejectReason';
 
 const ROW_SIZE = 2; // CONSTANT FOR NUMBER OF TALENTS IN A ROW
 
@@ -134,6 +135,7 @@ const TalentList = ({
 	const [replaceTalentModal, setReplaceTalentModal] = useState(false);
 	const [messageAPI, contextHolder] = message.useMessage();
 	const [talentIndex, setTalentIndex] = useState(0);
+	const [updatingNORejection,setUpdatingNORejectReason] = useState(false)
 	const [ActionKey, setActionKey] = useState("")
 	//schedule modal state
 	const [showScheduleInterviewModal, setScheduleInterviewModal] =
@@ -1931,6 +1933,14 @@ setSaveRemarkLoading(false)
 																break;
 															}
 
+															case TalentOnboardStatus.UPDATE_REJ_REASON: {
+																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
+																setActionKey(key)
+																setTalentIndex(item?.TalentID);
+																setUpdatingNORejectReason(true)
+																break;
+															}
+
 															case TalentOnboardStatus.INTERVIEW_STATUS: {
 																let key = filterTalentCTAs?.cTAInfoList?.find(item => item.key === menuItem.key).key
 																setActionKey(key)
@@ -2757,15 +2767,37 @@ handleMoveRejectToProfile(item)
 					centered
 					footer={null}
 					open={showTalentStatus}
-					onCancel={() => setTalentStatus(false)}>
+					onCancel={() => {setTalentStatus(false)}}>
 					<TalentStatus
 						talentInfo={filterTalentID}
 						hrId={hrId}
 						callAPI={callAPI}
 						getHrUserData={getHrUserData}
-						closeModal={() => setTalentStatus(false)}
+						closeModal={() =>{setTalentStatus(false)}}
 						apiData={apiData}
 						ActionKey={ActionKey}
+						updatingNORejection={updatingNORejection}
+					/>
+				</Modal>
+			)}
+
+			{updatingNORejection && (
+				<Modal
+					transitionName=""
+					width="1256px"
+					centered
+					footer={null}
+					open={updatingNORejection}
+					onCancel={() => {setUpdatingNORejectReason(false)}}>
+					<UpdateRejectReason
+						talentInfo={filterTalentID}
+						hrId={hrId}
+						callAPI={callAPI}
+						getHrUserData={getHrUserData}
+						closeModal={() =>{setUpdatingNORejectReason(false)}}
+						apiData={apiData}
+						ActionKey={ActionKey}
+						updatingNORejection={updatingNORejection}
 					/>
 				</Modal>
 			)}
