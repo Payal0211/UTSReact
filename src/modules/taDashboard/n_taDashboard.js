@@ -1904,11 +1904,11 @@ const [TabTitle, setTabTitle] = useState('A')
                                                                 className={taStylesNew["diamond-toggle"]}
                                                                 data-tooltip={userData?.UserId === 2 ||
                                                                     userData?.UserId === 333 ||
-                                                                    userData?.UserId === 190 || userData?.UserId === 96 ? (row?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond") : "Not allowed"}
+                                                                    userData?.UserId === 190 || userData?.UserId === 96 ? (row?.companyCategory === "VC POC" ? 'VC POC' : row?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond") : "Not allowed"}
                                                                 onClick={() => {
                                                                     if (userData?.UserId === 2 ||
                                                                         userData?.UserId === 333 ||
-                                                                        userData?.UserId === 190 || userData?.UserId === 96) {
+                                                                        userData?.UserId === 190 || userData?.UserId === 96 || row?.companyCategory !== "VC POC") {
                                                                         if (row?.companyCategory === "Diamond") {
                                                                             setShowDiamondRemark(true);
                                                                             setCompanyIdForRemark({ ...row, index: i });
@@ -1919,7 +1919,7 @@ const [TabTitle, setTabTitle] = useState('A')
 
                                                                 }}
                                                             >
-                                                                {row?.companyCategory === "Diamond"
+                                                                {row?.companyCategory === "VC POC" ? <img src="images/diamond-blue.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} /> :  row?.companyCategory === "Diamond"
                                                                     ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />
                                                                     : <img src="images/diamond-ic.svg" alt="Diamond" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-inactive"]}`} />}
                                                             </button>

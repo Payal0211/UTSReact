@@ -104,6 +104,7 @@ function PreviewClientModal({
   const [getValuesForDD, setValuesForDD] = useState({});
   const [controlledPOC, setControlledPOC] = useState([]);
   const [allPocs, setAllPocs] = useState([]);
+  const [categoryOptions,setCategoryOptions] = useState([])
   const [controlledperk, setControlledperk] = useState([]);
   const [combinedPerkMemo, setCombinedPerkMemo] = useState([]);
   const [controlledFoundedInValue, setControlledFoundedInValue] = useState("");
@@ -472,6 +473,7 @@ const [error, setRefError] = useState({});
   };
 
   useEffect(() => {
+    getAllComanyCategory()
     if(getcompanyID){
       getDetails();
     }
@@ -485,6 +487,11 @@ const [error, setRefError] = useState({});
   const getAllSalesPerson = useCallback(async () => {
     const allSalesResponse = await MasterDAO.getSalesManRequestDAO();
     setAllPocs(allSalesResponse && allSalesResponse?.responseBody?.details);
+  }, []);
+
+  const getAllComanyCategory = useCallback(async () => {
+    const allSalesResponse = await MasterDAO.getCompanyCategoriesRequestDAO();
+    setCategoryOptions(allSalesResponse && allSalesResponse?.responseBody?.details.map(k=> ({id:k.id,value:k.id})));
   }, []);
 
   // useEffect(() => {
@@ -596,19 +603,19 @@ const [error, setRefError] = useState({});
   }
 ];
 
-const categoryOptions = [{
-    id: 'Diamond',
-    value: 'Diamond',
-  },
-   {
-    id: 'VC POC',
-    value: 'VC POC',
-  },
-  {
-    id: 'None',
-    value: 'None',
-  },
-]
+// const categoryOptions = [{
+//     id: 'Diamond',
+//     value: 'Diamond',
+//   },
+//    {
+//     id: 'VC POC',
+//     value: 'VC POC',
+//   },
+//   {
+//     id: 'None',
+//     value: 'None',
+//   },
+// ]
 
 const subCategoryOptions = [
   {
