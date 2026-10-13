@@ -466,7 +466,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									name="cancelReason"
 									label="Select Cancel Reason"
 									defaultValue="Please Select"
-									options={getParentRejectedReasons(talentStatus?.Data?.TalentCancelledReason)}
+									options={getParentRejectedReasons(talentStatus?.Data?.TalentCancelledReason?.filter(i=> i.talentStatusId === 5 || i.talentStatusId === null))}
 									required
 									isError={errors['cancelReason'] && errors['cancelReason']}
 									errorMsg="Please select Cancel Reason."
@@ -508,7 +508,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 								name="rejectReasonParentID"
 								label="Reason"
 								defaultValue="Please Select"
-								options={getParentRejectedReasons(talentStatus?.Data?.TalentRejectReason?.filter(i=> (i.talentStatusId === 5 || i.talentStatusId === null)))}
+								options={getParentRejectedReasons(talentStatus?.Data?.TalentRejectReason?.filter(i=> i.talentStatusId === 7 || i.talentStatusId === null))}
 								required={isRejectReason === 1}
 								isError={(errors['rejectReasonParentID'] && isRejectReason === 1) && errors['rejectReasonParentID']}
 								errorMsg="Please select Reject Reason."
