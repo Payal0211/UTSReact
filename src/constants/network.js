@@ -379,6 +379,7 @@ export class MastersAPI {
 	static GET_TALENT_TIME_ZONE = 'GetTalentTimeZone';
 	static UPDATE_REFERENCE_DETAILS = 'AddSalesHRRef';
 	static GET_HOW_SOON = 'GetHowSoon';
+	static Get_COMAPNY_CATEGORY = 'getCompanyCategory'
 	static GET_TIME_ZONE = 'GetTimeZone';
 	static GET_TIME_ZONE_PREFERENCE = 'GetTimeZonePreference';
 	static GET_PARTIAL_ENGAGEMENT_TYPE = 'GetPartialEngagementType';

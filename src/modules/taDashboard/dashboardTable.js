@@ -1579,13 +1579,13 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
 
 
             <div style={{ display: 'flex', justifyContent: 'start', width: '30px' }}>
-              <Tooltip title={data?.companyCategory === "Diamond" ? "Diamond" : "Non Diamond"} >
+              <Tooltip title={data?.companyCategory === "VC POC" ? 'VC POC' :data?.companyCategory === "Diamond" ? "Diamond" : "Non Diamond"} >
                 <button
                   className={taStylesNew["diamond-toggle"]}
 
 
                 >
-                  {data?.companyCategory === "Diamond"
+                  {data?.companyCategory === "VC POC" ?  <img src="images/diamond-blue.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />: data?.companyCategory === "Diamond"
                     ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />
                     : <img src="images/diamond-ic.svg" alt="Diamond" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-inactive"]}`} />}
                 </button>
@@ -2002,14 +2002,14 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
             <div style={{ display: 'flex', justifyContent: 'start', width: '30px' }}>
               <Tooltip title={
                 userData?.UserId === 2 || userData?.UserId === 333 || userData?.UserId === 190 || userData?.UserId === 96
-                  ? (data?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond")
+                  ? (data?.companyCategory === "VC POC" ?  'VC POC': data?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond")
                   : "Not allowed"
               } >
                 <button
                   className={taStylesNew["diamond-toggle"]}
 
                   onClick={() => {
-                    if (userData?.UserId === 2 || userData?.UserId === 333 || userData?.UserId === 190 || userData?.UserId === 96) {
+                    if (userData?.UserId === 2 || userData?.UserId === 333 || userData?.UserId === 190 || userData?.UserId === 96 || data?.companyCategory !== "VC POC") {
                       if (data?.companyCategory === "Diamond") {
                         setShowDiamondRemark(true);
                         setCompanyIdForRemark({ ...data, index: ind });
@@ -2019,7 +2019,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                     }
                   }}
                 >
-                  {data?.companyCategory === "Diamond"
+                  {data?.companyCategory === "VC POC" ? <img src="images/diamond-blue.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} /> : data?.companyCategory === "Diamond"
                     ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />
                     : <img src="images/diamond-ic.svg" alt="Diamond" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-inactive"]}`} />}
                 </button>
