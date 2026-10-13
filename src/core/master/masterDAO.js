@@ -626,6 +626,32 @@ export const MasterDAO = {
 			return errorDebug(error, 'MasterDAO.getSalesManRequestDAO');
 		}
 	},
+	getCompanyCategoriesRequestDAO: async function () {
+		try {
+			const salesManResult = await MasterAPI.getCompanyCategoriesRequest();
+			if (salesManResult) {
+				const statusCode = salesManResult['statusCode'];
+				if (statusCode === HTTPStatusCode.OK) {
+					const tempResult = salesManResult.responseBody;
+					return {
+						statusCode: statusCode,
+						responseBody: tempResult,
+					};
+				} else if (statusCode === HTTPStatusCode.NOT_FOUND) {
+					return salesManResult;
+				} else if (statusCode === HTTPStatusCode.BAD_REQUEST)
+					return salesManResult;
+				else if (statusCode === HTTPStatusCode.UNAUTHORIZED) {
+					let deletedResponse =
+						UserSessionManagementController.deleteAllSession();
+					if (deletedResponse) window.location.replace(UTSRoutes.LOGINROUTE);
+				}
+				// return statusCode;
+			}
+		} catch (error) {
+			return errorDebug(error, 'MasterDAO.getCompanyCategoriesRequestDAO');
+		}
+	},
 	getHRDeletReasonRequestDAO: async function () {
 		try {
 			const hrDeleteResponse = await MasterAPI.getHRDeleteReasonRequest();

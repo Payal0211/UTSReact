@@ -63,6 +63,7 @@ function NewAddCompany() {
   const [getcompanyID, setcompanyID] = useState("");
   const [getUploadFileData, setUploadFileData] = useState("");
   const [base64Image, setBase64Image] = useState("");
+  const [categoryOptions,setCategoryOptions] = useState([])
   const [loadingCompanyDetails, setLoadingCompanyDetails] = useState(false)
   const [hrPricingTypes, setHRPricingTypes] = useState([]);
   const [uploading, setUploading] = useState(false)
@@ -252,8 +253,14 @@ function NewAddCompany() {
     }
   }, [navigate]);
 
+   const getAllComanyCategory = useCallback(async () => {
+    const allSalesResponse = await MasterDAO.getCompanyCategoriesRequestDAO();
+    setCategoryOptions(allSalesResponse && allSalesResponse?.responseBody?.details.map(k=> ({id:k.id,value:k.id})));
+  }, []);
+
   useEffect(() => {
     getFilterRequest();
+    getAllComanyCategory()
   }, [getFilterRequest])
 
   const getAllValuesForDD = useCallback(async () => {
@@ -2083,19 +2090,7 @@ function NewAddCompany() {
                             label: "value"    // display text
                           }}
                           placeholder="Category *"
-                          options={[{
-                            id: 'Diamond',
-                            value: 'Diamond',
-                          },
-                          {
-                            id: 'VC POC',
-                            value: 'VC POC',
-                          },
-                          {
-                            id: 'None',
-                            value: 'None',
-                          },
-                          ]}
+                          options={categoryOptions}
                           value={companySectionData?.Category}
                           onChange={(val, valObj) => {
                             setCompanySectionData(p => ({ ...p, Category: val }))

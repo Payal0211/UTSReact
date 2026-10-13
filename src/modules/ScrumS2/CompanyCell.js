@@ -31,6 +31,7 @@ function CompanyCell(props) {
 
     const i = getRowIndex(data);
     const isDiamond = data?.companyCategory === 'Diamond';
+    const isVCPOC = data?.companyCategory === 'VC POC';
     const isAllowedToToggleDiamond =
         userData?.UserId === 2 ||
         userData?.UserId === 333 ||
@@ -76,7 +77,7 @@ function CompanyCell(props) {
 
             <div style={{ display: 'flex', width:'40px' }}>
                 <Tooltip title={ isAllowedToToggleDiamond
-                            ? isDiamond
+                            ?isVCPOC ? "VC POC" : isDiamond
                                 ? 'Remove Diamond'
                                 : 'Add Diamond'
                             : 'Not allowed'}>
@@ -90,7 +91,7 @@ function CompanyCell(props) {
                     //         : 'Not allowed'
                     // }
                     onClick={() => {
-                        if (!isAllowedToToggleDiamond) return;
+                        if (!isAllowedToToggleDiamond || isVCPOC) return;
                         if (isDiamond) {
                             setShowDiamondRemark(true);
                             setCompanyIdForRemark({ ...data, index: i });
@@ -99,7 +100,11 @@ function CompanyCell(props) {
                         }
                     }}
                 >
-                    {isDiamond ? (
+                    {isVCPOC ? <img
+                            src="images/diamond-bluec.svg"
+                            alt="Diamond Active"
+                            className={`${stylesOBj['diamond-icon']} ${stylesOBj['diamond-active']}`}
+                        /> : isDiamond ? (
                         <img
                             src="images/diamond-active-ic.svg"
                             alt="Diamond Active"

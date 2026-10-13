@@ -318,6 +318,19 @@ export const MasterAPI = {
 			return errorDebug(error, 'MasterAPI.getSalesManRequest');
 		}
 	},
+	getCompanyCategoriesRequest: async function () {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK + SubDomain.MASTERS + MastersAPI.Get_COMAPNY_CATEGORY;
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'MasterAPI.getCompanyCategoriesRequest');
+		}
+	},
 	getHRDeleteReasonRequest: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =
