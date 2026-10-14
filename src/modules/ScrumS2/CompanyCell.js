@@ -101,7 +101,7 @@ function CompanyCell(props) {
                     }}
                 >
                     {isVCPOC ? <img
-                            src="images/diamond-bluec.svg"
+                            src="images/diamond-blue.svg"
                             alt="Diamond Active"
                             className={`${stylesOBj['diamond-icon']} ${stylesOBj['diamond-active']}`}
                         /> : isDiamond ? (
