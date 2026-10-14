@@ -2473,6 +2473,23 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{data?.joiningDate}</div>;
       },
     },
+      {
+      headerName: 'SOW Date',
+      field: 'sowDate',
+      width: 180,
+      filter: MultiConditionTextFilter,
+       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.sowDate)))?.map(v => ({ data: v })) },
+      cellStyle: (params) => ({
+        textAlign: 'center',
+      }),
+      cellRenderer: (props) => {
+        const { data } = props;
+        if (data?.isTotalRow) {
+          return null;
+        }
+        return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{data?.sowDate}</div>;
+      },
+    },
     {
       headerName: 'Active TRs',
       field: 'activeTR',
