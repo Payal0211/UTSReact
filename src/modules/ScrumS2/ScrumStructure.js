@@ -2510,12 +2510,46 @@ function ScrumStructure2() {
             cellRenderer: HrStatusCell,
         },
         {
+            headerName: 'Talent & Joined Date',
+            field: 'joiningDate',
+            width: 120,
+            filter: MultiConditionTextFilter,
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.joiningDate)))?.map(v => ({ data: v })) },
+            cellStyle: (params) => ({
+                textAlign: 'center',
+            }),
+            cellRenderer: (props) => {
+                const { data } = props;
+                if (data?.isTotalRow) {
+                    return null;
+                }
+                return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{data?.joiningDate}</div>;
+            },
+        },
+        {
+            headerName: 'SOW Date',
+            field: 'sowDate',
+            width: 120,
+            filter: MultiConditionTextFilter,
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.sowDate)))?.map(v => ({ data: v })) },
+            cellStyle: (params) => ({
+                textAlign: 'center',
+            }),
+            cellRenderer: (props) => {
+                const { data } = props;
+                if (data?.isTotalRow) {
+                    return null;
+                }
+                return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{data?.sowDate}</div>;
+            },
+        },
+        {
             headerName: 'Active TRs',
             field: 'activeTR',
             cellStyle: { textAlign: 'center' },
             width: 100,
             filter: MultiConditionTextFilter,
-             filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.activeTR)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.activeTR)))?.map(v => ({ data: v })) },
         },
 
         {
@@ -2610,7 +2644,7 @@ function ScrumStructure2() {
             width: 170,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
-             filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.talent_AnnualCTC_Budget_INRValueStr)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.talent_AnnualCTC_Budget_INRValueStr)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -2622,7 +2656,7 @@ function ScrumStructure2() {
             width: 100,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
-             filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.uplersFeesPer)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.uplersFeesPer)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -2634,7 +2668,7 @@ function ScrumStructure2() {
             width: 170,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
-             filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.totalRevenue_NoofTalentStr)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.totalRevenue_NoofTalentStr)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -2646,7 +2680,7 @@ function ScrumStructure2() {
             width: 80,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
-             filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.days)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.days)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -3067,12 +3101,46 @@ function ScrumStructure2() {
             cellRenderer: HrStatusCell,
         },
         {
+            headerName: 'Talent & Joined Date',
+            field: 'joiningDate',
+            width: 120,
+            filter: MultiConditionTextFilter,
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.joiningDate)))?.map(v => ({ data: v })) },
+            cellStyle: (params) => ({
+                textAlign: 'center',
+            }),
+            cellRenderer: (props) => {
+                const { data } = props;
+                if (data?.isTotalRow) {
+                    return null;
+                }
+                return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{data?.joiningDate}</div>;
+            },
+        },
+        {
+            headerName: 'SOW Date',
+            field: 'sowDate',
+            width: 120,
+            filter: MultiConditionTextFilter,
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.sowDate)))?.map(v => ({ data: v })) },
+            cellStyle: (params) => ({
+                textAlign: 'center',
+            }),
+            cellRenderer: (props) => {
+                const { data } = props;
+                if (data?.isTotalRow) {
+                    return null;
+                }
+                return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{data?.sowDate}</div>;
+            },
+        },
+        {
             headerName: 'Active TRs',
             field: 'activeTR',
             cellStyle: { textAlign: 'center' },
             width: 100,
             filter: MultiConditionTextFilter,
-                filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.activeTR)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.activeTR)))?.map(v => ({ data: v })) },
         },
 
 
@@ -3086,7 +3154,7 @@ function ScrumStructure2() {
             width: 170,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
-                filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.talent_AnnualCTC_Budget_INRValueStr)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.talent_AnnualCTC_Budget_INRValueStr)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -3098,7 +3166,7 @@ function ScrumStructure2() {
             width: 100,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
-                filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.uplersFeesPer)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.uplersFeesPer)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -3110,7 +3178,7 @@ function ScrumStructure2() {
             width: 170,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
-                filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.totalRevenue_NoofTalentStr)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.totalRevenue_NoofTalentStr)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
@@ -3122,7 +3190,7 @@ function ScrumStructure2() {
             width: 80,
             filterParams: { type: 'number' },
             filter: MultiConditionTextFilter,
-                filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.days)))?.map(v => ({ data: v })) },
+            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.days)))?.map(v => ({ data: v })) },
             cellRenderer: ({ value, data }) => {
                 return value ? value : ''
             }
