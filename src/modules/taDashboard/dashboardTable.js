@@ -1862,7 +1862,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         if (data?.isTotalRow) {
           return null;
         }
-        return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusColorCode, data?.tA_HR_Status)}</div>;
+        return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{TabTitle === "HL" || TabTitle === 'HW'  ? All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status) : All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusColorCode, data?.tA_HR_Status)}</div>;
       },
     },
      {
