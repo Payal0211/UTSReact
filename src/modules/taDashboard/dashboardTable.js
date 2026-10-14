@@ -1865,6 +1865,23 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusColorCode, data?.tA_HR_Status)}</div>;
       },
     },
+     {
+      headerName: 'Talent & Joined Date',
+      field: 'joiningDate',
+      width: 180,
+      filter: MultiConditionTextFilter,
+       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.joiningDate)))?.map(v => ({ data: v })) },
+      cellStyle: (params) => ({
+        textAlign: 'center',
+      }),
+      cellRenderer: (props) => {
+        const { data } = props;
+        if (data?.isTotalRow) {
+          return null;
+        }
+        return <div style={{display:'flex',height:'100%'}}>{data?.joiningDate}</div>;
+      },
+    },
     {
       headerName: 'Active TRs',
       field: 'activeTR',
@@ -2437,6 +2454,23 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
           return null;
         }
         return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status)}</div>;
+      },
+    },
+       {
+      headerName: 'Talent & Joined Date',
+      field: 'joiningDate',
+      width: 180,
+      filter: MultiConditionTextFilter,
+       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.joiningDate)))?.map(v => ({ data: v })) },
+      cellStyle: (params) => ({
+        textAlign: 'center',
+      }),
+      cellRenderer: (props) => {
+        const { data } = props;
+        if (data?.isTotalRow) {
+          return null;
+        }
+        return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{data?.joiningDate}</div>;
       },
     },
     {
