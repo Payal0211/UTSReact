@@ -251,7 +251,7 @@ setIsLoading(false);
 								name="rejectReasonParentID"
 								label="Reason"
 								defaultValue="Please Select"
-								options={getParentRejectedReasons(talentStatus?.Data?.TalentRejectReason?.filter(i=> (i.talentStatusId === 5 || i.talentStatusId === null)))}
+								options={getParentRejectedReasons(talentStatus?.Data?.TalentRejectReason?.filter(i=> (i.talentStatusId === 7 || i.talentStatusId === null)))}
 								required={isRejectReason === 1}
 								isError={(errors['rejectReasonParentID'] && isRejectReason === 1) && errors['rejectReasonParentID']}
 								errorMsg="Please select Reject Reason."
