@@ -170,6 +170,21 @@ function ScrumStructure2() {
         gridApiRef.current = params.api;
     };
 
+     useEffect(() => {
+    const handleOutsideMouseDown = (e) => {
+        const api = gridApiRef.current;
+        if (!api) return;
+        // Nothing is being edited, so do nothing
+        if (api.getEditingCells().length === 0) return;
+        // Click inside the popup editor, so keep editing
+        if (e.target.closest('.ag-popup-editor')) return;
+        // Click anywhere else: commit the value and close the editor
+        api.stopEditing(false);
+    };
+    document.addEventListener('mousedown', handleOutsideMouseDown);
+    return () => document.removeEventListener('mousedown', handleOutsideMouseDown);
+}, []);
+
     const GRID_ROW_HEIGHT = 46;
     const GRID_HEADER_HEIGHT = 44;
     const GRID_MIN_HEIGHT = 320;
@@ -2510,40 +2525,6 @@ function ScrumStructure2() {
             cellRenderer: HrStatusCell,
         },
         {
-            headerName: 'Talent & Joined Date',
-            field: 'joiningDate',
-            width: 120,
-            filter: MultiConditionTextFilter,
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.joiningDate)))?.map(v => ({ data: v })) },
-            cellStyle: (params) => ({
-                textAlign: 'center',
-            }),
-            cellRenderer: (props) => {
-                const { data } = props;
-                if (data?.isTotalRow) {
-                    return null;
-                }
-                return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{data?.joiningDate}</div>;
-            },
-        },
-        {
-            headerName: 'SOW Date',
-            field: 'sowDate',
-            width: 120,
-            filter: MultiConditionTextFilter,
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.sowDate)))?.map(v => ({ data: v })) },
-            cellStyle: (params) => ({
-                textAlign: 'center',
-            }),
-            cellRenderer: (props) => {
-                const { data } = props;
-                if (data?.isTotalRow) {
-                    return null;
-                }
-                return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{data?.sowDate}</div>;
-            },
-        },
-        {
             headerName: 'Active TRs',
             field: 'activeTR',
             cellStyle: { textAlign: 'center' },
@@ -3100,40 +3081,7 @@ function ScrumStructure2() {
             filter: MultiConditionTextFilter,
             cellRenderer: HrStatusCell,
         },
-        {
-            headerName: 'Talent & Joined Date',
-            field: 'joiningDate',
-            width: 120,
-            filter: MultiConditionTextFilter,
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.joiningDate)))?.map(v => ({ data: v })) },
-            cellStyle: (params) => ({
-                textAlign: 'center',
-            }),
-            cellRenderer: (props) => {
-                const { data } = props;
-                if (data?.isTotalRow) {
-                    return null;
-                }
-                return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{data?.joiningDate}</div>;
-            },
-        },
-        {
-            headerName: 'SOW Date',
-            field: 'sowDate',
-            width: 120,
-            filter: MultiConditionTextFilter,
-            filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.sowDate)))?.map(v => ({ data: v })) },
-            cellStyle: (params) => ({
-                textAlign: 'center',
-            }),
-            cellRenderer: (props) => {
-                const { data } = props;
-                if (data?.isTotalRow) {
-                    return null;
-                }
-                return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{data?.sowDate}</div>;
-            },
-        },
+      
         {
             headerName: 'Active TRs',
             field: 'activeTR',
