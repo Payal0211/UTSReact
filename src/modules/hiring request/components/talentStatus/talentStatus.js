@@ -261,6 +261,11 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 		return reasonsList
 	}
 
+	const getCancelReasons = (reasons)=> {
+		let reasonsList = reasons?.filter(reason=> reason.parentId === watch('cancelReason')?.id)?.map(item=> ({id:item.id,value:item.reason}))
+		return reasonsList
+	}
+
 	return (
 		<div className={TalentStatusStyle.container}>
 			<div className={TalentStatusStyle.modalTitle}>
@@ -447,6 +452,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 								mode={'id/value'}
 								setValue={setValue}
 								register={register}
+								onValueChange={()=>{setIsRejectReason(1)}}
 								name="talentStatus"
 								label="Select Talent Status"
 								defaultValue="Please Select"
@@ -458,6 +464,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 							/>
 						</div>
 						{watch('talentStatus')?.id === 5 && (
+							<>
 							<div className={TalentStatusStyle.colMd12}>
 								<HRSelectField
 									mode={'id/value'}
@@ -472,6 +479,68 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									errorMsg="Please select Cancel Reason."
 								/>
 							</div>
+
+							{watch('cancelReason')?.id && <div className={TalentStatusStyle.colMd12}>
+								<HRSelectField
+									controlledValue={controllCreditBaseRejectReason}
+									setControlledValue={setControllCreditBaseRejectReason}
+									isControlled={true}
+									mode={'id/value'}
+									setValue={setValue}
+									register={register}
+									name="rejectReason"
+									label="Detailed Cancellation Sub Category"
+									defaultValue="Please Select"
+									options={getCancelReasons(talentStatus?.Data?.TalentCancelledReason)}
+									required={isRejectReason === 1}
+									isError={(errors['rejectReason'] && isRejectReason === 1) && errors['rejectReason']}
+									errorMsg="Please select Category."
+									onValueChange={async (e,val)=>{
+										// setIsLoading(true);         
+										let res = await hiringRequestDAO.getRejectionReasonForTalentDAO({
+											hrId:hrId,
+											rejectionId:val?.id,
+											atsTalentId:talentInfo?.ATSTalentID
+										});
+										const tempDiv = document.createElement('div');
+										tempDiv.innerHTML = res?.responseBody?.details?.rejectionMessageForTalent;
+										const textContent = tempDiv.textContent || tempDiv.innerText || ''; 
+										setValue("OtherRejectReason",textContent)
+										// setIsLoading(false); 
+										clearErrors('rejectReason')
+									}}
+								/>
+								<div className={TalentStatusStyle.rejectCandNote}>
+									<img 
+									src={LockIcon} 
+									alt="lock-icon" />
+									This cancellation reason wont be shared with the candidate.
+								</div>
+							</div>}
+
+							{watch('rejectReason')?.id && <div className={TalentStatusStyle.colMd12}>
+								<HRInputField
+									isTextArea={true}
+									register={register}
+									errors={errors}
+									label={'Cancellation message for the candidate'}
+									required={isRejectReason === 1}
+									name="OtherRejectReason"
+									type={InputType.TEXT}
+									placeholder="please enter cancellation message"	
+									validationSchema={{
+										required: isRejectReason === 1 ? 'please enter cancellation message.' : false,
+									}}								
+								/>
+								<div className={TalentStatusStyle.rejectCandNote} style={{marginTop:'5px'}}>
+									<img 
+									src={LockIcon} 
+									alt="lock-icon" />
+									This message is derived from the above input and will be shared with the candidate
+								</div>
+							</div>}
+							</>
+							
 						)}
 						{watch('talentStatus')?.id === 7 && (
 						<>
@@ -525,8 +594,7 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									This rejection reason wont be shared with the candidate.
 								</div>
 							</div>}
-					
-							{watch('rejectReasonParentID')?.id && <div className={TalentStatusStyle.colMd12}>
+					{watch('rejectReasonParentID')?.id && <div className={TalentStatusStyle.colMd12}>
 								<HRSelectField
 									controlledValue={controllCreditBaseRejectReason}
 									setControlledValue={setControllCreditBaseRejectReason}
@@ -585,6 +653,10 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									This message is derived from the above input and will be shared with the candidate
 								</div>
 							</div>}
+						
+						</>
+						)}
+							
 							
 							<div className={TalentStatusStyle.colMd12}>
 								<HRInputField
@@ -607,8 +679,6 @@ const TalentStatus = ({ talentInfo, hrId, callAPI, getHrUserData,closeModal,apiD
 									This remarks will not be shared with the candidate
 								</div>
 							</div>
-						</>
-						)}
 						{watch('talentStatus')?.id === 6 && (
 							<>
 								<div className={TalentStatusStyle.colMd12}>

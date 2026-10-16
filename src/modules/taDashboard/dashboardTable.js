@@ -3228,17 +3228,43 @@ return  [
   }
 
   const onColumnMoved = (params) => {
-    if (!params.finished) return; // Ignore intermediate drag events
-    if (params.toIndex + 1 < 6) return
+     if (!params.finished) return;
+     if (params.toIndex + 1 < 6) return
+    const movedColumn = params.column;
+    if (!movedColumn) return;
 
+    const columns = params.api.getAllDisplayedColumns();
+    const movedIndex = columns.findIndex(
+        col => col.getColId() === movedColumn.getColId()
+    );
 
-    let pl = {
+    const previousColumn = columns[movedIndex - 1];
+    const nextColumn = columns[movedIndex + 1];
+
+    // console.log({
+    //     movedColumn: movedColumn.getColId(),
+    //     movedIndex: movedIndex + 1,
+    //     previousColumn: previousColumn?.getColId(),
+    //     nextColumn: nextColumn?.getColId(),
+    // });
+    // let pl = {
+    //   POD_Id: selectedHead,
+    //   ColumnName: params.column.getColId(),
+    //   ColumnOrder: params.toIndex + 1
+    // }
+    
+  
+    let colOrd = columnOrder.find(c=> c.columnName === nextColumn?.getColId()).columnOrder
+
+       let plnew = {
       POD_Id: selectedHead,
       ColumnName: params.column.getColId(),
-      ColumnOrder: params.toIndex + 1
+      ColumnOrder: colOrd
     }
 
-    updateColumnOrder(pl)
+      // console.log(gridOrderedColumns,pl,columnOrder,plnew)
+
+    updateColumnOrder(plnew)
   };
 
 
