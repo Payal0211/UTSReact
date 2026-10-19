@@ -846,7 +846,7 @@ const ClientStatusTag = ({ status }) => {
 
 
                 {/* <!-- Content Section --> */}
-                <div className={`${stylesOBj["content-wrapper"]}`}>
+                <div className={`${stylesOBj["content-wrapper"]}`} style={{padding:'0 24px'}}>
                     {/* <!-- Filter Controls --> */}
                     <div className={`${stylesOBj["filter-controls"]}`}>
                         {/* <div className={`${stylesOBj["filter-group"]}`}>
