@@ -634,7 +634,7 @@ export default function New_all_clients_company() {
     return <div className={`${stylesOBj["dashboard-container"]}`}>
         {/* <!-- Main Content Area --> */}
         <main className={`${stylesOBj["main-content"]}`}>
-            <div className={`${stylesOBj["content-wrapper"]}`}>
+            <div className={`${stylesOBj["content-wrapper"]}`} style={{padding:'0 24px'}}>
 
 
 
