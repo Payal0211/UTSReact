@@ -416,24 +416,43 @@ function ScrumStructure2() {
     }
 
     const canMoveUp = (record) => {
-        let index = getRowIndex(record);
-        if (index === 0) return false;
+    const i = getRowIndex(record);
 
-        return (
-            TaListData[index].tA_UserID ===
-            TaListData[index - 1].tA_UserID
-        );
-    };
+    return (
+        i > 0 &&
+        TaListData[i - 1]?.taName === record?.taName
+    );
+};
 
-    const canMoveDown = (record) => {
-        let index = getRowIndex(record);
-        if (index === TaListData.length - 1) return false;
+const canMoveDown = (record) => {
+    const i = getRowIndex(record);
 
-        return (
-            TaListData[index].tA_UserID ===
-            TaListData[index + 1].tA_UserID
-        );
-    };
+    return (
+        i >= 0 &&
+        i < TaListData.length - 1 &&
+        TaListData[i + 1]?.taName === record?.taName
+    );
+};
+
+    // const canMoveUp = (record) => {
+    //     let index = getRowIndex(record);
+    //     if (index === 0) return false;
+
+    //     return (
+    //         TaListData[index].tA_UserID ===
+    //         TaListData[index - 1].tA_UserID
+    //     );
+    // };
+
+    // const canMoveDown = (record) => {
+    //     let index = getRowIndex(record);
+    //     if (index === TaListData.length - 1) return false;
+
+    //     return (
+    //         TaListData[index].tA_UserID ===
+    //         TaListData[index + 1].tA_UserID
+    //     );
+    // };
 
     const moveRowUp = (index, record) => {
         const i = getRowIndex(record);
@@ -1991,6 +2010,13 @@ function ScrumStructure2() {
         });
     };
 
+    const excludedTotalColumns = [
+    "interview_Scheduled_Target",
+    "profile_Shared_Achieved",
+    "profile_Shared_Target",
+    "todayProfile_Shared_Target",
+];
+
     const getTotalRow = (rows, columnDefs) => {
         const total = {
             taName: "Total",
@@ -2024,11 +2050,19 @@ function ScrumStructure2() {
             let hasNumericValue = false;
             const isCurrencyField = currencyFields.includes(field);
 
+         
 
 
             if (field === "noOfCallsGivenDay") {
                 uniqueTARows.forEach((row) => {
                     const rawValue = row[field];
+
+                        if (
+             row.taName === "Split Revenue" &&
+            excludedTotalColumns.includes(field)
+        ) {
+return
+        }
 
                     if (typeof rawValue === "number") {
                         sum += +rawValue;
@@ -2042,6 +2076,13 @@ function ScrumStructure2() {
             } else {
                 uniqueRows.forEach((row) => {
                     const rawValue = row[field];
+
+                      if (
+             row.taName === "Split Revenue" &&
+            excludedTotalColumns.includes(field)
+        ) {
+return
+        }
 
                     if (isCurrencyField) {
                         const parsed = parseCurrencyString(rawValue);
@@ -2207,6 +2248,7 @@ function ScrumStructure2() {
     const canMoveTAGroupUp = (row) => {
         const groups = getTAGroups(TaListData);
 
+        
         const groupIndex = groups.findIndex(
             g => g.taId === row.tA_UserID
         );
@@ -2856,7 +2898,7 @@ function ScrumStructure2() {
 
                 return (
                     <div style={{ display: "flex", alignItems: "flex-start" }}>
-                        {(params.api.isAnyFilterPresent() || scrumTabTitle !== "A") ? "" : <div style={{ display: "flex" }}>
+                        {(params.api.isAnyFilterPresent() || scrumTabTitle !== "A" || params.data.taName === "Split Revenue") ? "" : <div style={{ display: "flex" }}>
                             <button
                                 onClick={() => moveTAGroupUp(params.data)}
                                 disabled={!canMoveTAGroupUp(params.data)}
