@@ -337,6 +337,7 @@ export default class UTSRoutes {
 	static Invoice = '/Invoice'
 	static Customer = '/customer'
 	static Leave = '/leave'
+	static COMPANY_REPORT = '/companyReport'
 	static VIEWONBOARDDETAILS = '/viewOnboardDetails/:onboardID/:isOngoing'
 	static UTM_TRACKING_REPORT = "/utmTrackingReport";
 	static CLIENT_PORTAL_TRACKING_REPORT = "/clientPortalTrackingReport";

@@ -17,6 +17,7 @@ import NewEngagementList from 'modules/engagement/screens/engagementList/n_engag
 import NewTADashboard from 'modules/taDashboard/n_taDashboard';
 // import ScrumStructure from 'modules/scrumStructure/scrumStructure';
 import ScrumStructure2 from 'modules/ScrumS2/ScrumStructure';
+import CompanyReportPage from 'modules/companyReport/companyReport'
 import TAplayground from 'modules/taDashboard/dashboard/ta_playground';
 // import TempScrumStructure from 'modules/scrumStructure/sctemp';
 
@@ -185,6 +186,12 @@ function App() {
 							key={UTSRoutes.TASCRUMSTRUCTURE}
 							path={UTSRoutes.TASCRUMSTRUCTURE}
 							element={<ScrumStructure2 />}
+						/>
+						<Route
+							exact
+							key={UTSRoutes.COMPANY_REPORT}
+							path={UTSRoutes.COMPANY_REPORT}
+							element={<CompanyReportPage />}
 						/>
 						{/* <Route
 							exact
