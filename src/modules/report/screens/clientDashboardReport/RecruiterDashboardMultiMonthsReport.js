@@ -1596,7 +1596,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
             //     getTalentProfilesDetailsfromTable(result, 'T_I2S');
             //   }}
             >
-              {result.total_interviewToSelectedPercent ? result.total_interviewToSelectedPercent : ''}
+              {result.total_interviewToSelectedPercent ? `${result.total_interviewToSelectedPercent} %` : ''}
             </p>
           }
           return +text > 0 ? (
@@ -1612,10 +1612,10 @@ export default function RecruiterDashboardMultiMonthsReport() {
             
             //   }}
             >
-              {text ? text : ''}
+              {text ? `${text} %` : ''}
             </p>
           ) : (
-            text ? text : ''
+            text ? `${text} %` : ''
           );
         },
       },
@@ -1821,7 +1821,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
             //     getTalentProfilesDetailsfromTable(result, 'T_GVA');
             //   }}
             >
-              {result.total_goalVsAchievedPercent ? result.total_goalVsAchievedPercent : ''}
+              {result.total_goalVsAchievedPercent ? `${result.total_goalVsAchievedPercent} %` : ''}
             </p>
           }
           return +text > 0 ? (
@@ -1837,10 +1837,10 @@ export default function RecruiterDashboardMultiMonthsReport() {
             
             //   }}
             >
-              {text ? text : ''}
+              {text ? `${text} %` : ''}
             </p>
           ) : (
-            text ? text : ''
+            text ? `${text} %` : ''
           );
         },
       },
@@ -1862,7 +1862,7 @@ export default function RecruiterDashboardMultiMonthsReport() {
             //     getTalentProfilesDetailsfromTable(result, 'T_TPJ');
             //   }}
             >
-              {result.total_totalPipelineToJoiningPercent ? result.total_totalPipelineToJoiningPercent : ''}
+              {result.total_totalPipelineToJoiningPercent ? `${result.total_totalPipelineToJoiningPercent} %` : ''}
             </p>
           }
           return +text > 0 ? (
@@ -1878,10 +1878,10 @@ export default function RecruiterDashboardMultiMonthsReport() {
             
             //   }}
             >
-              {text ? text : ''}
+              {text ? `${text} %` : ''}
             </p>
           ) : (
-            text ? text : ''
+            text ? `${text} %` : ''
           );
         },
       },

@@ -92,6 +92,7 @@ export class TaDashboardURL {
 	static GET_QUARTERLY_SUMMARY_REPORT_CONTRACT= 'TADasboardQuarterlySummary_Contract'
 	static ALL_TA_USERS = 'GetAllTAUsers'
 	static INSERT_TASK_COMMENT = 'InsertTaskComment'
+	static ALL_COMPANY_REPORT = 'getCompanyWiseHRDetails'
 	static GET_ALL_COMMENTS = 'GetAllTaskComments'
 	static GET_SCRUM_POD_TABLE_DATA = 'Get_NewScrum_PODWiseProductivity'
 	static GET_SCRUM_PIPELINE_TABLE_DATA = "Get_NewScrum_PODWiseRevenueSummary"

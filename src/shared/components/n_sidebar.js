@@ -39,7 +39,7 @@ export default function N_sidebar() {
 
     // One array per submenu group, listing every child route it contains.
     const uplersReportRoutes = [UTSRoutes.POD_DASHBOARD_REPORT, UTSRoutes.Weekly_WCGR, UTSRoutes.MOM_OVERVIEW, UTSRoutes.QOQ_OVERVIEW];
-    const hiringFunnelRoutes = [UTSRoutes.AM_INTERVIEW, UTSRoutes.SCREENING_INTERVIEW_REJECT, UTSRoutes.DAILY_BUSINESS_NUMBERS, UTSRoutes.POTENTIAL_CLOSURES_SHEET, UTSRoutes.COMPANY_CATEGORY];
+    const hiringFunnelRoutes = [UTSRoutes.AM_INTERVIEW, UTSRoutes.COMPANY_REPORT, UTSRoutes.SCREENING_INTERVIEW_REJECT, UTSRoutes.DAILY_BUSINESS_NUMBERS, UTSRoutes.POTENTIAL_CLOSURES_SHEET, UTSRoutes.COMPANY_CATEGORY];
     const taReportRoutes = [UTSRoutes.TADASHBOARD_PG, UTSRoutes.RECRUITER_DASHBOARD_MULTI_MONTH_REPORT, UTSRoutes.DAILYSNAPSHOT, UTSRoutes.RECRUITERREPORT, UTSRoutes.IMMEDIATEJOINER, UTSRoutes.CLIENT_INTERVIEW_RESCHEDULE, UTSRoutes.AVERAGE_SLA, UTSRoutes.CLIENT_DASHBOARD_REPORT];
     const talentRoutes = [UTSRoutes.TALENT_REPORT, UTSRoutes.TALENT_BACKOUT_REPORT, UTSRoutes.TALENT_DOCUMENTS, UTSRoutes.TALENT_NOTES];
     const reportsRoutes = [UTSRoutes.CLIENT_FEEDBACK, UTSRoutes.REVENUE_REPORT, UTSRoutes.Leave, UTSRoutes.CLIENT_REPORT, UTSRoutes.HR_REPORT, UTSRoutes.I2S_REPORT, UTSRoutes.HRLostReoprt, UTSRoutes.SLA_REPORT];
@@ -200,6 +200,7 @@ export default function N_sidebar() {
                         </a>
                         <ul className={`${stylesOBj['nav-submenu']}`}>
                             <li><Link to={UTSRoutes.AM_INTERVIEW} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.AM_INTERVIEW) ? stylesOBj['active'] : ''}`}>AM Wise Interview Count</Link></li>
+                            <li><Link to={UTSRoutes.COMPANY_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.COMPANY_REPORT) ? stylesOBj['active'] : ''}`}>Company Report</Link></li>
                             <li><Link to={UTSRoutes.SCREENING_INTERVIEW_REJECT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.SCREENING_INTERVIEW_REJECT) ? stylesOBj['active'] : ''}`}>Screen & Interview Reject Count</Link></li>
                             <li><Link to={UTSRoutes.DAILY_BUSINESS_NUMBERS} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.DAILY_BUSINESS_NUMBERS) ? stylesOBj['active'] : ''}`}>Revenue Report</Link></li>
                             <li><Link to={UTSRoutes.POTENTIAL_CLOSURES_SHEET} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.POTENTIAL_CLOSURES_SHEET) ? stylesOBj['active'] : ''}`}>Potential Closures List</Link></li>
