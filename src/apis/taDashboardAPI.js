@@ -616,8 +616,23 @@ export const TaDashboardAPI = {
 			return errorDebug(error, 'TaDashboardAPI.geAllTAUSERSRequest');
 		}
 	},
-
-getPODTableDataRequest: async function (pl) {
+    getCompanyReportRequest: async function (pl) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			SubDomain.TA_DASHBOARD +
+			TaDashboardURL.ALL_COMPANY_REPORT + `?search=${pl}`
+			
+		httpService.setAuthRequired = true;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'TaDashboardAPI.getCompanyReportRequest');
+		}
+	},
+    getPODTableDataRequest: async function (pl) {
 		let httpService = new HttpServices();
 		httpService.URL =
 			NetworkInfo.NETWORK +

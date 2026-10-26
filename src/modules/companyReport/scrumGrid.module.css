@@ -1,0 +1,62 @@
+/* Add these rules into scrumStructure.module.css (or import as a separate module) */
+
+.grid-wrapper {
+    margin: 16px;
+    /* height: auto; */
+    width: 100%;
+    overflow-y: hidden !important;
+    overflow-x: auto !important;
+
+}
+
+
+.grid-wrapper :global(.ag-header) {
+    z-index: 3;   /* no position property here — don't touch positioning */
+    background-color: #fff;
+}
+
+
+.grid-wrapper [class*="ag-header-cell-label"]{
+    text-align: center;
+    justify-content: center;
+}
+
+.grid-wrapper [class*="ag-cell"]{
+    font-size:10px !important
+}
+
+.grid-wrapper [class*="ag-grid-pinned-left-cells"]{
+    z-index: 1 !important;
+}
+
+/* Keeps text top-aligned inside spanned TA cells, matching the old rowSpan look */
+.ag-cell-top-align {
+    display: flex;
+    align-items: flex-start;
+    padding-top: 10px;
+}
+
+/* Ensures every cell shows a right-hand gridline even where the theme's columnBorder
+   param doesn't reach (some renderer wrapper divs swallow the border otherwise). */
+.ag-cell-excel-border {
+    border-right: 1px solid #e3e7eb;
+}
+
+.tableSelectField :global(.ant-select) {
+    width: 100%;
+}
+
+
+.ag-header-center .ag-header-cell-label {
+    justify-content: space-between;
+}
+
+.ag-header-center .ag-header-cell-comp-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.ag-header-group-cell-label{
+    font-Size:12px
+}

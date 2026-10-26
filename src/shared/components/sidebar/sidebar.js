@@ -606,6 +606,14 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					isChildren : false					
 				}),
 				new SideBarModels({
+					id: 'Creopor',
+					title: 'Company Report',
+					isActive: false,
+					navigateTo: UTSRoutes.COMPANY_REPORT,
+					isVisible: isAccess(usertypeID, 'amInterviews'),
+					isChildren : false					
+				}),
+				new SideBarModels({
 					id: 'screenInterviewReject',
 					title: 'Screen & Interview Reject Count',
 					isActive: false,
