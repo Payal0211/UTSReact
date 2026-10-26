@@ -1630,7 +1630,7 @@ const getExportData = () => {
                         Created Date
                       </th>
 
-                      {showTalentCol?.stage === 'Added HR (New)' &&   <th
+                      {showTalentCol?.stage === 'Added HR (New)' &&  showTalentCol.stage_ID !== "NHR"  && <th
                             style={{
                               padding: "10px",
                               border: "1px solid #ddd",
@@ -1641,7 +1641,7 @@ const getExportData = () => {
                           </th> }
 
                       {showTalentCol?.category !== "CF" &&
-                        showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' &&(
+                        showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  &&(
                           <th
                             style={{
                               padding: "10px",
@@ -1820,7 +1820,7 @@ const getExportData = () => {
                               {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason' : 'Talent'}
                             </th>}
 
-                           {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)') &&<th
+                           {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)' || showTalentCol.stage_ID === "NHR" ) &&<th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -1858,7 +1858,7 @@ const getExportData = () => {
                           {detail.hrCreatedDateStr}
                         </td>
 
-                         {showTalentCol?.stage === 'Added HR (New)' &&  <td
+                         {showTalentCol?.stage === 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  &&  <td
                               style={{
                                 padding: "8px",
                                 border: "1px solid #ddd",
@@ -1868,7 +1868,7 @@ const getExportData = () => {
                             </td> }
                             
                         {showTalentCol?.category !== "CF" &&
-                          showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && (
+                          showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  && (
                             <td
                               style={{
                                 padding: "8px",
@@ -2032,7 +2032,7 @@ const getExportData = () => {
                                 {detail.talent}
                               </td>}
 
-                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures'|| showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)') &&<td
+                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures'|| showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)' || showTalentCol.stage_ID === "NHR" ) &&<td
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",

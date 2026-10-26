@@ -4493,8 +4493,9 @@ function WeeklyWCGR() {
                         TR Updated Date
                       </th>}
 
-                      {showTalentCol?.category !== "CF" &&
-                        showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && (
+                      {(showTalentCol?.category !== "CF" &&
+                        showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' &&
+                      showTalentCol.stage_ID !== "NHR"   ) && (
                           <th
                             style={{
                               padding: "10px",
@@ -4634,7 +4635,7 @@ function WeeklyWCGR() {
                       >
                         Sales Person
                       </th>
-                      {showTalentCol?.stage === "HRs (Carry Fwd)" && (
+                      {showTalentCol?.stage === "HRs (Carry Fwd)" && showTalentCol.stage_ID !== "NHR"  && (
                         <th
                           style={{
                             padding: "10px",
@@ -4682,7 +4683,7 @@ function WeeklyWCGR() {
                               {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason' : 'Talent'}
                             </th>}
 
-                            {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)') && <th
+                            {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)' || showTalentCol.stage_ID === "NHR" ) && <th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -4720,7 +4721,7 @@ function WeeklyWCGR() {
                           {showTalentCol.stage_ID === "J4"  ?  detail.createdDateStr : detail.hrCreatedDateStr}
                         </td>
 
-                        {showTalentCol?.stage === 'Added HR (New)' && <td
+                        {showTalentCol?.stage === 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  && <td
                           style={{
                             padding: "8px",
                             border: "1px solid #ddd",
@@ -4730,7 +4731,7 @@ function WeeklyWCGR() {
                         </td>}
 
                         {showTalentCol?.category !== "CF" &&
-                          showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && (
+                          showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  && (
                             <td
                               style={{
                                 padding: "8px",
@@ -4903,7 +4904,7 @@ function WeeklyWCGR() {
                                 {detail.talent}
                               </td>}
 
-                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)') && <td
+                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)' || showTalentCol.stage_ID === "NHR" ) && <td
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",
