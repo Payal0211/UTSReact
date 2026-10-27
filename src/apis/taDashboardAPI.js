@@ -621,7 +621,7 @@ export const TaDashboardAPI = {
 		httpService.URL =
 			NetworkInfo.NETWORK +
 			SubDomain.TA_DASHBOARD +
-			TaDashboardURL.ALL_COMPANY_REPORT + `?search=${pl}`
+			TaDashboardURL.ALL_COMPANY_REPORT + pl
 			
 		httpService.setAuthRequired = true;
 		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
