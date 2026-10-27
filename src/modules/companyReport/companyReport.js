@@ -3,29 +3,96 @@ import stylesOBj from './companyReport.module.css'
 import { useNavigate } from 'react-router-dom';
 import { HTTPStatusCode } from "constants/network";
 import gridStyles from './scrumGrid.module.css'
-import { Modal, message, Radio, Skeleton, Spin, Tooltip, Tag } from "antd";
+import { Tabs, Select, Table, Modal, Tooltip, Skeleton, message, Dropdown, Menu, Spin, Radio } from "antd";
 import { scrumGridTheme } from 'modules/ScrumS2/gridTheme'
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
+import { ReportDAO } from "core/report/reportDAO";
 import UTSRoutes from 'constants/routes';
+import { All_Hiring_Request_Utils } from 'shared/utils/all_hiring_request_util';
 import { AgGridReact } from 'ag-grid-react'
+import { downloadToExcel } from "modules/report/reportUtils";
+import { ReactComponent as CalenderSVG } from "assets/svg/calender.svg";
+import DatePicker from "react-datepicker";
+import moment from 'moment'
 
 function CompanyReport() {
     const navigate = useNavigate()
     const [isLoading, setLoading] = useState(false)
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState('');
+
+    let presistHeaddata = localStorage.getItem('companyReportSelectedHead')
+    let presisTabdata = localStorage.getItem('companyReportSelectedTab')
+    const [hrModal, setHRModal] = useState(presisTabdata ? presisTabdata : 'DP');
+    const [selectedHead, setSelectedHead] = useState(presistHeaddata ? +presistHeaddata : '');
+    const [pODList, setPODList] = useState([]);
+    const today = new Date();
+
+
+    const firstDayOfMonth = new Date();
+    firstDayOfMonth.setDate(1);
+
+    const [monthDate, setMonthDate] = useState(today);
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
+
     const [companyList, setCompanyList] = useState([])
     const gridWrapperRef = useRef(null);
     const [availableHeight, setAvailableHeight] = useState(600);
     const GRID_MIN_HEIGHT = 320;
     const GRID_BOTTOM_PADDING = 24;
+
+    const getHeads = async () => {
+        let filterResult = await ReportDAO.getAllPODGroupDAO();
+
+        if (filterResult.statusCode === HTTPStatusCode.OK) {
+            setPODList(filterResult && filterResult?.responseBody);
+            setSelectedHead(prev => {
+                if (prev === '') {
+
+                    return filterResult?.responseBody[0]?.dd_value
+                } else {
+
+                    return prev
+                }
+
+            });
+
+        } else if (filterResult?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            // setLoading(false);
+            return navigate(UTSRoutes.LOGINROUTE);
+        } else if (
+            filterResult?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR
+        ) {
+            // setLoading(false);
+            return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+        } else {
+            return "NO DATA FOUND";
+        }
+    };
+
+    useEffect(() => {
+        getHeads();
+    }, []);
+
     const getListData = async () => {
         setLoading(true)
-        let req = await TaDashboardDAO.getCompanyReportRequestDAO(search);
+        // let pl = {
+        // "searchText": search,
+        // "month": +moment(monthDate).format("M") ,
+        // "year":  +moment(monthDate).format("YYYY") ,
+        // "fromDate": startDate ? startDate.toLocaleDateString("en-US") : '',
+        // "toDate":  endDate ? endDate.toLocaleDateString("en-US") : '',
+        //      "pod_id": selectedHead ?? null
+        // }
+
+        let query = `?pod_id=${selectedHead}&monthstr=${+moment(monthDate).format("M")}&yearstr=${+moment(monthDate).format("YYYY")}&search=${search}
+        &fromDate=${startDate ? startDate.toLocaleDateString("en-US") : ''}&toDate=${endDate ? endDate.toLocaleDateString("en-US") : ''}`
+        let req = await TaDashboardDAO.getCompanyReportRequestDAO(query);
         setLoading(false)
         if (req.statusCode === HTTPStatusCode.OK) {
-            setCompanyList(req.responseBody);
+            setCompanyList(groupByRowSpan(req.responseBody, 'companyName'));
         } else if (req.statusCode === HTTPStatusCode.NOT_FOUND) {
             setCompanyList([]);
         } else if (req?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
@@ -43,8 +110,10 @@ function CompanyReport() {
 
 
     useEffect(() => {
-        getListData()
-    }, [search])
+        if (selectedHead) {
+            getListData()
+        }
+    }, [search, selectedHead, , monthDate, startDate, endDate])
 
     const scrumDefaultColDef = {
         resizable: true,
@@ -57,6 +126,56 @@ function CompanyReport() {
         headerClass: `${gridStyles["ag-header-center"]}`,
     };
 
+    function groupByRowSpan(data, groupField) {
+        const grouped = {};
+
+        // Group data by TA
+        data.forEach((item) => {
+            const key = item[groupField];
+
+            if (!grouped[key]) {
+                grouped[key] = [];
+            }
+
+            grouped[key].push(item);
+        });
+
+        const finalData = [];
+
+        Object.entries(grouped).forEach(([key, rows]) => {
+
+            // Add actual rows
+            rows.forEach((row, index) => {
+                finalData.push({
+                    ...row,
+                    rowSpan: index === 0 ? rows.length : 0,
+                    isTotalRow: false,
+                });
+            });
+
+            // Calculate TA wise totals
+
+
+            const totalJoinedRevenue = rows.reduce(
+                (sum, row) => sum + (parseFloat(row.joinedRevenue) || 0),
+                0
+            );
+
+
+            // Add TA Total Row
+            finalData.push({
+                [groupField]: ``,
+                id: `total-${key}`,
+                // talent_AnnualCTC_Budget_INRValueStr: totalTalentPayRate,
+                joinedRevenue: +totalJoinedRevenue ? totalJoinedRevenue?.toFixed(2) : '',
+                isTotalRow: true,
+                rowSpan: 1,
+            });
+        });
+
+        return finalData;
+    }
+
     const gridColumns = () => {
         return [
             {
@@ -65,16 +184,58 @@ function CompanyReport() {
                 width: 140,
                 pinned: 'left',
                 sortable: false,
+                //             rowSpan: (params) => params.data?.rowSpan || 1,
+                //              cellStyle: (params) => ({
+                //     borderBottom: params.data?.rowSpan === 0 ? 'none' : '',
+                //     borderTop: params.data?.rowSpan > 0 ? '1px solid #4C4E641F' : '',
+                //   }),
                 suppressMovable: true,
-                //           cellRenderer: (props) => {
-                //     const { data, ind ,value} = props;
+                cellRenderer: (props) => {
+                    const { data, api } = props;
 
-                //     return (
-                //       <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                //         {value ? value: ""}
-                //       </div>
-                //     );
-                //   },
+
+                    if (props.node.rowPinned === "bottom") {
+                        return "";
+                    }
+
+                    if (data?.isTotalRow) {
+                        return null;
+                    }
+                    return (
+                        <div
+                            //  className={taStylesNew["company-cell"]}
+                            style={{
+                                display: 'flex', alignItems: 'center',
+                                gap: '5px',
+                                height: '100%'
+                            }}>
+
+
+
+                            <Tooltip title={data.companyName}>
+                                <span className={stylesOBj["company-name"]} style={{
+                                    display: 'block',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                    fontWeight: 500,
+                                    fontSize: '10px',
+                                    lineHeight: "10px",
+                                    width: '70%',
+                                    cursor: "pointer",
+                                    /* font-weight: bold; */
+                                    textDecoration: " underline",
+                                }}
+
+                                    onClick={() => {
+                                        window.open(`/viewCompanyDetails/${data.companyID}`, "_blank");
+                                    }}>
+                                    {data.companyName}
+                                </span>
+                            </Tooltip>
+                        </div>
+                    );
+                },
             },
             {
                 headerName: 'HR ID',
@@ -164,8 +325,20 @@ function CompanyReport() {
                 suppressMovable: true,
             },
             {
+                headerName: 'Status',
+                field: 'hrStatus',
+                width: 140,
+                sortable: false,
+                suppressMovable: true,
+                cellRenderer: (props) => {
+                    const { data } = props;
+                    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.hrStatusCode, data?.hrStatus)}</div>;
+
+                }
+            },
+            {
                 headerName: 'TRs',
-                field: 'noOfTalentRejectInterview',
+                field: 'totalTR',
                 width: 80,
                 sortable: false,
                 suppressMovable: true,
@@ -404,7 +577,7 @@ function CompanyReport() {
                 },
             },
             {
-                headerName: 'Offer Dropout/Backout',
+                headerName: 'Dropout',
                 field: 'offerDropout',
                 width: 100,
                 sortable: false,
@@ -414,7 +587,25 @@ function CompanyReport() {
 
                     return (
                         <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {`${data.offerDropout} / ${data.offerBackout}`}
+                            {data.offerDropou ? `${data.offerDropout}` : ''}
+                        </div>
+                    );
+                },
+
+
+            },
+            {
+                headerName: 'Backout',
+                field: 'offerBackout',
+                width: 100,
+                sortable: false,
+                suppressMovable: true,
+                cellRenderer: (props) => {
+                    const { data, ind, value } = props;
+
+                    return (
+                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
+                            {data.offerBackout ? `${data.offerBackout}` : ''}
                         </div>
                     );
                 },
@@ -489,10 +680,16 @@ function CompanyReport() {
                 headerName: 'Joined Revenue',
                 field: 'joinedRevenue',
                 width: 100,
+                cellStyle: (params) => ({
+                    textAlign: 'center',
+                    ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
+                }),
                 sortable: false,
                 suppressMovable: true,
                 cellRenderer: (props) => {
                     const { data, ind, value } = props;
+
+
 
                     return (
                         <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
@@ -547,28 +744,187 @@ function CompanyReport() {
     }, [companyList.length]);
 
     const gridHeightPx = availableHeight
+
+
+    const onCalenderFilter = (dates) => {
+        const [start, end] = dates;
+        setStartDate(start);
+        setEndDate(end);
+
+
+    };
+
+    const clearFilters = () => {
+        setDebouncedSearch("");
+        setSearch('')
+        setStartDate();
+        setMonthDate(today)
+        setEndDate();
+
+    }
+
+    const handleExport = (apiData) => {
+
+
+        const formattedData = apiData.map((row) => {
+            const obj = {};
+
+            gridColumns().forEach((col) => {
+                const header = col.headerName
+                obj[header] = row[col.field] ?? "";
+            });
+
+            return obj;
+        });
+
+        downloadToExcel(formattedData, 'company Report')
+    }
+
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
             <main className={`${stylesOBj["main-content"]}`}>
 
-                <div style={{ display: 'flex', paddingRight: '15px', margin: '5px 10px' }}>
-                    <div className={`${stylesOBj["filter-group"]} ${stylesOBj['search-group']}`} style={{ marginLeft: '5px' }}>
-                        <input type="text" className={`${stylesOBj["filter-input"]} ${stylesOBj['search-input']}`} placeholder="Search"
-                            onChange={debouncedSearchHandler}
-                            value={debouncedSearch}
-                        />
-                        {debouncedSearch.length > 0 && <Tooltip title="Reset search">
-                            <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'Large', position: 'absolute', right: '40px', cursor: 'pointer' }} onClick={e => {
-                                e.stopPropagation();
-                                setDebouncedSearch("");
-                                setSearch('')
-                            }}>X</span>
-                        </Tooltip>}
-                        <img src="images/search-ic.svg" alt="Search Icon" className={`${stylesOBj["input-icon"]}`} />
+                <div className={stylesOBj.filterContainer}>
+                    <div className={stylesOBj.filterSets}>
+                        <div className={stylesOBj.filterSetsInner}>
+                            <div className={stylesOBj.filterSetsInner2}>
+                                <Radio.Group
+                                    onChange={(e) => {
+                                        setHRModal(e.target.value);
+                                        localStorage.setItem('companyReportSelectedTab', e.target.value)
+                                        if (e.target.value === "Contract") {
+                                            let val = pODList.find(
+                                                (i) => i.dd_text === "Orion"
+                                            )?.dd_value;
+                                            setSelectedHead(val);
+                                            localStorage.setItem('companyReportSelectedHead', val)
+                                        } else {
+                                            let val = pODList[0]?.dd_value;
+                                            setSelectedHead(val);
+                                            localStorage.setItem('companyReportSelectedHead', val)
+                                        }
+
+                                        //  setEngagementType(e.target.value);
+                                    }}
+                                    value={hrModal}
+                                >
+                                    <Radio value={"DP"}>FTE</Radio>
+                                    <Radio value={"Contract"}>Contract</Radio>
+                                </Radio.Group>
+                                <Select
+                                    id="selectedValue"
+                                    placeholder="Select Head"
+                                    style={{ width: "200px" }}
+                                    // mode="multiple"
+                                    value={selectedHead}
+                                    showSearch={true}
+                                    onChange={(value, option) => {
+                                        setSelectedHead(value);
+                                        localStorage.setItem('companyReportSelectedHead', value)
+                                    }}
+                                    options={pODList?.map((v) => ({
+                                        label: v.dd_text,
+                                        value: v.dd_value,
+                                    })).filter(item => {
+                                        if (hrModal === "DP") {
+                                            return item.value !== 5
+                                        } else {
+                                            return item.value === 5
+                                        }
+                                    })}
+                                    optionFilterProp="label"
+                                />
+                            </div>
+
+
+                            <p
+                                className={stylesOBj.resetText}
+                                // style={{ width: "190px" }}
+                                onClick={() => {
+                                    clearFilters();
+                                }}
+                            >
+                                Reset Filter
+                            </p>
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center" }}>
+                            <div className={`${stylesOBj["filter-group"]} ${stylesOBj['search-group']}`} style={{ marginRight: '10px', minWidth: '200px', width: '200px' }}>
+                                <input type="text" className={`${stylesOBj["filter-input"]} ${stylesOBj['search-input']}`} placeholder="Search"
+                                    onChange={debouncedSearchHandler}
+                                    value={debouncedSearch}
+                                />
+                                {debouncedSearch.length > 0 && <Tooltip title="Reset search">
+                                    <span style={{ color: 'red', fontWeight: 'bold', fontSize: 'Large', position: 'absolute', right: '40px', cursor: 'pointer' }} onClick={e => {
+                                        e.stopPropagation();
+                                        setDebouncedSearch("");
+                                        setSearch('')
+                                    }}>X</span>
+                                </Tooltip>}
+                                <img src="images/search-ic.svg" alt="Search Icon" className={`${stylesOBj["input-icon"]}`} />
+                            </div>
+                            {/* {dateTypeFilter === 0 && ( */}
+                            <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap: '8px' }}>
+                                <div>
+                                    Month-Year
+                                </div>
+                                <div className={stylesOBj.calendarFilter} style={{ width: '200px' }}>
+                                    <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
+                                    <DatePicker
+                                        style={{ backgroundColor: "red", width: '200px' }}
+                                        onKeyDown={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                        }}
+                                        className={stylesOBj.dateFilter}
+                                        placeholderText="Month - Year"
+                                        selected={monthDate}
+                                        onChange={date => setMonthDate(date)}
+                                        dateFormat="MM-yyyy"
+                                        showMonthYearPicker
+                                    />
+                                </div>
+                            </div>
+                            {/* )} */}
+                            {/* {dateTypeFilter === 1 && ( */}
+                            <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', gap: '8px', marginLeft: '10px' }}>
+                                <div>Date</div>
+                                <div className={stylesOBj.calendarFilter} style={{ width: '200px' }}>
+                                    <CalenderSVG style={{ height: "16px", marginRight: "16px" }} />
+                                    <DatePicker
+                                        style={{ backgroundColor: "red" }}
+                                        onKeyDown={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                        }}
+                                        className={stylesOBj.dateFilter}
+                                        placeholderText="Start date - End date"
+                                        selected={startDate}
+                                        onChange={onCalenderFilter}
+                                        startDate={startDate}
+                                        endDate={endDate}
+                                        maxDate={new Date()}
+                                        selectsRange
+                                    />
+                                </div>
+                            </div>
+                            {/* )}                 */}
+
+
+                            <div
+                                // className={stylesOBj.paginationFilter}
+                                style={{ border: "none", width: "auto", marginLeft: '10px' }}
+                            >
+                                <button
+                                    className={stylesOBj.btnPrimary}
+                                    onClick={() => handleExport(companyList)}
+                                >
+                                    Export
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-
                 <div
                     ref={gridWrapperRef}
                     className={`${stylesOBj["table-container"]} ${gridStyles["grid-wrapper"]}`}

@@ -53,6 +53,55 @@ body {
 
 
 
+.filterSets{
+    /* width: 100%; */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 24px;
+    display: flex;
+    border-radius: 10px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    background-color: var(--background-color-light);
+}
+
+.filterSetsInner{
+    display: flex;
+    align-items: center;
+}
+.filterSetsInner [class*="ant-select"] [class*="ant-select-selector"] {
+    padding-top: 0 !important;
+    padding-bottom: 0px !important;
+}
+
+.filterSetsInner2 [class*="ant-select"] [class*="ant-select-selector"] {
+    padding: 12px 10px !important;
+    height: 49px !important;
+    min-height: 44px ;
+    overflow: scroll;
+    /* width:200px */
+}
+
+
+.filterSetsInner p{
+    margin: 0 0 0 10px;
+    text-decoration: underline;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.filterDescription {
+    margin: 24px auto 0 auto;
+    justify-content: inherit;
+    gap: 16px;
+}
+
+.dateTypeFilter [class*="ant-select"] [class*="ant-select-selector"] {
+    padding: 10px !important;
+    height: 44px !important;
+}
+
 /* ===================== */
 /* Card container        */
 /* ===================== */
