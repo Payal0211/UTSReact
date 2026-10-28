@@ -87,8 +87,7 @@ function CompanyReport() {
         //      "pod_id": selectedHead ?? null
         // }
 
-        let query = `?pod_id=${selectedHead}&monthstr=${+moment(monthDate).format("M")}&yearstr=${+moment(monthDate).format("YYYY")}&search=${search}
-        &fromDate=${startDate ? startDate.toLocaleDateString("en-US") : ''}&toDate=${endDate ? endDate.toLocaleDateString("en-US") : ''}`
+        let query = `?pod_id=${selectedHead}&monthstr=${+moment(monthDate).format("M")}&yearstr=${+moment(monthDate).format("YYYY")}&search=${search}&fromDate=${startDate ? startDate.toLocaleDateString("en-US") : ''}&toDate=${endDate ? endDate.toLocaleDateString("en-US") : ''}`
         let req = await TaDashboardDAO.getCompanyReportRequestDAO(query);
         setLoading(false)
         if (req.statusCode === HTTPStatusCode.OK) {
@@ -194,6 +193,9 @@ function CompanyReport() {
                     const { data, api } = props;
 
 
+                    if(data?.rowSpan === 0){
+                        return ""
+                    }
                     if (props.node.rowPinned === "bottom") {
                         return "";
                     }
@@ -340,6 +342,22 @@ function CompanyReport() {
                 headerName: 'TRs',
                 field: 'totalTR',
                 width: 80,
+                sortable: false,
+                suppressMovable: true,
+                cellRenderer: (props) => {
+                    const { data, ind, value } = props;
+
+                    return (
+                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
+                            {value ? value : ""}
+                        </div>
+                    );
+                },
+            },
+              {
+                headerName: 'HR Created Date',
+                field: 'hrCreatedDate',
+                width: 100,
                 sortable: false,
                 suppressMovable: true,
                 cellRenderer: (props) => {
