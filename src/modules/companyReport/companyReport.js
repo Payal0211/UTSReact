@@ -160,13 +160,26 @@ function CompanyReport() {
                 0
             );
 
+            const getformatedTotal = (totalJoinedRevenue) => {
+                if (hrModal === 'DP') {
+                    return totalJoinedRevenue?.toLocaleString('en-IN', {
+                        style: 'currency', currency: 'INR', minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })
+                } else {
+
+                } return totalJoinedRevenue?.toLocaleString('en-US', {
+                    style: 'currency', currency: 'USD', minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })
+            }
 
             // Add TA Total Row
             finalData.push({
                 [groupField]: ``,
                 id: `total-${key}`,
                 // talent_AnnualCTC_Budget_INRValueStr: totalTalentPayRate,
-                joinedRevenue: +totalJoinedRevenue ? totalJoinedRevenue?.toFixed(2) : '',
+                joinedRevenueStr: +totalJoinedRevenue ? getformatedTotal(totalJoinedRevenue) : '',
                 isTotalRow: true,
                 rowSpan: 1,
             });
@@ -193,7 +206,7 @@ function CompanyReport() {
                     const { data, api } = props;
 
 
-                    if(data?.rowSpan === 0){
+                    if (data?.rowSpan === 0) {
                         return ""
                     }
                     if (props.node.rowPinned === "bottom") {
@@ -354,7 +367,7 @@ function CompanyReport() {
                     );
                 },
             },
-              {
+            {
                 headerName: 'HR Created Date',
                 field: 'hrCreatedDate',
                 width: 100,
@@ -564,7 +577,7 @@ function CompanyReport() {
             },
             {
                 headerName: 'Negotiation Start Revenue',
-                field: 'negotiationStartRevenueValue',
+                field: 'negotiationStartRevenueStr',
                 width: 100,
                 sortable: false,
                 suppressMovable: true,
@@ -664,7 +677,7 @@ function CompanyReport() {
             },
             {
                 headerName: 'Offer Signed Revenue',
-                field: 'offerSignedRevenueValue',
+                field: 'offerSignedRevenueValueStr',
                 width: 100,
                 sortable: false,
                 suppressMovable: true,
@@ -696,7 +709,7 @@ function CompanyReport() {
             },
             {
                 headerName: 'Joined Revenue',
-                field: 'joinedRevenue',
+                field: 'joinedRevenueStr',
                 width: 100,
                 cellStyle: (params) => ({
                     textAlign: 'center',
