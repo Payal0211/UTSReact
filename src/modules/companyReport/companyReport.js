@@ -193,6 +193,9 @@ function CompanyReport() {
                     const { data, api } = props;
 
 
+                    if(data?.rowSpan === 0){
+                        return ""
+                    }
                     if (props.node.rowPinned === "bottom") {
                         return "";
                     }
