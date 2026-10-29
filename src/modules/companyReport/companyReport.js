@@ -87,7 +87,7 @@ function CompanyReport() {
         //      "pod_id": selectedHead ?? null
         // }
 
-        let query = `?pod_id=${selectedHead}&monthstr=${+moment(monthDate).format("M")}&yearstr=${+moment(monthDate).format("YYYY")}&search=${search}&fromDate=${startDate ? startDate.toLocaleDateString("en-US") : ''}&toDate=${endDate ? endDate.toLocaleDateString("en-US") : ''}`
+        let query = `?pod_id=${selectedHead}&monthstr=${(endDate && startDate)? "": +moment(monthDate).format("M")}&yearstr=${(endDate && startDate)? "":+moment(monthDate).format("YYYY")}&search=${search}&fromDate=${startDate ? startDate.toLocaleDateString("en-US") : ''}&toDate=${endDate ? endDate.toLocaleDateString("en-US") : ''}`
         let req = await TaDashboardDAO.getCompanyReportRequestDAO(query);
         setLoading(false)
         if (req.statusCode === HTTPStatusCode.OK) {
