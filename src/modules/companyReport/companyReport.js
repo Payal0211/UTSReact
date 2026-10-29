@@ -5,6 +5,7 @@ import { HTTPStatusCode } from "constants/network";
 import gridStyles from './scrumGrid.module.css'
 import { Tabs, Select, Table, Modal, Tooltip, Skeleton, message, Dropdown, Menu, Spin, Radio } from "antd";
 import { scrumGridTheme } from 'modules/ScrumS2/gridTheme'
+import MultiConditionTextFilter from 'modules/ScrumS2/MultiConditionTextFilter';
 import TableSkeleton from 'shared/components/tableSkeleton/tableSkeleton'
 import { TaDashboardDAO } from "core/taDashboard/taDashboardDRO";
 import { ReportDAO } from "core/report/reportDAO";
@@ -204,9 +205,9 @@ function CompanyReport() {
                 suppressMovable: true,
                 cellRenderer: (props) => {
                     const { data, api } = props;
-
-
-                    if (data?.rowSpan === 0) {
+                    const isFilterApplied = api.isAnyFilterPresent()
+console.log(isFilterApplied)
+                    if (data?.rowSpan === 0  && !isFilterApplied) {
                         return ""
                     }
                     if (props.node.rowPinned === "bottom") {
@@ -345,6 +346,8 @@ function CompanyReport() {
                 width: 140,
                 sortable: false,
                 suppressMovable: true,
+                filter: MultiConditionTextFilter,
+                filterParams: { type: 'status', list: Array.from(new Set(companyList.filter(i=> !i.isTotalRow)?.map(i => i.hrStatus)))?.map(v => ({ data: v })) },
                 cellRenderer: (props) => {
                     const { data } = props;
                     return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.hrStatusCode, data?.hrStatus)}</div>;
@@ -975,7 +978,11 @@ function CompanyReport() {
                             //   getRowId={(params) => String(params.data.id)}
                             suppressScrollOnNewData={true}
                             suppressRowTransform={true}
-
+onFilterChanged={(params) => {
+        const isAnyFilterApplied = params.api.isAnyFilterPresent();
+  params.api.refreshCells({ force: true });
+                                        params.api.redrawRows();
+    }}
                         />}
 
 
