@@ -1641,7 +1641,7 @@ const getExportData = () => {
                           </th> }
 
                       {showTalentCol?.category !== "CF" &&
-                        showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  &&(
+                        showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Split HRs Opening Balance' && showTalentCol?.stage !== 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  &&(
                           <th
                             style={{
                               padding: "10px",
@@ -1720,7 +1720,7 @@ const getExportData = () => {
                                   "rgb(233, 233, 233) !important",
                               }}
                             >
-                              {showTalentCol?.stage === "Joining" || showTalentCol?.stage === "Joined" ||
+                              {showTalentCol?.stage === "Joining" || showTalentCol?.stage === "Joined" || showTalentCol?.stage === "Negotiation Start" ||showTalentCol?.stage === "Offer Signed" ||showTalentCol?.stage === "Carry Fwd Preonboarding" ||
                                 showTalentCol?.stage === "Selections/Closures"
                                 ? "Revenue"
                                 : " 1TR Pipeline"}
@@ -1809,7 +1809,7 @@ const getExportData = () => {
                           ? false
                           : true) && (
                           <>
-                            {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures')) && <th
+                            {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === "Negotiation Start" ||showTalentCol?.stage === "Offer Signed" ||showTalentCol?.stage === "Carry Fwd Preonboarding" || showTalentCol?.stage === 'Selections/Closures')) && <th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -1820,7 +1820,7 @@ const getExportData = () => {
                               {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason' : 'Talent'}
                             </th>}
 
-                           {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)' || showTalentCol.stage_ID === "NHR" ) &&<th
+                           {!(showTalentCol?.stage === "Joined"  || showTalentCol?.stage === "Negotiation Start" ||showTalentCol?.stage === "Offer Signed" ||showTalentCol?.stage === "Carry Fwd Preonboarding" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)' || showTalentCol.stage_ID === "NHR" ) &&<th
                               style={{
                                 padding: "10px",
                                 border: "1px solid #ddd",
@@ -1868,7 +1868,7 @@ const getExportData = () => {
                             </td> }
                             
                         {showTalentCol?.category !== "CF" &&
-                          showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  && (
+                          showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Split HRs Opening Balance' && showTalentCol?.stage !== 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  && (
                             <td
                               style={{
                                 padding: "8px",
@@ -2020,7 +2020,7 @@ const getExportData = () => {
                             ? false
                             : true) && (
                             <>
-                              {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures')) && <td
+                              {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === "Negotiation Start" ||showTalentCol?.stage === "Offer Signed" ||showTalentCol?.stage === "Carry Fwd Preonboarding" || showTalentCol?.stage === 'Selections/Closures')) && <td
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",
@@ -2032,7 +2032,7 @@ const getExportData = () => {
                                 {detail.talent}
                               </td>}
 
-                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === 'Selections/Closures'|| showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)' || showTalentCol.stage_ID === "NHR" ) &&<td
+                              {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === "Negotiation Start" ||showTalentCol?.stage === "Offer Signed" ||showTalentCol?.stage === "Carry Fwd Preonboarding" || showTalentCol?.stage === 'Selections/Closures'|| showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)' || showTalentCol.stage_ID === "NHR" ) &&<td
                                 style={{
                                   padding: "8px",
                                   border: "1px solid #ddd",
