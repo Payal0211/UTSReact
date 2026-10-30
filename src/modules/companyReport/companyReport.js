@@ -25,7 +25,7 @@ function CompanyReport() {
 
     let presistHeaddata = localStorage.getItem('companyReportSelectedHead')
     let presisTabdata = localStorage.getItem('companyReportSelectedTab')
-    const [hrModal, setHRModal] = useState(presisTabdata ? presisTabdata : 'DP');
+    const [hrModal, setHRModal] = useState(presisTabdata ? presisTabdata : "Contract");
     const [selectedHead, setSelectedHead] = useState(presistHeaddata ? +presistHeaddata : '');
     const [pODList, setPODList] = useState([]);
     const today = new Date();
@@ -51,8 +51,11 @@ function CompanyReport() {
             setPODList(filterResult && filterResult?.responseBody);
             setSelectedHead(prev => {
                 if (prev === '') {
+                    let val = filterResult?.responseBody.find(
+                        (i) => i.dd_text === "Orion"
+                    )?.dd_value;
 
-                    return filterResult?.responseBody[0]?.dd_value
+                    return val
                 } else {
 
                     return prev
@@ -88,7 +91,7 @@ function CompanyReport() {
         //      "pod_id": selectedHead ?? null
         // }
 
-        let query = `?pod_id=${selectedHead}&monthstr=${(endDate && startDate)? "": +moment(monthDate).format("M")}&yearstr=${(endDate && startDate)? "":+moment(monthDate).format("YYYY")}&search=${search}&fromDate=${startDate ? startDate.toLocaleDateString("en-US") : ''}&toDate=${endDate ? endDate.toLocaleDateString("en-US") : ''}`
+        let query = `?pod_id=${selectedHead}&monthstr=${(endDate && startDate) ? "" : +moment(monthDate).format("M")}&yearstr=${(endDate && startDate) ? "" : +moment(monthDate).format("YYYY")}&search=${search}&fromDate=${startDate ? startDate.toLocaleDateString("en-US") : ''}&toDate=${endDate ? endDate.toLocaleDateString("en-US") : ''}`
         let req = await TaDashboardDAO.getCompanyReportRequestDAO(query);
         setLoading(false)
         if (req.statusCode === HTTPStatusCode.OK) {
@@ -842,8 +845,9 @@ console.log(isFilterApplied)
                                     }}
                                     value={hrModal}
                                 >
-                                    <Radio value={"DP"}>FTE</Radio>
+
                                     <Radio value={"Contract"}>Contract</Radio>
+                                    <Radio value={"DP"}>FTE</Radio>
                                 </Radio.Group>
                                 <Select
                                     id="selectedValue"
@@ -978,11 +982,11 @@ console.log(isFilterApplied)
                             //   getRowId={(params) => String(params.data.id)}
                             suppressScrollOnNewData={true}
                             suppressRowTransform={true}
-onFilterChanged={(params) => {
-        const isAnyFilterApplied = params.api.isAnyFilterPresent();
-  params.api.refreshCells({ force: true });
-                                        params.api.redrawRows();
-    }}
+                            onFilterChanged={(params) => {
+                                const isAnyFilterApplied = params.api.isAnyFilterPresent();
+                                params.api.refreshCells({ force: true });
+                                params.api.redrawRows();
+                            }}
                         />}
 
 
