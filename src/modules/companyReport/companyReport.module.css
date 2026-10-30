@@ -326,7 +326,7 @@ body {
 }
 
 .calendarFilter [class*='react-datepicker__month-container']{
-       width: 220px;
+       width: 250px;
     font-size: 10px; 
 }
 
