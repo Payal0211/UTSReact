@@ -209,8 +209,8 @@ function CompanyReport() {
                 cellRenderer: (props) => {
                     const { data, api } = props;
                     const isFilterApplied = api.isAnyFilterPresent()
-
-                    if (data?.rowSpan === 0 && !isFilterApplied) {
+console.log(isFilterApplied)
+                    if (data?.rowSpan === 0  && !isFilterApplied) {
                         return ""
                     }
                     if (props.node.rowPinned === "bottom") {
@@ -350,7 +350,7 @@ function CompanyReport() {
                 sortable: false,
                 suppressMovable: true,
                 filter: MultiConditionTextFilter,
-                filterParams: { type: 'status', list: Array.from(new Set(companyList.filter(i => !i.isTotalRow)?.map(i => i.hrStatus)))?.map(v => ({ data: v })) },
+                filterParams: { type: 'status', list: Array.from(new Set(companyList.filter(i=> !i.isTotalRow)?.map(i => i.hrStatus)))?.map(v => ({ data: v })) },
                 cellRenderer: (props) => {
                     const { data } = props;
                     return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.hrStatusCode, data?.hrStatus)}</div>;
