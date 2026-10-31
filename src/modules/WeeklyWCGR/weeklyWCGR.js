@@ -2269,9 +2269,31 @@ function WeeklyWCGR() {
       }
 
         if (record?.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
-      if (record.stage_ID === "TA") {
-        return text
+      // if (record.stage_ID === "TA") {
+      //   return text
+      // }
+
+      if(record.stage_ID === "TA" || record.stage_ID === "Carry Fwd Preonboarding - Existing" ||
+       record.stage_ID ===  "CF_Split_Existing" || record.stage_ID === "CF_Preonboarding_New" || record.stage_ID === "CF_Split_New" ||  
+record.stage_ID === "CF_Split" || record.stage_ID === "CF_Preonboarding"
+      ){
+ return <div >
+          {text ?
+            <span
+              onClick={() => {
+                getHRTalentWiseReport(record, text, week, month)
+              }}
+              style={{ cursor: "pointer", color: "#1890ff" }}
+            >
+              {text}
+            </span>
+
+            : (
+              ""
+            )}
+        </div>
       }
+
       if (record.stage_ID === "CF" ||
         record.stage_ID === "NHR" || record.stage_ID === "J12" || record.stage_ID === "L"
       ) {
@@ -2643,8 +2665,28 @@ function WeeklyWCGR() {
     }
 
     if (record?.stage_Title === "PIPELINE REVIEW  ·  Revenue Planning") {
-      if (record.stage_ID === "TA") {
-        return text
+      // if (record.stage_ID === "TA") {
+      //   return text
+      // }
+          if(record.stage_ID === "TA" || record.stage_ID === "Carry Fwd Preonboarding - Existing" ||
+       record.stage_ID ===  "CF_Split_Existing" || record.stage_ID === "CF_Preonboarding_New" || record.stage_ID === "CF_Split_New" ||  
+record.stage_ID === "CF_Split" || record.stage_ID === "CF_Preonboarding"
+      ){
+ return <div >
+          {text ?
+            <span
+              onClick={() => {
+                getHRTalentWiseReport(record, text, week, month)
+              }}
+              style={{ cursor: "pointer", color: "#1890ff" }}
+            >
+              {text}
+            </span>
+
+            : (
+              ""
+            )}
+        </div>
       }
       if (record.stage_ID === "CF" ||
         record.stage_ID === "NHR" || record.stage_ID === "J12" || record.stage_ID === "L"
@@ -4494,7 +4536,7 @@ function WeeklyWCGR() {
                       </th>}
 
                       {(showTalentCol?.category !== "CF" &&
-                        showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' &&
+                        showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && !showTalentCol?.stage?.includes('Split HRs Opening Balance') && showTalentCol?.stage !== 'Added HR (New)' &&
                       showTalentCol.stage_ID !== "NHR"   ) && (
                           <th
                             style={{
@@ -4583,7 +4625,7 @@ function WeeklyWCGR() {
                                   "rgb(233, 233, 233) !important",
                               }}
                             >
-                              {showTalentCol?.stage === "Joining" || showTalentCol?.stage === "Joined" ||
+                              {showTalentCol?.stage === "Joining" || showTalentCol?.stage === "Joined" || showTalentCol?.stage?.includes("Carry Fwd Preonboarding") ||
                                 showTalentCol?.stage === "Selections/Closures"
                                 ? "Revenue"
                                 : " 1TR Pipeline"}
@@ -4731,7 +4773,7 @@ function WeeklyWCGR() {
                         </td>}
 
                         {showTalentCol?.category !== "CF" &&
-                          showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && showTalentCol?.stage !== 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  && (
+                          showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && !showTalentCol?.stage?.includes('Split HRs Opening Balance') && showTalentCol?.stage !== 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  && (
                             <td
                               style={{
                                 padding: "8px",
