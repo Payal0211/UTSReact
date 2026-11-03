@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import stylesOBj from './companyReport.module.css'
 import { useNavigate } from 'react-router-dom';
 import { HTTPStatusCode } from "constants/network";
@@ -192,6 +192,96 @@ function CompanyReport() {
         return finalData;
     }
 
+    const autoGroupColumnDef = {
+        headerName: "companyName",
+        minWidth: 140,
+        cellRendererParams: {
+            suppressCount: false,
+        },
+    };
+
+    const [gridApi, setGridApi] = useState(null);
+
+    const statusFilterInitialized = useRef(false);
+
+    const availableStatuses = useMemo(() => {
+        return [
+            ...new Set(
+                companyList
+                    ?.filter(item => !item.isTotalRow)
+                    ?.map(item => item.hrStatus)
+                    ?.filter(Boolean)
+            )
+        ];
+    }, [companyList]);
+
+    const defaultSelectedStatuses = useMemo(() => {
+        return availableStatuses.filter(
+            status => !['Closed - Lost', 'Closed - Cancelled'].includes(status)
+        );
+    }, [availableStatuses]);
+
+    useEffect(() => {
+
+        if (
+            !gridApi ||
+            !companyList?.length ||
+            !availableStatuses.length ||
+            statusFilterInitialized.current
+        ) {
+            return;
+        }
+
+        const existingModel = gridApi.getFilterModel() || {};
+
+        // Don't override an existing filter model
+        if (existingModel.hrStatus) {
+            statusFilterInitialized.current = true;
+            return;
+        }
+
+        if (defaultSelectedStatuses.length > 0) {
+
+            gridApi.setFilterModel({
+                ...existingModel,
+
+                hrStatus: {
+                    values: defaultSelectedStatuses
+                }
+            });
+        }
+
+        statusFilterInitialized.current = true;
+
+    }, [
+        gridApi,
+        companyList,
+        availableStatuses,
+        defaultSelectedStatuses
+    ]);
+
+    const handleFirstDataRendered = (params) => {
+        const api = params.api;
+
+        const existingFilterModel = api.getFilterModel() || {};
+
+        // Don't override an existing Status filter
+        if (existingFilterModel.hrStatus) {
+            return;
+        }
+
+        // Apply default selection, excluding the two statuses
+        if (defaultSelectedStatuses.length > 0) {
+            api.setFilterModel({
+                ...existingFilterModel,
+                hrStatus: {
+                    values: defaultSelectedStatuses
+                }
+            });
+        }
+    };
+
+
     const gridColumns = () => {
         return [
             {
@@ -343,6 +433,20 @@ function CompanyReport() {
                 sortable: false,
                 suppressMovable: true,
             },
+            // {
+            //     headerName: 'Status',
+            //     field: 'hrStatus',
+            //     width: 140,
+            //     sortable: false,
+            //     suppressMovable: true,
+            //     filter: MultiConditionTextFilter,
+            //     filterParams: { type: 'status', list: Array.from(new Set(companyList.filter(i => !i.isTotalRow)?.map(i => i.hrStatus)))?.map(v => ({ data: v }))},
+            //     cellRenderer: (props) => {
+            //         const { data } = props;
+            //         return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.hrStatusCode, data?.hrStatus)}</div>;
+
+            //     }
+            // },
             {
                 headerName: 'Status',
                 field: 'hrStatus',
@@ -350,7 +454,12 @@ function CompanyReport() {
                 sortable: false,
                 suppressMovable: true,
                 filter: MultiConditionTextFilter,
-                filterParams: { type: 'status', list: Array.from(new Set(companyList.filter(i => !i.isTotalRow)?.map(i => i.hrStatus)))?.map(v => ({ data: v })) },
+                filterParams: {
+                    type: 'status',
+                    list: availableStatuses.map(status => ({
+                        data: status
+                    }))
+                },
                 cellRenderer: (props) => {
                     const { data } = props;
                     return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.hrStatusCode, data?.hrStatus)}</div>;
@@ -971,7 +1080,9 @@ function CompanyReport() {
 
                     {isLoading ? <TableSkeleton /> :
                         <AgGridReact
-
+                            onGridReady={(params) => {
+                                setGridApi(params.api);
+                            }}
                             rowData={companyList}
                             theme={scrumGridTheme}
                             columnDefs={gridColumns()}
@@ -980,13 +1091,15 @@ function CompanyReport() {
                             rowHeight={25}
                             defaultColDef={scrumDefaultColDef}
                             //   getRowId={(params) => String(params.data.id)}
+                            autoGroupColumnDef={autoGroupColumnDef}
                             suppressScrollOnNewData={true}
                             suppressRowTransform={true}
-                            onFilterChanged={(params) => {
-                                const isAnyFilterApplied = params.api.isAnyFilterPresent();
-                                params.api.refreshCells({ force: true });
-                                params.api.redrawRows();
-                            }}
+                            // onFilterChanged={(params) => {
+                            //     const isAnyFilterApplied = params.api.isAnyFilterPresent();
+                            //     params.api.refreshCells({ force: true });
+                            //     params.api.redrawRows();
+                            // }}
+                            onFirstDataRendered={handleFirstDataRendered}
                         />}
 
 
