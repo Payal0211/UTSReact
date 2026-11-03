@@ -1742,6 +1742,19 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       },
       cellStyle: { textAlign: 'center' },
     },
+     {
+      headerName: 'POC',
+      field: 'pocName',
+      width: 130,
+      filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.pocName)))?.map(v => ({ data: v })) },
+      filter: MultiConditionTextFilter,
+      cellRenderer: (props) => {
+        const { data, value, ind } = props;
+        if (data?.isTotalRow) return null;
+        return value
+      },
+      cellStyle: { textAlign: 'center' },
+    },
     {
       headerName: 'AM',
       field: 'am',
@@ -2756,6 +2769,19 @@ return  [
       field: 'no_of_InterviewRounds',
       width: 130,
       filterParams: { type: 'number' },
+      filter: MultiConditionTextFilter,
+      cellRenderer: (props) => {
+        const { data, value, ind } = props;
+        if (data?.isTotalRow) return null;
+        return value
+      },
+      cellStyle: { textAlign: 'center' },
+    },
+     {
+      headerName: 'POC',
+      field: 'pocName',
+      width: 130,
+      filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.pocName)))?.map(v => ({ data: v })) },
       filter: MultiConditionTextFilter,
       cellRenderer: (props) => {
         const { data, value, ind } = props;
