@@ -299,8 +299,8 @@ function CompanyReport() {
                 cellRenderer: (props) => {
                     const { data, api } = props;
                     const isFilterApplied = api.isAnyFilterPresent()
-
-                    if (data?.rowSpan === 0 && !isFilterApplied) {
+console.log(isFilterApplied)
+                    if (data?.rowSpan === 0  && !isFilterApplied) {
                         return ""
                     }
                     if (props.node.rowPinned === "bottom") {
