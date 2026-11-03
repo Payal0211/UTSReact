@@ -766,11 +766,11 @@ function WeeklyWCGR() {
       dataIndex: "talentStatus",
       key: "talentStatus",
       width: '150px',
-      // render: (_, param) =>
-      //   All_Hiring_Request_Utils.GETHRSTATUS(
-      //     param?.hrStatusCode,
-      //     param?.talentStatus
-      //   ),
+      render: (_, param) =>
+        All_Hiring_Request_Utils.GETHRSTATUS(
+          105,
+          param?.talentStatus
+        ),
     },
     {
       title: <div style={{ textAlign: "center" }}> Billing %</div>,
@@ -907,11 +907,11 @@ function WeeklyWCGR() {
       dataIndex: "talentStatus",
       key: "talentStatus",
       width: '150px',
-      // render: (_, param) =>
-      //   All_Hiring_Request_Utils.GETHRSTATUS(
-      //     param?.hrStatusCode,
-      //     param?.talentStatus
-      //   ),
+      render: (_, param) =>
+        All_Hiring_Request_Utils.GETHRSTATUS(
+          105,
+          param?.talentStatus
+        ),
     },
     {
       title: <div style={{ textAlign: "center" }}> Billing %</div>,
@@ -2003,7 +2003,61 @@ function WeeklyWCGR() {
     },
     
  
-  ] :  [
+  ] : showTalentCol?.stage === "Profiles Shared" ? [
+    {
+      title: "Action Date",
+      dataIndex: "actionDate",
+      key: "actionDate",
+      width: "150px",
+      render: (text) => {
+        return text ? moment(text).format('DD/MM/YYYY'): ''
+      },
+    },
+    {
+      title: "Company",
+      dataIndex: "company",
+      key: "company",
+      width: "150px",
+    },
+    {
+      title: "HR #",
+      dataIndex: "hR_Number",
+      key: "hR_Number",
+      width: "170px",
+      render: (text, value) => {
+        return (
+          <a
+            href={`/allhiringrequest/${value.hiringRequestID}`}
+            style={{ textDecoration: "underline" }}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {text}
+          </a>
+        ); // Replace `/client/${text}` with the appropriate link you need
+      },
+    },
+    {
+      title: "HR Title",
+      dataIndex: "hrTitle",
+      key: "hrTitle",
+    },
+    {
+      title: "Talent",
+      dataIndex: "talent",
+      key: "talent",
+    },
+    {
+      title: "TA",
+      dataIndex: "ta",
+      key: "ta",
+    },
+    {
+      title: "Sales Person",
+      dataIndex: "salesperson",
+      key: "salesperson",
+    },
+  ] :[
     {
       title: "Action Date",
       dataIndex: "actionDate",
@@ -3373,6 +3427,50 @@ record.stage_ID === "CF_Split" || record.stage_ID === "CF_Preonboarding"
 
   const ProfileColumns = () => {
     if(isAllPODData){
+       if(showTalentCol?.stage_ID ==="Hired"){
+       return [
+      {
+        title: "Action Date",
+        dataIndex: "actionDate",
+        key: "actionDate",
+        width: "150px",
+        render: (text) => {
+          return moment(text).format("DD/MM/YYYY");
+        }
+      }, {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+        width: "150px",
+      },
+      {
+        title: "HR #",
+        dataIndex: "hR_Number",
+        key: "hR_Number",
+        width: "170px",
+        render: (text, value) => {
+          return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+        }
+      },
+      {
+        title: "HR Title",
+        dataIndex: "hrTitle",
+        key: "hrTitle",
+        width: "200px",
+      },
+      {
+        title: "Talent",
+        dataIndex: "talent",
+        key: "talent",
+        width: "100px",
+      },
+   
+
+
+
+    ];
+    }
         return [
       {
         title: "Action Date",
@@ -3431,6 +3529,50 @@ record.stage_ID === "CF_Split" || record.stage_ID === "CF_Preonboarding"
     ];
 
     }
+    if(showTalentCol?.stage_ID ==="Hired"){
+       return [
+      {
+        title: "Action Date",
+        dataIndex: "actionDate",
+        key: "actionDate",
+        width: "150px",
+        render: (text) => {
+          return moment(text).format("DD/MM/YYYY");
+        }
+      }, {
+        title: "Company",
+        dataIndex: "company",
+        key: "company",
+        width: "150px",
+      },
+      {
+        title: "HR #",
+        dataIndex: "hR_Number",
+        key: "hR_Number",
+        width: "170px",
+        render: (text, value) => {
+          return <a href={`/allhiringrequest/${value.hiringRequestID}`} style={{ textDecoration: 'underline' }} target="_blank" rel="noreferrer">{text}</a>;  // Replace `/client/${text}` with the appropriate link you need
+
+        }
+      },
+      {
+        title: "HR Title",
+        dataIndex: "hrTitle",
+        key: "hrTitle",
+        width: "200px",
+      },
+      {
+        title: "Talent",
+        dataIndex: "talent",
+        key: "talent",
+        width: "100px",
+      },
+   
+
+
+
+    ];
+    }
     return [
       {
         title: "Action Date",
@@ -3469,7 +3611,7 @@ record.stage_ID === "CF_Split" || record.stage_ID === "CF_Preonboarding"
         width: "100px",
       },
       {
-        title: "Slot/Remark",
+        title: "Slot/Remark?",
         dataIndex: "slotDetail",
         key: "slotDetail",
         width: "350px",
@@ -4536,7 +4678,7 @@ record.stage_ID === "CF_Split" || record.stage_ID === "CF_Preonboarding"
                       </th>}
 
                       {(showTalentCol?.category !== "CF" &&
-                        showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && !showTalentCol?.stage?.includes('Split HRs Opening Balance') && showTalentCol?.stage !== 'Added HR (New)' &&
+                        showTalentCol?.category !== "CH" && showTalentCol?.stage.split("-")[0]?.trim() !== "Opening Balance"  && !showTalentCol?.stage?.includes('Split HRs Opening Balance') && showTalentCol?.stage !== 'Added HR (New)' &&
                       showTalentCol.stage_ID !== "NHR"   ) && (
                           <th
                             style={{
@@ -4760,7 +4902,7 @@ record.stage_ID === "CF_Split" || record.stage_ID === "CF_Preonboarding"
                         <td
                           style={{ padding: "8px", border: "1px solid #ddd" }}
                         >
-                          {showTalentCol.stage_ID === "J4"  ?  detail.createdDateStr : detail.hrCreatedDateStr}
+                          {showTalentCol.stage_ID === "J4" && showTalentCol?.stage !== 'Selection Achieved'  ?  detail.createdDateStr : detail.hrCreatedDateStr}
                         </td>
 
                         {showTalentCol?.stage === 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  && <td
@@ -4773,7 +4915,7 @@ record.stage_ID === "CF_Split" || record.stage_ID === "CF_Preonboarding"
                         </td>}
 
                         {showTalentCol?.category !== "CF" &&
-                          showTalentCol?.category !== "CH" && showTalentCol?.stage !== "Opening Balance" && !showTalentCol?.stage?.includes('Split HRs Opening Balance') && showTalentCol?.stage !== 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  && (
+                          showTalentCol?.category !== "CH" && showTalentCol?.stage.split("-")[0]?.trim() !== "Opening Balance" && !showTalentCol?.stage?.includes("Opening Balance") && !showTalentCol?.stage?.includes('Split HRs Opening Balance') && showTalentCol?.stage !== 'Added HR (New)' && showTalentCol.stage_ID !== "NHR"  && (
                             <td
                               style={{
                                 padding: "8px",
