@@ -80,36 +80,69 @@ function CompanyReport() {
         getHeads();
     }, []);
 
-    const getListData = async () => {
-        setLoading(true)
-        // let pl = {
-        // "searchText": search,
-        // "month": +moment(monthDate).format("M") ,
-        // "year":  +moment(monthDate).format("YYYY") ,
-        // "fromDate": startDate ? startDate.toLocaleDateString("en-US") : '',
-        // "toDate":  endDate ? endDate.toLocaleDateString("en-US") : '',
-        //      "pod_id": selectedHead ?? null
-        // }
+const handleFilterChanged = (params) => {
+    const api = params.api;
 
-        let query = `?pod_id=${selectedHead}&monthstr=${(endDate && startDate) ? "" : +moment(monthDate).format("M")}&yearstr=${(endDate && startDate) ? "" : +moment(monthDate).format("YYYY")}&search=${search}&fromDate=${startDate ? startDate.toLocaleDateString("en-US") : ''}&toDate=${endDate ? endDate.toLocaleDateString("en-US") : ''}`
-        let req = await TaDashboardDAO.getCompanyReportRequestDAO(query);
-        setLoading(false)
-        if (req.statusCode === HTTPStatusCode.OK) {
-            setCompanyList(groupByRowSpan(req.responseBody, 'companyName'));
-        } else if (req.statusCode === HTTPStatusCode.NOT_FOUND) {
-            setCompanyList([]);
-        } else if (req?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-            // setLoading(false);
-            return navigate(UTSRoutes.LOGINROUTE);
-        } else if (req?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-            // setLoading(false);
-            return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-        } else {
-            setCompanyList([]);
-            return "NO DATA FOUND";
+    // Which companies still have visible (non-total) rows?
+    const next = new Set();
+    api.forEachNodeAfterFilter((node) => {
+        if (node.data && !node.data.isTotalRow) next.add(node.data.groupKey);
+    });
 
-        }
+    const prev = visibleGroupsRef.current;
+    const changed = next.size !== prev.size || [...next].some((k) => !prev.has(k));
+
+    if (changed) {
+        visibleGroupsRef.current = next;
+        api.onFilterChanged();   // re-run so the total rows are re-evaluated (runs once, then stabilises)
+        return;
     }
+
+   api.refreshCells({
+    columns: [
+        'companyName',
+        'joinedRevenueStr',
+        'profilesShared',
+        'r1InterviewCompleted',
+        'r2InterviewCompleted',
+    ],
+    force: true,
+});
+};
+   const getListData = async () => {
+    setLoading(true)
+
+    let query = `?pod_id=${selectedHead}&monthstr=${(endDate && startDate) ? "" : +moment(monthDate).format("M")}&yearstr=${(endDate && startDate) ? "" : +moment(monthDate).format("YYYY")}&search=${search}&fromDate=${startDate ? startDate.toLocaleDateString("en-US") : ''}&toDate=${endDate ? endDate.toLocaleDateString("en-US") : ''}`
+
+    let req = await TaDashboardDAO.getCompanyReportRequestDAO(query);
+    setLoading(false)
+
+    if (req.statusCode === HTTPStatusCode.OK) {
+        const rows = groupByRowSpan(req.responseBody, 'companyName');
+
+        // 👇 new: remember which companies have rows, so total/gap rows show on first render
+        visibleGroupsRef.current = new Set(
+            rows.filter(r => !r.isTotalRow).map(r => r.groupKey)
+        );
+
+        setCompanyList(rows);
+
+    } else if (req.statusCode === HTTPStatusCode.NOT_FOUND) {
+        visibleGroupsRef.current = new Set();   // 👈 reset
+        setCompanyList([]);
+
+    } else if (req?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+        return navigate(UTSRoutes.LOGINROUTE);
+
+    } else if (req?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+        return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+
+    } else {
+        visibleGroupsRef.current = new Set();   // 👈 reset
+        setCompanyList([]);
+        return "NO DATA FOUND";
+    }
+}
 
 
     useEffect(() => {
@@ -151,6 +184,7 @@ function CompanyReport() {
             rows.forEach((row, index) => {
                 finalData.push({
                     ...row,
+                     groupKey: key,  
                     rowSpan: index === 0 ? rows.length : 0,
                     isTotalRow: false,
                 });
@@ -182,6 +216,7 @@ function CompanyReport() {
             finalData.push({
                 [groupField]: ``,
                 id: `total-${key}`,
+                 groupKey: key,
                 // talent_AnnualCTC_Budget_INRValueStr: totalTalentPayRate,
                 joinedRevenueStr: +totalJoinedRevenue ? getformatedTotal(totalJoinedRevenue) : '',
                 isTotalRow: true,
@@ -214,6 +249,36 @@ function CompanyReport() {
             )
         ];
     }, [companyList]);
+    // { companyName: [status, status, ...] }
+const groupStatuses = useMemo(() => {
+    const map = {};
+    companyList.forEach((item) => {
+        if (item.isTotalRow || !item.hrStatus) return;
+        if (!map[item.groupKey]) map[item.groupKey] = new Set();
+        map[item.groupKey].add(item.hrStatus);
+    });
+    return map;
+}, [companyList]);
+
+const gridApiRef = useRef(null);
+const visibleGroupsRef = useRef(new Set());  
+
+const doesExternalFilterPassold = (node) => {
+    const d = node.data;
+    if (!d?.isTotalRow) return true;                     // normal rows: column filter decides
+
+    const selected = gridApiRef.current?.getFilterModel()?.hrStatus?.values;
+    if (!selected || selected.length === 0) return true; // no status filter: show all gaps/totals
+
+    const statuses = groupStatuses[d.groupKey];
+    return !!statuses && selected.some((s) => statuses.has(s));
+};
+
+const doesExternalFilterPass = (node) => {
+    const d = node.data;
+    if (!d?.isTotalRow) return true;
+    return visibleGroupsRef.current.has(d.groupKey);
+};
 
     const defaultSelectedStatuses = useMemo(() => {
         return availableStatuses.filter(
@@ -284,68 +349,56 @@ function CompanyReport() {
 
     const gridColumns = () => {
         return [
-            {
-                headerName: 'Company',
-                field: 'companyName',
-                width: 140,
-                pinned: 'left',
-                sortable: false,
-                //             rowSpan: (params) => params.data?.rowSpan || 1,
-                //              cellStyle: (params) => ({
-                //     borderBottom: params.data?.rowSpan === 0 ? 'none' : '',
-                //     borderTop: params.data?.rowSpan > 0 ? '1px solid #4C4E641F' : '',
-                //   }),
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, api } = props;
-                    const isFilterApplied = api.isAnyFilterPresent()
-console.log(isFilterApplied)
-                    if (data?.rowSpan === 0  && !isFilterApplied) {
-                        return ""
-                    }
-                    if (props.node.rowPinned === "bottom") {
-                        return "";
-                    }
+      {
+    headerName: 'Company',
+    field: 'companyName',
+    width: 140,
+    pinned: 'left',
+    sortable: false,
+    suppressMovable: true,
+  cellRenderer: (props) => {
+    const { data, api, node } = props;
 
-                    if (data?.isTotalRow) {
-                        return null;
-                    }
-                    return (
-                        <div
-                            //  className={taStylesNew["company-cell"]}
-                            style={{
-                                display: 'flex', alignItems: 'center',
-                                gap: '5px',
-                                height: '100%'
-                            }}>
+    if (!data || data.isTotalRow || node.rowPinned === 'bottom') return <div />;
 
+    let i = node.rowIndex - 1;
+    while (i >= 0) {
+        const prev = api.getDisplayedRowAtIndex(i);
+        if (prev?.data && !prev.data.isTotalRow) {
+            if (prev.data.companyName === data.companyName) {
+                return <div />;
+            }
+            break;
+        }
+        i--;
+    }
 
-
-                            <Tooltip title={data.companyName}>
-                                <span className={stylesOBj["company-name"]} style={{
-                                    display: 'block',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    whiteSpace: 'nowrap',
-                                    fontWeight: 500,
-                                    fontSize: '10px',
-                                    lineHeight: "10px",
-                                    width: '70%',
-                                    cursor: "pointer",
-                                    /* font-weight: bold; */
-                                    textDecoration: " underline",
-                                }}
-
-                                    onClick={() => {
-                                        window.open(`/viewCompanyDetails/${data.companyID}`, "_blank");
-                                    }}>
-                                    {data.companyName}
-                                </span>
-                            </Tooltip>
-                        </div>
-                    );
-                },
-            },
+    return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', height: '100%' }}>
+            <Tooltip title={data.companyName}>
+                <span
+                    className={stylesOBj["company-name"]}
+                    style={{
+                        display: 'block',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        fontWeight: 500,
+                        fontSize: '10px',
+                        lineHeight: '10px',
+                        width: '70%',
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                    }}
+                    onClick={() => window.open(`/viewCompanyDetails/${data.companyID}`, "_blank")}
+                >
+                    {data.companyName}
+                </span>
+            </Tooltip>
+        </div>
+    );
+},
+},
             {
                 headerName: 'HR ID',
                 field: 'hR_Number',
@@ -514,22 +567,7 @@ console.log(isFilterApplied)
                     );
                 },
             },
-            {
-                headerName: '# profile Shared',
-                field: 'profilesShared',
-                width: 80,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
+         sumCol('# profile Shared', 'profilesShared', 80), 
             {
                 headerName: 'Assessment Reject',
                 field: 'assessmentReject',
@@ -546,22 +584,7 @@ console.log(isFilterApplied)
                     );
                 },
             },
-            {
-                headerName: 'R1 Interview Completed',
-                field: 'r1InterviewCompleted',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
+           sumCol('R1 Interview Completed', 'r1InterviewCompleted'),
             {
                 headerName: 'Profile to R1 Ratio',
                 field: 'profileToR1Ratio',
@@ -594,22 +617,7 @@ console.log(isFilterApplied)
                     );
                 },
             },
-            {
-                headerName: 'R2 Interview Completed',
-                field: 'r2InterviewCompleted',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
+         sumCol('R2 Interview Completed', 'r2InterviewCompleted'),
             {
                 headerName: 'R2 Interview Rejected',
                 field: 'r2InterviewRejected',
@@ -925,6 +933,43 @@ console.log(isFilterApplied)
 
         downloadToExcel(formattedData, 'company Report')
     }
+// Sums `field` over the visible rows of this company, directly above the total row
+const sumVisibleAbove = (props, field) => {
+    const { data, api, node } = props;
+    let sum = 0;
+    let i = node.rowIndex - 1;
+    while (i >= 0) {
+        const prev = api.getDisplayedRowAtIndex(i);
+        if (!prev?.data || prev.data.isTotalRow || prev.data.groupKey !== data.groupKey) break;
+        sum += parseFloat(prev.data[field]) || 0;
+        i--;
+    }
+    return sum;
+};
+
+// Column that shows the normal value on data rows and the company total on the total row
+const sumCol = (headerName, field, width = 100) => ({
+    headerName,
+    field,
+    width,
+    sortable: false,
+    suppressMovable: true,
+    cellStyle: (params) => ({
+        textAlign: 'center',
+        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC', fontWeight: 600 } : {}),
+    }),
+    cellRenderer: (props) => {
+        const { data, value } = props;
+        const display = data?.isTotalRow
+            ? (sumVisibleAbove(props, field) || '')
+            : (value ? value : '');
+        return (
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                {display}
+            </div>
+        );
+    },
+});
 
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
@@ -1099,6 +1144,9 @@ console.log(isFilterApplied)
                             //     params.api.refreshCells({ force: true });
                             //     params.api.redrawRows();
                             // }}
+                             isExternalFilterPresent={() => true}
+                                doesExternalFilterPass={doesExternalFilterPass}
+                             onFilterChanged={handleFilterChanged} 
                             onFirstDataRendered={handleFirstDataRendered}
                         />}
 
