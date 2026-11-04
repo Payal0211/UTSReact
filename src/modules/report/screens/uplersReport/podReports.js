@@ -1750,6 +1750,16 @@ const getExportData = () => {
                             >
                               Uplers Fees %
                             </th>
+                              {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === "Negotiation Start" ||showTalentCol?.stage === "Offer Signed" ||showTalentCol?.stage === "Carry Fwd Preonboarding" || showTalentCol?.stage === 'Selections/Closures')) && <th
+                              style={{
+                                padding: "10px",
+                                border: "1px solid #ddd",
+                                backgroundColor:
+                                  "rgb(233, 233, 233) !important",
+                              }}
+                            >
+                              {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason' : 'Talent'}
+                            </th>}
                             <th
                               style={{
                                 padding: "10px",
@@ -1809,16 +1819,7 @@ const getExportData = () => {
                           ? false
                           : true) && (
                           <>
-                            {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === "Negotiation Start" ||showTalentCol?.stage === "Offer Signed" ||showTalentCol?.stage === "Carry Fwd Preonboarding" || showTalentCol?.stage === 'Selections/Closures')) && <th
-                              style={{
-                                padding: "10px",
-                                border: "1px solid #ddd",
-                                backgroundColor:
-                                  "rgb(233, 233, 233) !important",
-                              }}
-                            >
-                              {showTalentCol?.stage === "Lost (Pipeline)" ? 'Reason' : 'Talent'}
-                            </th>}
+                          
 
                            {!(showTalentCol?.stage === "Joined"  || showTalentCol?.stage === "Negotiation Start" ||showTalentCol?.stage === "Offer Signed" ||showTalentCol?.stage === "Carry Fwd Preonboarding" || showTalentCol?.stage === 'Selections/Closures' || showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)' || showTalentCol.stage_ID === "NHR" ) &&<th
                               style={{
@@ -1976,6 +1977,17 @@ const getExportData = () => {
                               >
                                 {detail.uplersFeesPer}
                               </td>
+                                {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === "Negotiation Start" ||showTalentCol?.stage === "Offer Signed" ||showTalentCol?.stage === "Carry Fwd Preonboarding" || showTalentCol?.stage === 'Selections/Closures')) && <td
+                                style={{
+                                  padding: "8px",
+                                  border: "1px solid #ddd",
+                                  minWidth: showTalentCol?.stage === "Lost (Pipeline)" ? '250px' : '',
+                                  // whiteSpace: "normal",    // ✅ allow wrapping
+                                  // wordBreak: "break-word",
+                                }}
+                              >
+                                {detail.talent}
+                              </td>}
                               <td
                                 style={{
                                   padding: "8px",
@@ -2020,17 +2032,7 @@ const getExportData = () => {
                             ? false
                             : true) && (
                             <>
-                              {(showTalentCol?.stage !== "Not Accepted HRs" && (showTalentCol?.stage === "Joined" || showTalentCol?.stage === "Negotiation Start" ||showTalentCol?.stage === "Offer Signed" ||showTalentCol?.stage === "Carry Fwd Preonboarding" || showTalentCol?.stage === 'Selections/Closures')) && <td
-                                style={{
-                                  padding: "8px",
-                                  border: "1px solid #ddd",
-                                  minWidth: showTalentCol?.stage === "Lost (Pipeline)" ? '250px' : '',
-                                  // whiteSpace: "normal",    // ✅ allow wrapping
-                                  // wordBreak: "break-word",
-                                }}
-                              >
-                                {detail.talent}
-                              </td>}
+                            
 
                               {!(showTalentCol?.stage === "Joined" || showTalentCol?.stage === "Negotiation Start" ||showTalentCol?.stage === "Offer Signed" ||showTalentCol?.stage === "Carry Fwd Preonboarding" || showTalentCol?.stage === 'Selections/Closures'|| showTalentCol?.stage === 'Preonboarding' || showTalentCol?.stage === 'Added HR (New)' || showTalentCol.stage_ID === "NHR" ) &&<td
                                 style={{
