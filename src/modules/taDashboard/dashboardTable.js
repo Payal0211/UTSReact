@@ -37,7 +37,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
   const navigate = useNavigate()
   const { setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails, startTargetDate, setStartTargetDate, setShowProfileTarget,
     editTAforTask, handleRemoveTask, getTalentProfilesDetailsfromTable, setTalentToMove, setProfileStatusID, setHRTalentListFourCount, setGoalList, setLoadingTalentProfile, getTalentProfilesDetailsfromGoalsTable,
-    today,setMonthDate,monthDate,TabTitle, setTabTitle
+    today, setMonthDate, monthDate, TabTitle, setTabTitle
   } = hooks;
   const [TaListData, setTaListData] = useState([]);
   const [isLoading, setIsLoading] = useState(false)
@@ -59,7 +59,8 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
 
   const [showAlertDetailModal, setShowAlertDetailModal] = useState(false);
   const [alertDetailData, setAlertDetailData] = useState({});
-
+  const visibleGroupsRef = useRef(new Set());
+  const [visibleRows, setVisibleRows] = useState(null);
   // const today = new Date();
   // const [monthDate, setMonthDate] = useState(today);
   const isHistory = useMemo(
@@ -144,6 +145,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       rows.forEach((row, index) => {
         finalData.push({
           ...row,
+          groupKey: key,
           rowSpan: index === 0 ? rows.length : 0,
           isTotalRow: false,
         });
@@ -189,6 +191,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       finalData.push({
         [groupField]: `${key} Total`,
         id: `total-${key}`,
+        groupKey: key,
         // talent_AnnualCTC_Budget_INRValueStr: totalTalentPayRate,
         uplersFeesPer: totalNR,
         revenue_On10PerCTCStr: totalNRUSD,
@@ -243,6 +246,84 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       setColumnOrder([])
     }
   }
+  const doesExternalFilterPass = (node) => {
+    if (!node.data?.isTotalRow) return true;
+
+    // no column filter active: show every total row
+    const api = gridApiRef.current;
+    if (!api || Object.keys(api.getFilterModel() || {}).length === 0) return true;
+
+    // show the total only if this TA had rows that passed the last pass
+    return visibleGroupsRef.current.has(node.data.groupKey);
+  };
+
+
+  const num = (v) => parseFloat(String(v ?? "").replace(/[^0-9.-]/g, "")) || 0;
+  const rowNR = (d) => num(d.totalRevenue_NoofTalentStr) - num(d.talent_AnnualCTC_Budget_INRValueStr);
+
+  const sumVisibleAbove = (props, getValue) => {
+    const { data, api, node } = props;
+    let sum = 0;
+    let i = node.rowIndex - 1;
+    while (i >= 0) {
+      const prev = api.getDisplayedRowAtIndex(i);
+      if (!prev?.data || prev.data.isTotalRow || prev.data.groupKey !== data.groupKey) break;
+      sum += getValue(prev.data);
+      i--;
+    }
+    return sum;
+  };
+  const sumFilteredRows = (api, getValue) => {
+    let sum = 0;
+    const seen = new Set(); // same de-dupe by HR number that getTotalRow uses
+    api.forEachNodeAfterFilter((n) => {
+      const d = n.data;
+      if (!d || d.isTotalRow || seen.has(d.hrNumber)) return;
+      seen.add(d.hrNumber);
+      sum += getValue(d);
+    });
+    return sum;
+  };
+  const handleFilterChanged = (params) => {
+    const api = params.api;
+    const filterActive = Object.keys(api.getFilterModel() || {}).length > 0;
+
+    // 1. collect rows that passed the column filters
+    const next = new Set();
+    const passing = [];
+    api.forEachNodeAfterFilter((node) => {
+      if (node.data && !node.data.isTotalRow) {
+        next.add(node.data.groupKey);
+        passing.push(node.data);
+      }
+    });
+
+    // 2. data for the other footer columns (NR (USD) is computed in its cell renderer)
+    try {
+      const footerNode = api.getPinnedBottomRow(0);
+      if (footerNode) {
+        footerNode.setData(getTotalRow(filterActive ? passing : TaListData, gridColumns()));
+      }
+    } catch (e) {
+      console.error('footer update failed', e);
+    }
+
+    // 3. remember which TAs still have rows
+    const prev = visibleGroupsRef.current;
+    const changed = next.size !== prev.size || [...next].some((k) => !prev.has(k));
+    visibleGroupsRef.current = next;
+
+    // 4. redraw TA total cells and the footer
+    api.refreshCells({
+      columns: ['uplersFeesPer', 'revenue_On10PerCTCStr', 'totalRevenue_NoofTalentStr', 'activeTR', 'taName'],
+      force: true,
+    });
+
+    // 5. if a TA lost all its rows, re-run once so its total row is hidden
+    if (changed) {
+      setTimeout(() => api.onFilterChanged(), 0);
+    }
+  };
 
   const getListData = useCallback(async () => {
     let pl = {
@@ -280,8 +361,14 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         profile_Shared_Achieved: row.profile_Shared_Achieved ?? 0,
         interview_Scheduled_Target: row.interview_Scheduled_Target ?? 0,
       }));
-      setTaListData(groupByRowSpan(normalized, "taName"));
+
+      const grouped = groupByRowSpan(normalized, "taName");
+      visibleGroupsRef.current = new Set(grouped.filter(r => !r.isTotalRow).map(r => r.groupKey));
+      setVisibleRows(null);
+      setTaListData(grouped);
     } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
+      visibleGroupsRef.current = new Set();
+      setVisibleRows(null);
       setTaListData([]);
     } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
       // setLoading(false);
@@ -1094,7 +1181,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     });
   };
 
-  const getTotalRow = (rows, columnDefs) => {
+  const getTotalRow = (rows = [], columnDefs) => {
     const total = {
       taName: "Total",
     };
@@ -1523,912 +1610,917 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
   );
 
   const gridHistoryColumns = () => {
-    if(TabTitle === 'HW'){
-      return  [
-    {
-      headerName: 'TA',
-      field: 'taName',
-      width: 140,
-      pinned: 'left',
-      sortable: false,
-      suppressMovable: true,
-      filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.taName)))?.map(v => ({ data: v })) },
-      filter: MultiConditionTextFilter,
-      rowSpan: (params) => params.data?.rowSpan || 1,
-      // valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
-      cellStyle: (params) => ({
-        borderBottom: params.data?.rowSpan === 0 ? 'none' : '',
-        borderTop: params.data?.rowSpan > 0 ? '1px solid #4C4E641F' : '',
-      }),
-      cellRenderer: (props) => {
-        const { data, value } = props
-        if (props.node.rowPinned === "bottom") {
-          return <strong>Total</strong>;
-        }
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return value
-      }
-    },
-    {
-      headerName: 'Company',
-      field: 'companyName',
-      width: 220,
-      pinned: 'left',
+    if (TabTitle === 'HW') {
+      return [
+        {
+          headerName: 'TA',
+          field: 'taName',
+          width: 140,
+          pinned: 'left',
+          sortable: false,
+          suppressMovable: true,
+          filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.taName)))?.map(v => ({ data: v })) },
+          filter: MultiConditionTextFilter,
+          cellRenderer: (props) => {
+            const { data, value, node, api } = props
+            if (props.node.rowPinned === "bottom") {
+              return <strong>Total</strong>;
+            }
+            if (!data || data.isTotalRow) return <div />;
 
-      suppressMovable: true,
-      filter: MultiConditionTextFilter,
-      cellRenderer: (props) => {
-        const { data, api } = props;
-        const ind = getRowIndex(data);
+            let i = node.rowIndex - 1;
+            while (i >= 0) {
+              const prev = api.getDisplayedRowAtIndex(i);
+              if (prev?.data && !prev.data.isTotalRow) {
+                if (prev.data.taName === data.taName) {
+                  return <div />;
+                }
+                break;
+              }
+              i--;
+            }
+            return value
+          }
+        },
+        {
+          headerName: 'Company',
+          field: 'companyName',
+          width: 220,
+          pinned: 'left',
 
-        if (props.node.rowPinned === "bottom") {
-          return "";
-        }
+          suppressMovable: true,
+          filter: MultiConditionTextFilter,
+          cellRenderer: (props) => {
+            const { data, api } = props;
+            const ind = getRowIndex(data);
 
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return (
-          <div
-            //  className={taStylesNew["company-cell"]}
-            style={{
-              display: 'flex', alignItems: 'center',
-              gap: '5px',
-              height: '100%'
-            }}>
+            if (props.node.rowPinned === "bottom") {
+              return "";
+            }
 
-
-            <div style={{ display: 'flex', justifyContent: 'start', width: '30px' }}>
-              <Tooltip title={data?.companyCategory === "VC POC" ? 'VC POC' :data?.companyCategory === "Diamond" ? "Diamond" : "Non Diamond"} >
-                <button
-                  className={taStylesNew["diamond-toggle"]}
+            if (data?.isTotalRow) {
+              return null;
+            }
+            return (
+              <div
+                //  className={taStylesNew["company-cell"]}
+                style={{
+                  display: 'flex', alignItems: 'center',
+                  gap: '5px',
+                  height: '100%'
+                }}>
 
 
-                >
-                  {data?.companyCategory === "VC POC" ?  <img src="images/diamond-blue.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />: data?.companyCategory === "Diamond"
-                    ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />
-                    : <img src="images/diamond-ic.svg" alt="Diamond" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-inactive"]}`} />}
-                </button>
-              </Tooltip>
+                <div style={{ display: 'flex', justifyContent: 'start', width: '30px' }}>
+                  <Tooltip title={data?.companyCategory === "VC POC" ? 'VC POC' : data?.companyCategory === "Diamond" ? "Diamond" : "Non Diamond"} >
+                    <button
+                      className={taStylesNew["diamond-toggle"]}
 
-            </div>
-            <Tooltip title={data.companyName}>
-              <span className={taStylesNew["company-name"]} style={{
-                display: 'block',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                fontWeight: 500,
-                fontSize: '10px',
-                lineHeight: "10px",
-                width: '70%'
-              }}>
-                {data?.companyName?.length > 20 ? `${data.companyName.slice(0, 18)}...` : data.companyName}
+
+                    >
+                      {data?.companyCategory === "VC POC" ? <img src="images/diamond-blue.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} /> : data?.companyCategory === "Diamond"
+                        ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />
+                        : <img src="images/diamond-ic.svg" alt="Diamond" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-inactive"]}`} />}
+                    </button>
+                  </Tooltip>
+
+                </div>
+                <Tooltip title={data.companyName}>
+                  <span className={taStylesNew["company-name"]} style={{
+                    display: 'block',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    fontWeight: 500,
+                    fontSize: '10px',
+                    lineHeight: "10px",
+                    width: '70%'
+                  }}>
+                    {data?.companyName?.length > 20 ? `${data.companyName.slice(0, 18)}...` : data.companyName}
+                  </span>
+                </Tooltip>
+              </div>
+            );
+          },
+        },
+        {
+          headerName: 'POC',
+          field: 'pocName',
+          pinned: 'left',
+          width: 130,
+          filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.pocName)))?.map(v => ({ data: v })) },
+          filter: MultiConditionTextFilter,
+          cellRenderer: (props) => {
+            const { data, value, ind } = props;
+            if (data?.isTotalRow) return null;
+            return value
+          },
+          cellStyle: { textAlign: 'center' },
+        },
+        {
+          headerName: 'HR ID',
+          field: 'hrNumber',
+          width: 150,
+          suppressMovable: true,
+          pinned: 'left',
+          filter: MultiConditionTextFilter,
+          cellStyle: (params) => ({
+            textAlign: 'center',
+            ...(duplicateColorMap[params.data?.hrNumber]
+              ? { backgroundColor: duplicateColorMap[params.data?.hrNumber] }
+              : {}),
+          }),
+          autoHeight: true,
+          cellRenderer: (props) => {
+            const { data } = props;
+            return (
+
+
+
+              <span
+                // className={taStylesNew["hr-id-chip"]}
+                style={{
+                  cursor: "pointer", color: "blue",
+                  /* font-weight: bold; */
+                  textDecoration: " underline",
+                  margin: '0px',
+                  fontSize: '10px'
+                }}
+                onClick={() => {
+                  window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${data.hiringRequest_ID}`, "_blank");
+                }}
+              >
+                {data.hrNumber}
               </span>
-            </Tooltip>
-          </div>
-        );
-      },
-    },
-    {
-      headerName: 'POC',
-      field: 'pocName',
-      width: 130,
-      pinned: 'left',
-      filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.pocName)))?.map(v => ({ data: v })) },
-      filter: MultiConditionTextFilter,
-      cellRenderer: (props) => {
-        const { data, value, ind } = props;
-        if (data?.isTotalRow) return null;
-        return value
-      },
-      cellStyle: { textAlign: 'center' },
-    },
-    {
-      headerName: 'HR ID',
-      field: 'hrNumber',
-      width: 150,
-      suppressMovable: true,
-      pinned: 'left',
-      filter: MultiConditionTextFilter,
-      cellStyle: (params) => ({
-        textAlign: 'center',
-        ...(duplicateColorMap[params.data?.hrNumber]
-          ? { backgroundColor: duplicateColorMap[params.data?.hrNumber] }
-          : {}),
-      }),
-      autoHeight: true,
-      cellRenderer: (props) => {
-        const { data } = props;
-        return (
 
 
-
-          <span
-            // className={taStylesNew["hr-id-chip"]}
-            style={{
-              cursor: "pointer", color: "blue",
-              /* font-weight: bold; */
-              textDecoration: " underline",
-              margin: '0px',
-              fontSize: '10px'
-            }}
-            onClick={() => {
-              window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${data.hiringRequest_ID}`, "_blank");
-            }}
-          >
-            {data.hrNumber}
-          </span>
-
-
-        );
-      },
-    },
-    {
-      headerName: 'HR Title',
-      field: 'hrTitle',
-      width: 220,
-      suppressMovable: true,
-      pinned: 'left',
-      filter: MultiConditionTextFilter,
-      autoHeight: true,
-      cellRenderer: (props) => {
-        const { data } = props;
-        return (
-          <div
-            // className={taStylesNew["hr-title-cell"]}
-            style={{
-              display: 'flex',
-              alignItems: 'center'
-            }}
-          >
-            {/* <Tooltip title={data.tA_HR_Status}>
+            );
+          },
+        },
+        {
+          headerName: 'HR Title',
+          field: 'hrTitle',
+          width: 220,
+          suppressMovable: true,
+          pinned: 'left',
+          filter: MultiConditionTextFilter,
+          autoHeight: true,
+          cellRenderer: (props) => {
+            const { data } = props;
+            return (
+              <div
+                // className={taStylesNew["hr-title-cell"]}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                {/* <Tooltip title={data.tA_HR_Status}>
               <span className={taStylesNew["hr-status-box"]}  style={{ background: data?.hrColorCode, marginRight:'5px' }}> */}
 
-            {/* <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span> */}
-            {/* </span>
+                {/* <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span> */}
+                {/* </span>
             </Tooltip> */}
 
-            <Tooltip title={data.hrTitle}><span style={{
-              display: 'block',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              fontSize: '10px',
-              fontWeight: 400,
-              // lineHeight: "10px"
-            }}>{data.hrTitle}</span></Tooltip>
+                <Tooltip title={data.hrTitle}><span style={{
+                  display: 'block',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  fontSize: '10px',
+                  fontWeight: 400,
+                  // lineHeight: "10px"
+                }}>{data.hrTitle}</span></Tooltip>
 
-            {/* <span 
+                {/* <span 
                 // className={taStylesNew["hr-id-chip"]}*/}
-            {/* style={{
+                {/* style={{
                   cursor: "pointer", color: "blue",
                   /* font-weight: bold; */}
-            {/* textDecoration: " underline",
+                {/* textDecoration: " underline",
                   margin: '0px'
                 }} */}
-            {/* onClick={() => {
+                {/* onClick={() => {
                   window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${data.hiringRequest_ID}`, "_blank");
                 }}
               >
                 {data.hrNumber}
               </span> */}
 
-          </div>
-        );
-      },
-    },
-    {
-      headerName: 'Status',
-      field: 'taskStatus',
-      pinned: 'left',
-      suppressMovable: true,
-      filterParams: { type: 'status', list: filtersList?.TaskStatus },
-      filter: MultiConditionTextFilter,
-      width: 120,
-      cellRenderer: (props) => {
-        const { value, data } = props;
-        const ind = getRowIndex(data);
-        const colorCode =
-          filtersList?.TaskStatus?.find((v) => v.data === value)?.colorCode ?? "";
-
-        if (props.node.rowPinned === "bottom") {
-          return "";
-        }
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return <span style={{ fontSize: '10px', color: colorCode, textAlign: 'center', display: 'flex', justifyContent: 'center' }} >{value}</span>;
-      },
-    },
-    {
-      headerName: '# Rounds',
-      field: 'no_of_InterviewRounds',
-      width: 130,
-      filterParams: { type: 'number' },
-      filter: MultiConditionTextFilter,
-      cellRenderer: (props) => {
-        const { data, value, ind } = props;
-        if (data?.isTotalRow) return null;
-        return value
-      },
-      cellStyle: { textAlign: 'center' },
-    },
-    
-    {
-      headerName: 'AM',
-      field: 'am',
-      width: 100,
-      filter: MultiConditionTextFilter,
-    },
-    {
-      headerName: 'NBD / Existing',
-      field: 'businessType',
-      width: 130,
-      filterParams: { type: 'status', list: [{ data: "Existing" }, { data: "NBD" }] },
-      cellStyle: { textAlign: 'center' },
-      filter: MultiConditionTextFilter,
-    },
-    {
-      headerName: 'Pricing Model',
-      field: 'pricingModel',
-      width: 140,
-      filterParams: { type: 'status', list: [{ data: "Transparent" }, { data: "Non Transparent" }] },
-      filter: MultiConditionTextFilter,
-    },
-    {
-      headerName: 'Talent Pay Rate (USD)',
-      field: 'talent_AnnualCTC_Budget_INRValueStr',
-      width: 160,
-      filterParams: { type: 'number' },
-      filter: MultiConditionTextFilter,
-      cellRenderer:(par)=>{
-        const {data} = par
-        return  data.totalRevenue_NoofTalent ? data?.totalRevenue_NoofTalent?.toLocaleString("en-US") : ''
-      }
-
-    },
-    {
-      headerName: 'NR %',
-      field: 'uplersFeesPer',
-      filterParams: { type: 'number' },
-      width: 100,
-      cellStyle: (params) => ({
-        textAlign: 'center',
-        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
-      }),
-      filter: MultiConditionTextFilter,
-      cellRenderer: (props) => {
-        const { data } = props;
-        if (data?.isTotalRow) {
-          return <strong>{data.uplersFeesPer?.toLocaleString('en-US')}</strong>;
-        }
-        return props.data.uplersFeesPer
-      },
-    },
-    {
-      headerName: 'NR (USD)',
-      field: 'revenue_On10PerCTCStr',
-      filterParams: { type: 'number' },
-      width: 140,
-      cellStyle: (params) => ({
-        textAlign: 'center',
-        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
-      }),
-      filter: MultiConditionTextFilter,
-      cellRenderer: (props) => {
-        const { data } = props;
-
-        if (props.node.rowPinned === "bottom") {
-          return data.revenue_On10PerCTCStr?.toLocaleString('en-US');
-        }
-
-        if (data?.isTotalRow) {
-          return (
-            <strong>
-              {data.revenue_On10PerCTCStr ? `${data.revenue_On10PerCTCStr?.toLocaleString("en-US")}` : ''}
-            </strong>
-          );
-        }
-
-        // NR (USD) = Bill Rate - Talent Pay Rate, per row
-        const billRate = parseFloat(
-          String(data.totalRevenue_NoofTalentStr ?? "").replace(/[^0-9.-]/g, "")
-        ) || 0;
-        const talentPayRate = parseFloat(
-          String(data.talent_AnnualCTC_Budget_INRValueStr ?? "").replace(/[^0-9.-]/g, "")
-        ) || 0;
-        const computedNRUSD = billRate - talentPayRate;
-
-        return computedNRUSD ? `${computedNRUSD?.toLocaleString("en-US")}` : ''
-      },
-    },
-    {
-      headerName: 'Bill Rate',
-      field: 'totalRevenue_NoofTalentStr',
-      width: 140,
-      filter: MultiConditionTextFilter,
-      cellStyle: (params) => ({
-        textAlign: 'center',
-        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),
-      }),
-      filterParams: { type: 'number' },
-      cellRenderer: (props) => {
-        const { data } = props;
-
-        if (data?.isTotalRow) {
-          return (
-            <strong>
-              {((Number(data.totalRevenue_NoofTalentStr || 0).toFixed(2)) * 100).toFixed(2)}%
-            </strong>
-          );
-        }
-
-        return  data.totalRevenue_NoofTalent?.toLocaleString("en-US")
-      }
-    },
-     {
-      headerName: 'HR Status',
-      field: 'tA_HR_Status',
-      width: 110,
-      filter: MultiConditionTextFilter,
-       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.tA_HR_Status)))?.map(v => ({ data: v })) },
-      cellStyle: (params) => ({
-        textAlign: 'center',
-      }),
-      cellRenderer: (props) => {
-        const { data } = props;
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{((TabTitle === "HL" || TabTitle === 'HW') && !isHistory)  ? All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status) : All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusColorCode, data?.tA_HR_Status)}</div>;
-      },
-    },
+              </div>
+            );
+          },
+        },
         {
-      headerName: 'Talent & Joined Date',
-      field: 'joiningDate',
-      width: 180,
-      filter: MultiConditionTextFilter,
-       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.joiningDate)))?.map(v => ({ data: v })) },
-      cellStyle: (params) => ({
-        textAlign: 'center',
-      }),
-      cellRenderer: (props) => {
-        const { data } = props;
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{data?.joiningDate}</div>;
-      },
-    },
-      {
-      headerName: 'SOW Date',
-      field: 'sowDate',
-      width: 180,
-      filter: MultiConditionTextFilter,
-       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.sowDate)))?.map(v => ({ data: v })) },
-      cellStyle: (params) => ({
-        textAlign: 'center',
-      }),
-      cellRenderer: (props) => {
-        const { data } = props;
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{data?.sowDate}</div>;
-      },
-    },
-    {
-      headerName: 'Active TRs',
-      field: 'activeTR',
-      width: 110,
-      filter: MultiConditionTextFilter,
-      filterParams: { type: 'number' },
-      cellStyle: (params) => ({
-        textAlign: 'center',
-        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),
-      }),
-      cellRenderer: (props) => {
-        const { data } = props;
-        if (data?.isTotalRow) {
-          return <strong>{data.activeTR}</strong>;
-        }
-        return data.activeTR;
-      },
-    },
-    {
-      headerName: 'Contractor/EOR',
-      field: 'modelType',
-      width: 140,
-      filter: MultiConditionTextFilter,
-    },
-    {
-      headerName: 'Active Profiles',
-      field: 'noOfProfile_TalentsTillDate',
-      width: 130,
-      filterParams: { type: 'number' },
-      filter: MultiConditionTextFilter,
-      cellStyle: { textAlign: 'center' },
-      cellRenderer: (props) => {
-        const { data } = props;
-        return +data?.noOfProfile_TalentsTillDate > 0 ? (
-          <p
-            style={{ color: "blue", fontWeight: "bold", textDecoration: "underline", cursor: "pointer", margin: 0 }}
-            onClick={() => {
-              getTalentProfilesDetailsfromTable(data, 0);
-              setTalentToMove(data);
-              setProfileStatusID(0);
-              setHRTalentListFourCount([]);
-            }}
-          >
-            {data?.noOfProfile_TalentsTillDate}
-          </p>
-        ) : (
-          data?.noOfProfile_TalentsTillDate
-        );
-      },
-    },
-    {
-      headerName: 'Latest Communication and Updates',
-      field: 'latestNotes',
-      width: 280,
-      filter: false,
+          headerName: 'Status',
+          field: 'taskStatus',
+          pinned: 'left',
+          suppressMovable: true,
+          filterParams: { type: 'status', list: filtersList?.TaskStatus },
+          filter: MultiConditionTextFilter,
+          width: 120,
+          cellRenderer: (props) => {
+            const { value, data } = props;
+            const ind = getRowIndex(data);
+            const colorCode =
+              filtersList?.TaskStatus?.find((v) => v.data === value)?.colorCode ?? "";
+
+            if (props.node.rowPinned === "bottom") {
+              return "";
+            }
+            if (data?.isTotalRow) {
+              return null;
+            }
+            return <span style={{ fontSize: '10px', color: colorCode, textAlign: 'center', display: 'flex', justifyContent: 'center' }} >{value}</span>;
+          },
+        },
+        {
+          headerName: '# Rounds',
+          field: 'no_of_InterviewRounds',
+          width: 130,
+          filterParams: { type: 'number' },
+          filter: MultiConditionTextFilter,
+          cellRenderer: (props) => {
+            const { data, value, ind } = props;
+            if (data?.isTotalRow) return null;
+            return value
+          },
+          cellStyle: { textAlign: 'center' },
+        },
+        {
+          headerName: 'AM',
+          field: 'am',
+          width: 100,
+          filter: MultiConditionTextFilter,
+        },
+        {
+          headerName: 'NBD / Existing',
+          field: 'businessType',
+          width: 130,
+          filterParams: { type: 'status', list: [{ data: "Existing" }, { data: "NBD" }] },
+          cellStyle: { textAlign: 'center' },
+          filter: MultiConditionTextFilter,
+        },
+        {
+          headerName: 'Pricing Model',
+          field: 'pricingModel',
+          width: 140,
+          filterParams: { type: 'status', list: [{ data: "Transparent" }, { data: "Non Transparent" }] },
+          filter: MultiConditionTextFilter,
+        },
+        {
+          headerName: 'Talent Pay Rate (USD)',
+          field: 'talent_AnnualCTC_Budget_INRValueStr',
+          width: 160,
+          filterParams: { type: 'number' },
+          filter: MultiConditionTextFilter,
+          cellRenderer: (par) => {
+            const { data } = par
+            return data.totalRevenue_NoofTalent ? data?.totalRevenue_NoofTalent?.toLocaleString("en-US") : ''
+          }
+
+        },
+        {
+          headerName: 'NR %',
+          field: 'uplersFeesPer',
+          filterParams: { type: 'number' },
+          width: 100,
+          cellStyle: (params) => ({
+            textAlign: 'center',
+            ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
+          }),
+          filter: MultiConditionTextFilter,
+          cellRenderer: (props) => {
+            const { data } = props;
+            if (data?.isTotalRow) {
+              return <strong>{data.uplersFeesPer?.toLocaleString('en-US')}</strong>;
+            }
+            return props.data.uplersFeesPer
+          },
+        },
+        {
+          headerName: 'NR (USD)',
+          field: 'revenue_On10PerCTCStr',
+          filterParams: { type: 'number' },
+          width: 140,
+          cellStyle: (params) => ({
+            textAlign: 'center',
+            ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
+          }),
+          filter: MultiConditionTextFilter,
+          cellRenderer: (props) => {
+            const { data } = props;
+
+            if (props.node.rowPinned === "bottom") {
+              return sumFilteredRows(props.api, rowNR).toLocaleString('en-US');
+            }
+
+            if (data?.isTotalRow) {
+              return <strong>{sumVisibleAbove(props, rowNR).toLocaleString("en-US")}</strong>;
+            }
+
+            // NR (USD) = Bill Rate - Talent Pay Rate, per row
+            const billRate = parseFloat(
+              String(data.totalRevenue_NoofTalentStr ?? "").replace(/[^0-9.-]/g, "")
+            ) || 0;
+            const talentPayRate = parseFloat(
+              String(data.talent_AnnualCTC_Budget_INRValueStr ?? "").replace(/[^0-9.-]/g, "")
+            ) || 0;
+            const computedNRUSD = billRate - talentPayRate;
+
+            return computedNRUSD ? `${computedNRUSD?.toLocaleString("en-US")}` : ''
+          },
+        },
+        {
+          headerName: 'Bill Rate',
+          field: 'totalRevenue_NoofTalentStr',
+          width: 140,
+          filter: MultiConditionTextFilter,
+          cellStyle: (params) => ({
+            textAlign: 'center',
+            ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),
+          }),
+          filterParams: { type: 'number' },
+          cellRenderer: (props) => {
+            const { data } = props;
+
+            if (data?.isTotalRow) {
+              const nr = sumVisibleAbove(props, rowNR);
+              return <strong>{((nr / 6000) * 100).toFixed(2)}%</strong>;
+            }
+
+            return data.totalRevenue_NoofTalent?.toLocaleString("en-US")
+          }
+        },
+        {
+          headerName: 'HR Status',
+          field: 'tA_HR_Status',
+          width: 110,
+          filter: MultiConditionTextFilter,
+          filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.tA_HR_Status)))?.map(v => ({ data: v })) },
+          cellStyle: (params) => ({
+            textAlign: 'center',
+          }),
+          cellRenderer: (props) => {
+            const { data } = props;
+            if (data?.isTotalRow) {
+              return null;
+            }
+            return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{((TabTitle === "HL" || TabTitle === 'HW') && !isHistory) ? All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status) : All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusColorCode, data?.tA_HR_Status)}</div>;
+          },
+        },
+        {
+          headerName: 'Talent & Joined Date',
+          field: 'joiningDate',
+          width: 180,
+          filter: MultiConditionTextFilter,
+          filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.joiningDate)))?.map(v => ({ data: v })) },
+          cellStyle: (params) => ({
+            textAlign: 'center',
+          }),
+          cellRenderer: (props) => {
+            const { data } = props;
+            if (data?.isTotalRow) {
+              return null;
+            }
+            return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{data?.joiningDate}</div>;
+          },
+        },
+        {
+          headerName: 'SOW Date',
+          field: 'sowDate',
+          width: 180,
+          filter: MultiConditionTextFilter,
+          filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.sowDate)))?.map(v => ({ data: v })) },
+          cellStyle: (params) => ({
+            textAlign: 'center',
+          }),
+          cellRenderer: (props) => {
+            const { data } = props;
+            if (data?.isTotalRow) {
+              return null;
+            }
+            return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{data?.sowDate}</div>;
+          },
+        },
+        {
+          headerName: 'Active TRs',
+          field: 'activeTR',
+          width: 110,
+          filter: MultiConditionTextFilter,
+          filterParams: { type: 'number' },
+          cellStyle: (params) => ({
+            textAlign: 'center',
+            ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),
+          }),
+          cellRenderer: (props) => {
+            const { data } = props;
+            if (data?.isTotalRow) {
+              return <strong>{sumVisibleAbove(props, (d) => parseFloat(d.activeTR) || 0)}</strong>;
+            }
+            return data.activeTR;
+          },
+        },
+        {
+          headerName: 'Contractor/EOR',
+          field: 'modelType',
+          width: 140,
+          filter: MultiConditionTextFilter,
+        },
+        {
+          headerName: 'Active Profiles',
+          field: 'noOfProfile_TalentsTillDate',
+          width: 130,
+          filterParams: { type: 'number' },
+          filter: MultiConditionTextFilter,
+          cellStyle: { textAlign: 'center' },
+          cellRenderer: (props) => {
+            const { data } = props;
+            return +data?.noOfProfile_TalentsTillDate > 0 ? (
+              <p
+                style={{ color: "blue", fontWeight: "bold", textDecoration: "underline", cursor: "pointer", margin: 0 }}
+                onClick={() => {
+                  getTalentProfilesDetailsfromTable(data, 0);
+                  setTalentToMove(data);
+                  setProfileStatusID(0);
+                  setHRTalentListFourCount([]);
+                }}
+              >
+                {data?.noOfProfile_TalentsTillDate}
+              </p>
+            ) : (
+              data?.noOfProfile_TalentsTillDate
+            );
+          },
+        },
+        {
+          headerName: 'Latest Communication and Updates',
+          field: 'latestNotes',
+          width: 280,
+          filter: false,
 
 
-      cellRenderer: (props) => {
-        const { value, data } = props
-        return <Tooltip title={value}>{data?.latestNotesTopRow}</Tooltip>
-      }
-      // cellRenderer: (props) => {
-      //   const { data } = props;
-      //   const ind = getRowIndex(data);
-      //   return data?.latestNotes ? (
-      //     <>
-      //       <div className={taStylesNew["latest-update"]} dangerouslySetInnerHTML={{ __html: data.latestNotes }}></div>
-      //       {/* <div className={taStylesNew["view-edit"]}>
-      //                   <button onClick={() => AddComment(data, ind)}>Edit</button>
-      //               </div> */}
-      //     </>
-      //   ) : "";
-      // },
-    },
+          cellRenderer: (props) => {
+            const { value, data } = props
+            return <Tooltip title={value}>{data?.latestNotesTopRow}</Tooltip>
+          }
+          // cellRenderer: (props) => {
+          //   const { data } = props;
+          //   const ind = getRowIndex(data);
+          //   return data?.latestNotes ? (
+          //     <>
+          //       <div className={taStylesNew["latest-update"]} dangerouslySetInnerHTML={{ __html: data.latestNotes }}></div>
+          //       {/* <div className={taStylesNew["view-edit"]}>
+          //                   <button onClick={() => AddComment(data, ind)}>Edit</button>
+          //               </div> */}
+          //     </>
+          //   ) : "";
+          // },
+        },
 
 
-  ];
+      ];
 
     }
 
-return  [
-    {
-      headerName: 'TA',
-      field: 'taName',
-      width: 140,
-      pinned: 'left',
-      sortable: false,
-      suppressMovable: true,
-      filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.taName)))?.map(v => ({ data: v })) },
-      filter: MultiConditionTextFilter,
-      rowSpan: (params) => params.data?.rowSpan || 1,
-      // valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
-      cellStyle: (params) => ({
-        borderBottom: params.data?.rowSpan === 0 ? 'none' : '',
-        borderTop: params.data?.rowSpan > 0 ? '1px solid #4C4E641F' : '',
-      }),
-      cellRenderer: (props) => {
-        const { data, value } = props
-        if (props.node.rowPinned === "bottom") {
-          return <strong>Total</strong>;
+    return [
+      {
+        headerName: 'TA',
+        field: 'taName',
+        width: 140,
+        pinned: 'left',
+        sortable: false,
+        suppressMovable: true,
+        filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.taName)))?.map(v => ({ data: v })) },
+        filter: MultiConditionTextFilter,
+        cellRenderer: (props) => {
+          const { data, value, node, api } = props
+          if (props.node.rowPinned === "bottom") {
+            return <strong>Total</strong>;
+          }
+          if (!data || data.isTotalRow) return <div />;
+
+          let i = node.rowIndex - 1;
+          while (i >= 0) {
+            const prev = api.getDisplayedRowAtIndex(i);
+            if (prev?.data && !prev.data.isTotalRow) {
+              if (prev.data.taName === data.taName) {
+                return <div />;
+              }
+              break;
+            }
+            i--;
+          }
+          return value
         }
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return value
-      }
-    },
-    {
-      headerName: 'Company',
-      field: 'companyName',
-      width: 220,
-      pinned: 'left',
+      },
+      {
+        headerName: 'Company',
+        field: 'companyName',
+        width: 220,
+        pinned: 'left',
 
-      suppressMovable: true,
-      filter: MultiConditionTextFilter,
-      cellRenderer: (props) => {
-        const { data, api } = props;
-        const ind = getRowIndex(data);
+        suppressMovable: true,
+        filter: MultiConditionTextFilter,
+        cellRenderer: (props) => {
+          const { data, api } = props;
+          const ind = getRowIndex(data);
 
-        if (props.node.rowPinned === "bottom") {
-          return "";
-        }
+          if (props.node.rowPinned === "bottom") {
+            return "";
+          }
 
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return (
-          <div
-            //  className={taStylesNew["company-cell"]}
-            style={{
-              display: 'flex', alignItems: 'center',
-              gap: '5px',
-              height: '100%'
-            }}>
+          if (data?.isTotalRow) {
+            return null;
+          }
+          return (
+            <div
+              //  className={taStylesNew["company-cell"]}
+              style={{
+                display: 'flex', alignItems: 'center',
+                gap: '5px',
+                height: '100%'
+              }}>
 
 
-            <div style={{ display: 'flex', justifyContent: 'start', width: '30px' }}>
-              <Tooltip title={data?.companyCategory === "VC POC" ? 'VC POC' :data?.companyCategory === "Diamond" ? "Diamond" : "Non Diamond"} >
-                <button
-                  className={taStylesNew["diamond-toggle"]}
+              <div style={{ display: 'flex', justifyContent: 'start', width: '30px' }}>
+                <Tooltip title={data?.companyCategory === "VC POC" ? 'VC POC' : data?.companyCategory === "Diamond" ? "Diamond" : "Non Diamond"} >
+                  <button
+                    className={taStylesNew["diamond-toggle"]}
 
 
-                >
-                  {data?.companyCategory === "VC POC" ?  <img src="images/diamond-blue.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />: data?.companyCategory === "Diamond"
-                    ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />
-                    : <img src="images/diamond-ic.svg" alt="Diamond" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-inactive"]}`} />}
-                </button>
+                  >
+                    {data?.companyCategory === "VC POC" ? <img src="images/diamond-blue.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} /> : data?.companyCategory === "Diamond"
+                      ? <img src="images/diamond-active-ic.svg" alt="Diamond Active" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-active"]}`} />
+                      : <img src="images/diamond-ic.svg" alt="Diamond" className={`${taStylesNew["diamond-icon"]} ${taStylesNew["diamond-inactive"]}`} />}
+                  </button>
+                </Tooltip>
+
+              </div>
+              <Tooltip title={data.companyName}>
+                <span className={taStylesNew["company-name"]} style={{
+                  display: 'block',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  fontWeight: 500,
+                  fontSize: '10px',
+                  lineHeight: "10px",
+                  width: '70%'
+                }}>
+                  {data?.companyName?.length > 20 ? `${data.companyName.slice(0, 18)}...` : data.companyName}
+                </span>
               </Tooltip>
-
             </div>
-            <Tooltip title={data.companyName}>
-              <span className={taStylesNew["company-name"]} style={{
+          );
+        },
+      },
+      {
+        headerName: 'POC',
+        field: 'pocName',
+        pinned: 'left',
+        width: 130,
+        filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.pocName)))?.map(v => ({ data: v })) },
+        filter: MultiConditionTextFilter,
+        cellRenderer: (props) => {
+          const { data, value, ind } = props;
+          if (data?.isTotalRow) return null;
+          return value
+        },
+        cellStyle: { textAlign: 'center' },
+      },
+      {
+        headerName: 'HR ID',
+        field: 'hrNumber',
+        width: 150,
+        suppressMovable: true,
+        pinned: 'left',
+        filter: MultiConditionTextFilter,
+        cellStyle: (params) => ({
+          textAlign: 'center',
+          ...(duplicateColorMap[params.data?.hrNumber]
+            ? { backgroundColor: duplicateColorMap[params.data?.hrNumber] }
+            : {}),
+        }),
+        autoHeight: true,
+        cellRenderer: (props) => {
+          const { data } = props;
+          return (
+
+
+
+            <span
+              // className={taStylesNew["hr-id-chip"]}
+              style={{
+                cursor: "pointer", color: "blue",
+                /* font-weight: bold; */
+                textDecoration: " underline",
+                margin: '0px',
+                fontSize: '10px'
+              }}
+              onClick={() => {
+                window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${data.hiringRequest_ID}`, "_blank");
+              }}
+            >
+              {data.hrNumber}
+            </span>
+
+
+          );
+        },
+      },
+      {
+        headerName: 'HR Title',
+        field: 'hrTitle',
+        width: 220,
+        suppressMovable: true,
+        pinned: 'left',
+        filter: MultiConditionTextFilter,
+        autoHeight: true,
+        cellRenderer: (props) => {
+          const { data } = props;
+          return (
+            <div
+              // className={taStylesNew["hr-title-cell"]}
+              style={{
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              {/* <Tooltip title={data.tA_HR_Status}>
+              <span className={taStylesNew["hr-status-box"]}  style={{ background: data?.hrColorCode, marginRight:'5px' }}> */}
+
+              {/* <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span> */}
+              {/* </span>
+            </Tooltip> */}
+
+              <Tooltip title={data.hrTitle}><span style={{
                 display: 'block',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                fontWeight: 500,
                 fontSize: '10px',
-                lineHeight: "10px",
-                width: '70%'
-              }}>
-                {data?.companyName?.length > 20 ? `${data.companyName.slice(0, 18)}...` : data.companyName}
-              </span>
-            </Tooltip>
-          </div>
-        );
-      },
-    },
-    {
-      headerName: 'HR ID',
-      field: 'hrNumber',
-      width: 150,
-      suppressMovable: true,
-      pinned: 'left',
-      filter: MultiConditionTextFilter,
-      cellStyle: (params) => ({
-        textAlign: 'center',
-        ...(duplicateColorMap[params.data?.hrNumber]
-          ? { backgroundColor: duplicateColorMap[params.data?.hrNumber] }
-          : {}),
-      }),
-      autoHeight: true,
-      cellRenderer: (props) => {
-        const { data } = props;
-        return (
+                fontWeight: 400,
+                // lineHeight: "10px"
+              }}>{data.hrTitle}</span></Tooltip>
 
-
-
-          <span
-            // className={taStylesNew["hr-id-chip"]}
-            style={{
-              cursor: "pointer", color: "blue",
-              /* font-weight: bold; */
-              textDecoration: " underline",
-              margin: '0px',
-              fontSize: '10px'
-            }}
-            onClick={() => {
-              window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${data.hiringRequest_ID}`, "_blank");
-            }}
-          >
-            {data.hrNumber}
-          </span>
-
-
-        );
-      },
-    },
-    {
-      headerName: 'HR Title',
-      field: 'hrTitle',
-      width: 220,
-      suppressMovable: true,
-      pinned: 'left',
-      filter: MultiConditionTextFilter,
-      autoHeight: true,
-      cellRenderer: (props) => {
-        const { data } = props;
-        return (
-          <div
-            // className={taStylesNew["hr-title-cell"]}
-            style={{
-              display: 'flex',
-              alignItems: 'center'
-            }}
-          >
-            {/* <Tooltip title={data.tA_HR_Status}>
-              <span className={taStylesNew["hr-status-box"]}  style={{ background: data?.hrColorCode, marginRight:'5px' }}> */}
-
-            {/* <span className={taStylesNew["hr-status-tooltip"]}>{data.tA_HR_Status}</span> */}
-            {/* </span>
-            </Tooltip> */}
-
-            <Tooltip title={data.hrTitle}><span style={{
-              display: 'block',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              fontSize: '10px',
-              fontWeight: 400,
-              // lineHeight: "10px"
-            }}>{data.hrTitle}</span></Tooltip>
-
-            {/* <span 
+              {/* <span 
                 // className={taStylesNew["hr-id-chip"]}*/}
-            {/* style={{
+              {/* style={{
                   cursor: "pointer", color: "blue",
                   /* font-weight: bold; */}
-            {/* textDecoration: " underline",
+              {/* textDecoration: " underline",
                   margin: '0px'
                 }} */}
-            {/* onClick={() => {
+              {/* onClick={() => {
                   window.open(UTSRoutes.ALLHIRINGREQUESTROUTE + `/${data.hiringRequest_ID}`, "_blank");
                 }}
               >
                 {data.hrNumber}
               </span> */}
 
-          </div>
-        );
-      },
-    },
-    {
-      headerName: 'Status',
-      field: 'taskStatus',
-      pinned: 'left',
-      suppressMovable: true,
-      filterParams: { type: 'status', list: filtersList?.TaskStatus },
-      filter: MultiConditionTextFilter,
-      width: 120,
-      cellRenderer: (props) => {
-        const { value, data } = props;
-        const ind = getRowIndex(data);
-        const colorCode =
-          filtersList?.TaskStatus?.find((v) => v.data === value)?.colorCode ?? "";
-
-        if (props.node.rowPinned === "bottom") {
-          return "";
-        }
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return <span style={{ fontSize: '10px', color: colorCode, textAlign: 'center', display: 'flex', justifyContent: 'center' }} >{value}</span>;
-      },
-    },
-    {
-      headerName: '# Rounds',
-      field: 'no_of_InterviewRounds',
-      width: 130,
-      filterParams: { type: 'number' },
-      filter: MultiConditionTextFilter,
-      cellRenderer: (props) => {
-        const { data, value, ind } = props;
-        if (data?.isTotalRow) return null;
-        return value
-      },
-      cellStyle: { textAlign: 'center' },
-    },
-    {
-      headerName: 'AM',
-      field: 'am',
-      width: 100,
-      filter: MultiConditionTextFilter,
-    },
-    {
-      headerName: 'NBD / Existing',
-      field: 'businessType',
-      width: 130,
-      filterParams: { type: 'status', list: [{ data: "Existing" }, { data: "NBD" }] },
-      cellStyle: { textAlign: 'center' },
-      filter: MultiConditionTextFilter,
-    },
-    {
-      headerName: 'Pricing Model',
-      field: 'pricingModel',
-      width: 140,
-      filterParams: { type: 'status', list: [{ data: "Transparent" }, { data: "Non Transparent" }] },
-      filter: MultiConditionTextFilter,
-    },
-    {
-      headerName: 'Talent Pay Rate (USD)',
-      field: 'talent_AnnualCTC_Budget_INRValueStr',
-      width: 160,
-      filterParams: { type: 'number' },
-      filter: MultiConditionTextFilter,
-      cellRenderer:(par)=>{
-        const {data} = par
-        return  data.totalRevenue_NoofTalent ? data?.totalRevenue_NoofTalent?.toLocaleString("en-US") : ''
-      }
-
-    },
-    {
-      headerName: 'NR %',
-      field: 'uplersFeesPer',
-      filterParams: { type: 'number' },
-      width: 100,
-      cellStyle: (params) => ({
-        textAlign: 'center',
-        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
-      }),
-      filter: MultiConditionTextFilter,
-      cellRenderer: (props) => {
-        const { data } = props;
-        if (data?.isTotalRow) {
-          return <strong>{data.uplersFeesPer?.toLocaleString('en-US')}</strong>;
-        }
-        return props.data.uplersFeesPer
-      },
-    },
-    {
-      headerName: 'NR (USD)',
-      field: 'revenue_On10PerCTCStr',
-      filterParams: { type: 'number' },
-      width: 140,
-      cellStyle: (params) => ({
-        textAlign: 'center',
-        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
-      }),
-      filter: MultiConditionTextFilter,
-      cellRenderer: (props) => {
-        const { data } = props;
-
-        if (props.node.rowPinned === "bottom") {
-          return data.revenue_On10PerCTCStr?.toLocaleString('en-US');
-        }
-
-        if (data?.isTotalRow) {
-          return (
-            <strong>
-              {data.revenue_On10PerCTCStr ? `${data.revenue_On10PerCTCStr?.toLocaleString("en-US")}` : ''}
-            </strong>
+            </div>
           );
+        },
+      },
+      {
+        headerName: 'Status',
+        field: 'taskStatus',
+        pinned: 'left',
+        suppressMovable: true,
+        filterParams: { type: 'status', list: filtersList?.TaskStatus },
+        filter: MultiConditionTextFilter,
+        width: 120,
+        cellRenderer: (props) => {
+          const { value, data } = props;
+          const ind = getRowIndex(data);
+          const colorCode =
+            filtersList?.TaskStatus?.find((v) => v.data === value)?.colorCode ?? "";
+
+          if (props.node.rowPinned === "bottom") {
+            return "";
+          }
+          if (data?.isTotalRow) {
+            return null;
+          }
+          return <span style={{ fontSize: '10px', color: colorCode, textAlign: 'center', display: 'flex', justifyContent: 'center' }} >{value}</span>;
+        },
+      },
+      {
+        headerName: '# Rounds',
+        field: 'no_of_InterviewRounds',
+        width: 130,
+        filterParams: { type: 'number' },
+        filter: MultiConditionTextFilter,
+        cellRenderer: (props) => {
+          const { data, value, ind } = props;
+          if (data?.isTotalRow) return null;
+          return value
+        },
+        cellStyle: { textAlign: 'center' },
+      },
+      {
+        headerName: 'AM',
+        field: 'am',
+        width: 100,
+        filter: MultiConditionTextFilter,
+      },
+      {
+        headerName: 'NBD / Existing',
+        field: 'businessType',
+        width: 130,
+        filterParams: { type: 'status', list: [{ data: "Existing" }, { data: "NBD" }] },
+        cellStyle: { textAlign: 'center' },
+        filter: MultiConditionTextFilter,
+      },
+      {
+        headerName: 'Pricing Model',
+        field: 'pricingModel',
+        width: 140,
+        filterParams: { type: 'status', list: [{ data: "Transparent" }, { data: "Non Transparent" }] },
+        filter: MultiConditionTextFilter,
+      },
+      {
+        headerName: 'Talent Pay Rate (USD)',
+        field: 'talent_AnnualCTC_Budget_INRValueStr',
+        width: 160,
+        filterParams: { type: 'number' },
+        filter: MultiConditionTextFilter,
+        cellRenderer: (par) => {
+          const { data } = par
+          return data.totalRevenue_NoofTalent ? data?.totalRevenue_NoofTalent?.toLocaleString("en-US") : ''
         }
 
-        // NR (USD) = Bill Rate - Talent Pay Rate, per row
-        const billRate = parseFloat(
-          String(data.totalRevenue_NoofTalentStr ?? "").replace(/[^0-9.-]/g, "")
-        ) || 0;
-        const talentPayRate = parseFloat(
-          String(data.talent_AnnualCTC_Budget_INRValueStr ?? "").replace(/[^0-9.-]/g, "")
-        ) || 0;
-        const computedNRUSD = billRate - talentPayRate;
-
-        return computedNRUSD ? `${computedNRUSD?.toLocaleString("en-US")}` : ''
       },
-    },
-    {
-      headerName: 'Bill Rate',
-      field: 'totalRevenue_NoofTalentStr',
-      width: 140,
-      filter: MultiConditionTextFilter,
-      cellStyle: (params) => ({
-        textAlign: 'center',
-        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),
-      }),
-      filterParams: { type: 'number' },
-      cellRenderer: (props) => {
-        const { data } = props;
+      {
+        headerName: 'NR %',
+        field: 'uplersFeesPer',
+        filterParams: { type: 'number' },
+        width: 100,
+        cellStyle: (params) => ({
+          textAlign: 'center',
+          ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
+        }),
+        filter: MultiConditionTextFilter,
+        cellRenderer: (props) => {
+          const { data } = props;
+          if (data?.isTotalRow) {
+            return <strong>{data.uplersFeesPer?.toLocaleString('en-US')}</strong>;
+          }
+          return props.data.uplersFeesPer
+        },
+      },
+      {
+        headerName: 'NR (USD)',
+        field: 'revenue_On10PerCTCStr',
+        filterParams: { type: 'number' },
+        width: 140,
+        cellStyle: (params) => ({
+          textAlign: 'center',
+          ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
+        }),
+        filter: MultiConditionTextFilter,
+        cellRenderer: (props) => {
+          const { data } = props;
+          if (props.node.rowPinned === "bottom") {
+            return sumFilteredRows(props.api, rowNR).toLocaleString('en-US');
+          }
 
-        if (data?.isTotalRow) {
-          return (
-            <strong>
-              {((Number(data.totalRevenue_NoofTalentStr || 0).toFixed(2)) * 100).toFixed(2)}%
-            </strong>
+          if (data?.isTotalRow) {
+            return <strong>{sumVisibleAbove(props, rowNR).toLocaleString("en-US")}</strong>;
+          }
+
+          // NR (USD) = Bill Rate - Talent Pay Rate, per row
+          const billRate = parseFloat(
+            String(data.totalRevenue_NoofTalentStr ?? "").replace(/[^0-9.-]/g, "")
+          ) || 0;
+          const talentPayRate = parseFloat(
+            String(data.talent_AnnualCTC_Budget_INRValueStr ?? "").replace(/[^0-9.-]/g, "")
+          ) || 0;
+          const computedNRUSD = billRate - talentPayRate;
+
+          return computedNRUSD ? `${computedNRUSD?.toLocaleString("en-US")}` : ''
+        },
+      },
+      {
+        headerName: 'Bill Rate',
+        field: 'totalRevenue_NoofTalentStr',
+        width: 140,
+        filter: MultiConditionTextFilter,
+        cellStyle: (params) => ({
+          textAlign: 'center',
+          ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),
+        }),
+        filterParams: { type: 'number' },
+        cellRenderer: (props) => {
+          const { data } = props;
+
+          if (data?.isTotalRow) {
+            const nr = sumVisibleAbove(props, rowNR);
+            return <strong>{((nr / 6000) * 100).toFixed(2)}%</strong>;
+          }
+          return data.totalRevenue_NoofTalent?.toLocaleString("en-US")
+        }
+      },
+      {
+        headerName: 'HR Status',
+        field: 'tA_HR_Status',
+        width: 110,
+        filter: MultiConditionTextFilter,
+        filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.tA_HR_Status)))?.map(v => ({ data: v })) },
+        cellStyle: (params) => ({
+          textAlign: 'center',
+        }),
+        cellRenderer: (props) => {
+          const { data } = props;
+          if (data?.isTotalRow) {
+            return null;
+          }
+          return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{((TabTitle === "HL" || TabTitle === 'HW') && !isHistory) ? All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status) : All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusColorCode, data?.tA_HR_Status)}</div>;
+        },
+      },
+
+      {
+        headerName: 'Active TRs',
+        field: 'activeTR',
+        width: 110,
+        filter: MultiConditionTextFilter,
+        filterParams: { type: 'number' },
+        cellStyle: (params) => ({
+          textAlign: 'center',
+          ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),
+        }),
+        cellRenderer: (props) => {
+          const { data } = props;
+          if (data?.isTotalRow) {
+            return <strong>{sumVisibleAbove(props, (d) => parseFloat(d.activeTR) || 0)}</strong>;
+          }
+          return data.activeTR;
+        },
+      },
+      {
+        headerName: 'Contractor/EOR',
+        field: 'modelType',
+        width: 140,
+        filter: MultiConditionTextFilter,
+      },
+      {
+        headerName: 'Active Profiles',
+        field: 'noOfProfile_TalentsTillDate',
+        width: 130,
+        filterParams: { type: 'number' },
+        filter: MultiConditionTextFilter,
+        cellStyle: { textAlign: 'center' },
+        cellRenderer: (props) => {
+          const { data } = props;
+          return +data?.noOfProfile_TalentsTillDate > 0 ? (
+            <p
+              style={{ color: "blue", fontWeight: "bold", textDecoration: "underline", cursor: "pointer", margin: 0 }}
+              onClick={() => {
+                getTalentProfilesDetailsfromTable(data, 0);
+                setTalentToMove(data);
+                setProfileStatusID(0);
+                setHRTalentListFourCount([]);
+              }}
+            >
+              {data?.noOfProfile_TalentsTillDate}
+            </p>
+          ) : (
+            data?.noOfProfile_TalentsTillDate
           );
-        }
-
-        return  data.totalRevenue_NoofTalent?.toLocaleString("en-US")
-      }
-    },
-     {
-      headerName: 'HR Status',
-      field: 'tA_HR_Status',
-      width: 110,
-      filter: MultiConditionTextFilter,
-       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.tA_HR_Status)))?.map(v => ({ data: v })) },
-      cellStyle: (params) => ({
-        textAlign: 'center',
-      }),
-      cellRenderer: (props) => {
-        const { data } = props;
-        if (data?.isTotalRow) {
-          return null;
-        }
-        return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{((TabTitle === "HL" || TabTitle === 'HW') && !isHistory)  ? All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status) : All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusColorCode, data?.tA_HR_Status)}</div>;
+        },
       },
-    },
-    
-    {
-      headerName: 'Active TRs',
-      field: 'activeTR',
-      width: 110,
-      filter: MultiConditionTextFilter,
-      filterParams: { type: 'number' },
-      cellStyle: (params) => ({
-        textAlign: 'center',
-        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),
-      }),
-      cellRenderer: (props) => {
-        const { data } = props;
-        if (data?.isTotalRow) {
-          return <strong>{data.activeTR}</strong>;
+      {
+        headerName: 'Latest Communication and Updates',
+        field: 'latestNotes',
+        width: 280,
+        filter: false,
+
+
+        cellRenderer: (props) => {
+          const { value, data } = props
+          return <Tooltip title={value}>{data?.latestNotesTopRow}</Tooltip>
         }
-        return data.activeTR;
+        // cellRenderer: (props) => {
+        //   const { data } = props;
+        //   const ind = getRowIndex(data);
+        //   return data?.latestNotes ? (
+        //     <>
+        //       <div className={taStylesNew["latest-update"]} dangerouslySetInnerHTML={{ __html: data.latestNotes }}></div>
+        //       {/* <div className={taStylesNew["view-edit"]}>
+        //                   <button onClick={() => AddComment(data, ind)}>Edit</button>
+        //               </div> */}
+        //     </>
+        //   ) : "";
+        // },
       },
-    },
-    {
-      headerName: 'Contractor/EOR',
-      field: 'modelType',
-      width: 140,
-      filter: MultiConditionTextFilter,
-    },
-    {
-      headerName: 'Active Profiles',
-      field: 'noOfProfile_TalentsTillDate',
-      width: 130,
-      filterParams: { type: 'number' },
-      filter: MultiConditionTextFilter,
-      cellStyle: { textAlign: 'center' },
-      cellRenderer: (props) => {
-        const { data } = props;
-        return +data?.noOfProfile_TalentsTillDate > 0 ? (
-          <p
-            style={{ color: "blue", fontWeight: "bold", textDecoration: "underline", cursor: "pointer", margin: 0 }}
-            onClick={() => {
-              getTalentProfilesDetailsfromTable(data, 0);
-              setTalentToMove(data);
-              setProfileStatusID(0);
-              setHRTalentListFourCount([]);
-            }}
-          >
-            {data?.noOfProfile_TalentsTillDate}
-          </p>
-        ) : (
-          data?.noOfProfile_TalentsTillDate
-        );
-      },
-    },
-    {
-      headerName: 'Latest Communication and Updates',
-      field: 'latestNotes',
-      width: 280,
-      filter: false,
 
 
-      cellRenderer: (props) => {
-        const { value, data } = props
-        return <Tooltip title={value}>{data?.latestNotesTopRow}</Tooltip>
-      }
-      // cellRenderer: (props) => {
-      //   const { data } = props;
-      //   const ind = getRowIndex(data);
-      //   return data?.latestNotes ? (
-      //     <>
-      //       <div className={taStylesNew["latest-update"]} dangerouslySetInnerHTML={{ __html: data.latestNotes }}></div>
-      //       {/* <div className={taStylesNew["view-edit"]}>
-      //                   <button onClick={() => AddComment(data, ind)}>Edit</button>
-      //               </div> */}
-      //     </>
-      //   ) : "";
-      // },
-    },
-
-
-  ];
+    ];
 
 
   }
- 
+
   const gridColumns = () => [
     {
       headerName: 'TA',
@@ -2439,19 +2531,23 @@ return  [
       suppressMovable: true,
       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.taName)))?.map(v => ({ data: v })) },
       filter: MultiConditionTextFilter,
-      rowSpan: (params) => params.data?.rowSpan || 1,
-      // valueFormatter: (params) => params.data?.rowSpan > 0 ? params.value : '',
-      cellStyle: (params) => ({
-        borderBottom: params.data?.rowSpan === 0 ? 'none' : '',
-        borderTop: params.data?.rowSpan > 0 ? '1px solid #4C4E641F' : '',
-      }),
       cellRenderer: (props) => {
-        const { data, value } = props
+        const { data, value, node, api } = props
         if (props.node.rowPinned === "bottom") {
           return <strong>Total</strong>;
         }
-        if (data?.isTotalRow) {
-          return null;
+        if (!data || data.isTotalRow) return <div />;
+
+        let i = node.rowIndex - 1;
+        while (i >= 0) {
+          const prev = api.getDisplayedRowAtIndex(i);
+          if (prev?.data && !prev.data.isTotalRow) {
+            if (prev.data.taName === data.taName) {
+              return <div />;
+            }
+            break;
+          }
+          i--;
         }
         return value
       }
@@ -2488,7 +2584,7 @@ return  [
             <div style={{ display: 'flex', justifyContent: 'start', width: '30px' }}>
               <Tooltip title={
                 userData?.UserId === 2 || userData?.UserId === 333 || userData?.UserId === 190 || userData?.UserId === 96
-                  ? (data?.companyCategory === "VC POC" ?  'VC POC': data?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond")
+                  ? (data?.companyCategory === "VC POC" ? 'VC POC' : data?.companyCategory === "Diamond" ? "Remove Diamond" : "Add Diamond")
                   : "Not allowed"
               } >
                 <button
@@ -2552,7 +2648,7 @@ return  [
         );
       },
     },
-     {
+    {
       headerName: 'POC',
       field: 'pocName',
       width: 130,
@@ -2861,15 +2957,11 @@ return  [
         const { data } = props;
 
         if (props.node.rowPinned === "bottom") {
-          return data.revenue_On10PerCTCStr?.toLocaleString('en-US');
+          return sumFilteredRows(props.api, rowNR).toLocaleString('en-US');
         }
 
         if (data?.isTotalRow) {
-          return (
-            <strong>
-              {data.revenue_On10PerCTCStr?.toLocaleString("en-US")}
-            </strong>
-          );
+          return <strong>{sumVisibleAbove(props, rowNR).toLocaleString("en-US")}</strong>;
         }
 
         // NR (USD) = Bill Rate - Talent Pay Rate, per row
@@ -2905,11 +2997,8 @@ return  [
         const { data } = props;
 
         if (data?.isTotalRow) {
-          return (
-            <strong>
-              {((Number(data.totalRevenue_NoofTalentStr || 0).toFixed(2)) * 100).toFixed(2)}%
-            </strong>
-          );
+          const nr = sumVisibleAbove(props, rowNR);
+          return <strong>{((nr / 6000) * 100).toFixed(2)}%</strong>;
         }
 
         return (
@@ -2922,12 +3011,12 @@ return  [
         );
       }
     },
-      {
+    {
       headerName: 'HR Status',
       field: 'tA_HR_Status',
       width: 110,
       filter: MultiConditionTextFilter,
-       filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.tA_HR_Status)))?.map(v => ({ data: v })) },
+      filterParams: { type: 'status', list: Array.from(new Set(TaListData?.map(i => i.tA_HR_Status)))?.map(v => ({ data: v })) },
       cellStyle: (params) => ({
         textAlign: 'center',
       }),
@@ -2936,7 +3025,7 @@ return  [
         if (data?.isTotalRow) {
           return null;
         }
-        return <div style={{display:'flex',justifyContent:'center',alignItems:"center",height:'100%'}}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status)}</div>;
+        return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.tA_HR_StatusID, data?.tA_HR_Status)}</div>;
       },
     },
     {
@@ -2952,7 +3041,7 @@ return  [
       cellRenderer: (props) => {
         const { data } = props;
         if (data?.isTotalRow) {
-          return <strong>{data.activeTR}</strong>;
+          return <strong>{sumVisibleAbove(props, (d) => parseFloat(d.activeTR) || 0)}</strong>;
         }
         return data.activeTR;
       },
@@ -3133,8 +3222,7 @@ return  [
   ];
 
   const columnDefs = useMemo(() => gridColumns(), [TaListData]);
-
-  const pinnedBottomRowData = useMemo((par) => {
+  const pinnedBottomRowData = useMemo(() => {
     return [getTotalRow(TaListData, gridColumns())];
   }, [TaListData]);
 
@@ -3156,20 +3244,20 @@ return  [
     gridApiRef.current = params.api;
   };
 
-   useEffect(() => {
+  useEffect(() => {
     const handleOutsideMouseDown = (e) => {
-        const api = gridApiRef.current;
-        if (!api) return;
-        // Nothing is being edited, so do nothing
-        if (api.getEditingCells().length === 0) return;
-        // Click inside the popup editor, so keep editing
-        if (e.target.closest('.ag-popup-editor')) return;
-        // Click anywhere else: commit the value and close the editor
-        api.stopEditing(false);
+      const api = gridApiRef.current;
+      if (!api) return;
+      // Nothing is being edited, so do nothing
+      if (api.getEditingCells().length === 0) return;
+      // Click inside the popup editor, so keep editing
+      if (e.target.closest('.ag-popup-editor')) return;
+      // Click anywhere else: commit the value and close the editor
+      api.stopEditing(false);
     };
     document.addEventListener('mousedown', handleOutsideMouseDown);
     return () => document.removeEventListener('mousedown', handleOutsideMouseDown);
-}, []);
+  }, []);
 
   const setDiamondCompany = async (row, index) => {
     let payload = {
@@ -3257,14 +3345,14 @@ return  [
   }
 
   const onColumnMoved = (params) => {
-     if (!params.finished) return;
-     if (params.toIndex + 1 < 6) return
+    if (!params.finished) return;
+    if (params.toIndex + 1 < 6) return
     const movedColumn = params.column;
     if (!movedColumn) return;
 
     const columns = params.api.getAllDisplayedColumns();
     const movedIndex = columns.findIndex(
-        col => col.getColId() === movedColumn.getColId()
+      col => col.getColId() === movedColumn.getColId()
     );
 
     const previousColumn = columns[movedIndex - 1];
@@ -3281,17 +3369,17 @@ return  [
     //   ColumnName: params.column.getColId(),
     //   ColumnOrder: params.toIndex + 1
     // }
-    
-  
-    let colOrd = columnOrder.find(c=> c.columnName === nextColumn?.getColId()).columnOrder
 
-       let plnew = {
+
+    let colOrd = columnOrder.find(c => c.columnName === nextColumn?.getColId()).columnOrder
+
+    let plnew = {
       POD_Id: selectedHead,
       ColumnName: params.column.getColId(),
       ColumnOrder: colOrd
     }
 
-      // console.log(gridOrderedColumns,pl,columnOrder,plnew)
+    // console.log(gridOrderedColumns,pl,columnOrder,plnew)
 
     updateColumnOrder(plnew)
   };
@@ -3384,41 +3472,41 @@ return  [
         >
           Lost
         </button>
-       
-          <button
-            onClick={() => setTabTitle('HW')}
-            style={{
-              background: 'none',
-              border: 'none',
-              padding: '8px 0 12px',
-              fontSize: 15,
-              fontWeight: TabTitle === 'HW' ? 600 : 400,
-              color: TabTitle === 'HW' ? '#000' : '#8c8c8c',
-              borderBottom: TabTitle === 'HW' ? '2px solid #FFDA30' : '2px solid transparent',
-              cursor: 'pointer',
-            }}
-          >
-            HR Won
-          </button>
-          <button
-            onClick={() => setTabTitle('HL')}
-            style={{
-              background: 'none',
-              border: 'none',
-              padding: '8px 0 12px',
-              fontSize: 15,
-              fontWeight: TabTitle === 'HL' ? 600 : 400,
-              color: TabTitle === 'HL' ? '#000' : '#8c8c8c',
-              borderBottom: TabTitle === 'HL' ? '2px solid #FFDA30' : '2px solid transparent',
-              cursor: 'pointer',
-            }}
-          >
-            HR Lost
-          </button>
+
+        <button
+          onClick={() => setTabTitle('HW')}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: '8px 0 12px',
+            fontSize: 15,
+            fontWeight: TabTitle === 'HW' ? 600 : 400,
+            color: TabTitle === 'HW' ? '#000' : '#8c8c8c',
+            borderBottom: TabTitle === 'HW' ? '2px solid #FFDA30' : '2px solid transparent',
+            cursor: 'pointer',
+          }}
+        >
+          HR Won
+        </button>
+        <button
+          onClick={() => setTabTitle('HL')}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: '8px 0 12px',
+            fontSize: 15,
+            fontWeight: TabTitle === 'HL' ? 600 : 400,
+            color: TabTitle === 'HL' ? '#000' : '#8c8c8c',
+            borderBottom: TabTitle === 'HL' ? '2px solid #FFDA30' : '2px solid transparent',
+            cursor: 'pointer',
+          }}
+        >
+          HR Lost
+        </button>
       </div>
       <div className={`${taStylesNew["table-container"]} ${gridStyles["grid-wrapper"]}`} style={{ marginTop: '20px' }}>
         {isLoading ? <TableSkeleton /> : <div style={{ height: 500 }} ><AgGridReact
-          //  onGridReady={onGridReady}
+          onGridReady={onGridReady}
           // onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
           //  theme={scrumGridTheme}
           rowData={TaListData}
@@ -3437,6 +3525,10 @@ return  [
           onColumnMoved={onColumnMoved}
           onColumnResized={onColumnResized}
           pinnedBottomRowData={pinnedBottomRowData}
+
+          isExternalFilterPresent={() => true}
+          doesExternalFilterPass={doesExternalFilterPass}
+          onFilterChanged={handleFilterChanged}
           getRowStyle={(params) => {
             if (params.node.rowPinned) {
               return {

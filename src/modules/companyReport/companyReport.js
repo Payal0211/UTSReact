@@ -102,9 +102,17 @@ const handleFilterChanged = (params) => {
     columns: [
         'companyName',
         'joinedRevenueStr',
+        'negotiationStartRevenueStr',
         'profilesShared',
         'r1InterviewCompleted',
         'r2InterviewCompleted',
+        'r3InterviewCompleted',
+        'offerDropout',
+        'offerBackout',
+        'offerSignedCount',
+        'r1InterviewRejected',
+        'r2InterviewRejected',
+        'r3InterviewRejected'
     ],
     force: true,
 });
@@ -193,24 +201,7 @@ const handleFilterChanged = (params) => {
             // Calculate TA wise totals
 
 
-            const totalJoinedRevenue = rows.reduce(
-                (sum, row) => sum + (parseFloat(row.joinedRevenue) || 0),
-                0
-            );
-
-            const getformatedTotal = (totalJoinedRevenue) => {
-                if (hrModal === 'DP') {
-                    return totalJoinedRevenue?.toLocaleString('en-IN', {
-                        style: 'currency', currency: 'INR', minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    })
-                } else {
-
-                } return totalJoinedRevenue?.toLocaleString('en-US', {
-                    style: 'currency', currency: 'USD', minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                })
-            }
+           
 
             // Add TA Total Row
             finalData.push({
@@ -218,7 +209,8 @@ const handleFilterChanged = (params) => {
                 id: `total-${key}`,
                  groupKey: key,
                 // talent_AnnualCTC_Budget_INRValueStr: totalTalentPayRate,
-                joinedRevenueStr: +totalJoinedRevenue ? getformatedTotal(totalJoinedRevenue) : '',
+                // joinedRevenueStr: +totalJoinedRevenue ? getformatedTotal(totalJoinedRevenue) : '',
+                // negotiationStartRevenueStr : +totalNegotiationRevenue ? getformatedTotal(totalNegotiationRevenue) : '',
                 isTotalRow: true,
                 rowSpan: 1,
             });
@@ -471,7 +463,26 @@ const doesExternalFilterPass = (node) => {
                     );
                 },
             },
+{
+                headerName: 'Status',
+                field: 'hrStatus',
+                width: 140,
+                sortable: false,
+                pinned: 'left',
+                suppressMovable: true,
+                filter: MultiConditionTextFilter,
+                filterParams: {
+                    type: 'status',
+                    list: availableStatuses.map(status => ({
+                        data: status
+                    }))
+                },
+                cellRenderer: (props) => {
+                    const { data } = props;
+                    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.hrStatusCode, data?.hrStatus)}</div>;
 
+                }
+            },
             {
                 headerName: 'POC',
                 field: 'pocName',
@@ -500,25 +511,7 @@ const doesExternalFilterPass = (node) => {
 
             //     }
             // },
-            {
-                headerName: 'Status',
-                field: 'hrStatus',
-                width: 140,
-                sortable: false,
-                suppressMovable: true,
-                filter: MultiConditionTextFilter,
-                filterParams: {
-                    type: 'status',
-                    list: availableStatuses.map(status => ({
-                        data: status
-                    }))
-                },
-                cellRenderer: (props) => {
-                    const { data } = props;
-                    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: "center", height: '100%' }}>{All_Hiring_Request_Utils.GETHRSTATUS(data?.hrStatusCode, data?.hrStatus)}</div>;
-
-                }
-            },
+            
             {
                 headerName: 'TRs',
                 field: 'totalTR',
@@ -601,87 +594,13 @@ const doesExternalFilterPass = (node) => {
                     );
                 },
             },
-            {
-                headerName: 'R1 Interview Rejected',
-                field: 'r1InterviewRejected',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
+            sumCol('R1 Interview Rejected', 'r1InterviewRejected'),
+           
          sumCol('R2 Interview Completed', 'r2InterviewCompleted'),
-            {
-                headerName: 'R2 Interview Rejected',
-                field: 'r2InterviewRejected',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
-            {
-                headerName: 'R3 Interview Completed',
-                field: 'r3InterviewCompleted',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
-            {
-                headerName: 'R3 Interview Rejected',
-                field: 'r3InterviewRejected',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
-            {
-                headerName: 'No. of Talents rejected in interview',
-                field: 'noOfTalentRejectInterview',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
+            sumCol('R2 Interview Rejected', 'r2InterviewRejected'),
+             sumCol('R3 Interview Completed', 'r3InterviewCompleted'),
+              sumCol('R3 Interview Rejected', 'r3InterviewRejected'),
+             sumCol('No. of Talents rejected in interview', 'noOfTalentRejectInterview'),
             {
                 headerName: 'Negotiation Start Count',
                 field: 'negotiationStartCount',
@@ -698,22 +617,7 @@ const doesExternalFilterPass = (node) => {
                     );
                 },
             },
-            {
-                headerName: 'Negotiation Start Revenue',
-                field: 'negotiationStartRevenueStr',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
+            sumCurrencyCol('Negotiation Start Revenue','negotiationStartRevenueStr','negotiationStartRevenueValue'),
             {
                 headerName: 'R1 to R2 Ratio',
                 field: 'r1ToR2Ratio',
@@ -730,58 +634,10 @@ const doesExternalFilterPass = (node) => {
                     );
                 },
             },
-            {
-                headerName: 'Dropout',
-                field: 'offerDropout',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {data.offerDropou ? `${data.offerDropout}` : ''}
-                        </div>
-                    );
-                },
-
-
-            },
-            {
-                headerName: 'Backout',
-                field: 'offerBackout',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {data.offerBackout ? `${data.offerBackout}` : ''}
-                        </div>
-                    );
-                },
-
-
-            },
-            {
-                headerName: 'Offer Signed Talent',
-                field: 'offerSignedCount',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
+             sumCol('Dropout', 'offerDropout'),
+              sumCol('Backout', 'offerBackout'),
+               sumCol('Offer Signed Talent', 'offerSignedCount'),
+           
             {
                 headerName: 'R1 to Selected (I2S %)',
                 field: 'r1ToSelected',
@@ -830,28 +686,7 @@ const doesExternalFilterPass = (node) => {
                     );
                 },
             },
-            {
-                headerName: 'Joined Revenue',
-                field: 'joinedRevenueStr',
-                width: 100,
-                cellStyle: (params) => ({
-                    textAlign: 'center',
-                    ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
-                }),
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
+            sumCurrencyCol('Joined Revenue','joinedRevenueStr','joinedRevenue'),
             {
                 headerName: 'Current Active profiles',
                 field: 'currentActiveProfile',
@@ -947,6 +782,32 @@ const sumVisibleAbove = (props, field) => {
     return sum;
 };
 
+const currencySumVisibleAbove =(props,field)=>{
+     const { data, api, node } = props;
+    let sum = 0;
+    let i = node.rowIndex - 1;
+    while (i >= 0) {
+        const prev = api.getDisplayedRowAtIndex(i);
+        if (!prev?.data || prev.data.isTotalRow || prev.data.groupKey !== data.groupKey) break;
+        sum += parseFloat(prev.data[field]) || 0;          
+        i--;
+    }
+     const getformatedTotal = (totalJoinedRevenue) => {
+                if (hrModal === 'DP') {
+                    return totalJoinedRevenue?.toLocaleString('en-IN', {
+                        style: 'currency', currency: 'INR', minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })
+                } else {
+
+                } return totalJoinedRevenue?.toLocaleString('en-US', {
+                    style: 'currency', currency: 'USD', minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                })
+            }
+    return sum ? getformatedTotal(sum) : '';
+}
+
 // Column that shows the normal value on data rows and the company total on the total row
 const sumCol = (headerName, field, width = 100) => ({
     headerName,
@@ -970,6 +831,33 @@ const sumCol = (headerName, field, width = 100) => ({
         );
     },
 });
+
+const sumCurrencyCol = (headerName, field, valueField,width = 100)=>(
+     {
+                headerName,
+                field,
+                width,
+                cellStyle: (params) => ({
+                    textAlign: 'center',
+                    ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
+                }),
+                sortable: false,
+                suppressMovable: true,
+                cellRenderer: (props) => {
+                    const { data, ind, value } = props;
+
+                const display = data?.isTotalRow
+                        ? (currencySumVisibleAbove(props, valueField) || '')
+                        : (value ? value : '');
+
+                    return (
+                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
+                            {display}
+                        </div>
+                    );
+                },
+            }
+)
 
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
