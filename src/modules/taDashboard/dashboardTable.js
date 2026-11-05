@@ -59,7 +59,8 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
 
   const [showAlertDetailModal, setShowAlertDetailModal] = useState(false);
   const [alertDetailData, setAlertDetailData] = useState({});
-
+const visibleGroupsRef = useRef(new Set());
+const [visibleRows, setVisibleRows] = useState(null);
   // const today = new Date();
   // const [monthDate, setMonthDate] = useState(today);
   const isHistory = useMemo(
@@ -144,6 +145,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       rows.forEach((row, index) => {
         finalData.push({
           ...row,
+          groupKey: key,
           rowSpan: index === 0 ? rows.length : 0,
           isTotalRow: false,
         });
@@ -189,6 +191,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       finalData.push({
         [groupField]: `${key} Total`,
         id: `total-${key}`,
+        groupKey: key,
         // talent_AnnualCTC_Budget_INRValueStr: totalTalentPayRate,
         uplersFeesPer: totalNR,
         revenue_On10PerCTCStr: totalNRUSD,
@@ -243,6 +246,84 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       setColumnOrder([])
     }
   }
+const doesExternalFilterPass = (node) => {
+  if (!node.data?.isTotalRow) return true;
+
+  // no column filter active: show every total row
+  const api = gridApiRef.current;
+  if (!api || Object.keys(api.getFilterModel() || {}).length === 0) return true;
+
+  // show the total only if this TA had rows that passed the last pass
+  return visibleGroupsRef.current.has(node.data.groupKey);
+};
+
+
+const num = (v) => parseFloat(String(v ?? "").replace(/[^0-9.-]/g, "")) || 0;
+const rowNR = (d) => num(d.totalRevenue_NoofTalentStr) - num(d.talent_AnnualCTC_Budget_INRValueStr);
+
+const sumVisibleAbove = (props, getValue) => {
+  const { data, api, node } = props;
+  let sum = 0;
+  let i = node.rowIndex - 1;
+  while (i >= 0) {
+    const prev = api.getDisplayedRowAtIndex(i);
+    if (!prev?.data || prev.data.isTotalRow || prev.data.groupKey !== data.groupKey) break;
+    sum += getValue(prev.data);
+    i--;
+  }
+  return sum;
+};
+const sumFilteredRows = (api, getValue) => {
+  let sum = 0;
+  const seen = new Set(); // same de-dupe by HR number that getTotalRow uses
+  api.forEachNodeAfterFilter((n) => {
+    const d = n.data;
+    if (!d || d.isTotalRow || seen.has(d.hrNumber)) return;
+    seen.add(d.hrNumber);
+    sum += getValue(d);
+  });
+  return sum;
+};
+const handleFilterChanged = (params) => {
+  const api = params.api;
+  const filterActive = Object.keys(api.getFilterModel() || {}).length > 0;
+
+  // 1. collect rows that passed the column filters
+  const next = new Set();
+  const passing = [];
+  api.forEachNodeAfterFilter((node) => {
+    if (node.data && !node.data.isTotalRow) {
+      next.add(node.data.groupKey);
+      passing.push(node.data);
+    }
+  });
+
+  // 2. data for the other footer columns (NR (USD) is computed in its cell renderer)
+try {
+  const footerNode = api.getPinnedBottomRow(0);
+  if (footerNode) {
+    footerNode.setData(getTotalRow(filterActive ? passing : TaListData, gridColumns()));
+  }
+} catch (e) {
+  console.error('footer update failed', e);
+}
+
+  // 3. remember which TAs still have rows
+  const prev = visibleGroupsRef.current;
+  const changed = next.size !== prev.size || [...next].some((k) => !prev.has(k));
+  visibleGroupsRef.current = next;
+
+  // 4. redraw TA total cells and the footer
+  api.refreshCells({
+    columns: ['uplersFeesPer', 'revenue_On10PerCTCStr', 'totalRevenue_NoofTalentStr', 'activeTR'],
+    force: true,
+  });
+
+  // 5. if a TA lost all its rows, re-run once so its total row is hidden
+  if (changed) {
+    setTimeout(() => api.onFilterChanged(), 0);
+  }
+};
 
   const getListData = useCallback(async () => {
     let pl = {
@@ -280,9 +361,15 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
         profile_Shared_Achieved: row.profile_Shared_Achieved ?? 0,
         interview_Scheduled_Target: row.interview_Scheduled_Target ?? 0,
       }));
-      setTaListData(groupByRowSpan(normalized, "taName"));
+     
+     const grouped = groupByRowSpan(normalized, "taName");
+visibleGroupsRef.current = new Set(grouped.filter(r => !r.isTotalRow).map(r => r.groupKey));
+setVisibleRows(null);
+setTaListData(grouped);
     } else if (result.statusCode === HTTPStatusCode.NOT_FOUND) {
-      setTaListData([]);
+       visibleGroupsRef.current = new Set();
+  setVisibleRows(null);
+  setTaListData([]);
     } else if (result?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
       // setLoading(false);
       return navigate(UTSRoutes.LOGINROUTE);
@@ -1094,7 +1181,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
     });
   };
 
-  const getTotalRow = (rows, columnDefs) => {
+const getTotalRow = (rows = [], columnDefs) => {
     const total = {
       taName: "Total",
     };
@@ -1819,17 +1906,13 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       cellRenderer: (props) => {
         const { data } = props;
 
-        if (props.node.rowPinned === "bottom") {
-          return data.revenue_On10PerCTCStr?.toLocaleString('en-US');
-        }
+      if (props.node.rowPinned === "bottom") {
+  return sumFilteredRows(props.api, rowNR).toLocaleString('en-US');
+}
 
-        if (data?.isTotalRow) {
-          return (
-            <strong>
-              {data.revenue_On10PerCTCStr ? `${data.revenue_On10PerCTCStr?.toLocaleString("en-US")}` : ''}
-            </strong>
-          );
-        }
+      if (data?.isTotalRow) {
+  return <strong>{sumVisibleAbove(props, rowNR).toLocaleString("en-US")}</strong>;
+}
 
         // NR (USD) = Bill Rate - Talent Pay Rate, per row
         const billRate = parseFloat(
@@ -1856,13 +1939,10 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       cellRenderer: (props) => {
         const { data } = props;
 
-        if (data?.isTotalRow) {
-          return (
-            <strong>
-              {((Number(data.totalRevenue_NoofTalentStr || 0).toFixed(2)) * 100).toFixed(2)}%
-            </strong>
-          );
-        }
+      if (data?.isTotalRow) {
+  const nr = sumVisibleAbove(props, rowNR);
+  return <strong>{((nr / 6000) * 100).toFixed(2)}%</strong>;
+}
 
         return  data.totalRevenue_NoofTalent?.toLocaleString("en-US")
       }
@@ -1931,7 +2011,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
       cellRenderer: (props) => {
         const { data } = props;
         if (data?.isTotalRow) {
-          return <strong>{data.activeTR}</strong>;
+          return <strong>{sumVisibleAbove(props, (d) => parseFloat(d.activeTR) || 0)}</strong>;
         }
         return data.activeTR;
       },
@@ -2279,18 +2359,13 @@ return  [
       filter: MultiConditionTextFilter,
       cellRenderer: (props) => {
         const { data } = props;
+if (props.node.rowPinned === "bottom") {
+  return sumFilteredRows(props.api, rowNR).toLocaleString('en-US');
+}
 
-        if (props.node.rowPinned === "bottom") {
-          return data.revenue_On10PerCTCStr?.toLocaleString('en-US');
-        }
-
-        if (data?.isTotalRow) {
-          return (
-            <strong>
-              {data.revenue_On10PerCTCStr ? `${data.revenue_On10PerCTCStr?.toLocaleString("en-US")}` : ''}
-            </strong>
-          );
-        }
+       if (data?.isTotalRow) {
+  return <strong>{sumVisibleAbove(props, rowNR).toLocaleString("en-US")}</strong>;
+}
 
         // NR (USD) = Bill Rate - Talent Pay Rate, per row
         const billRate = parseFloat(
@@ -2317,14 +2392,10 @@ return  [
       cellRenderer: (props) => {
         const { data } = props;
 
-        if (data?.isTotalRow) {
-          return (
-            <strong>
-              {((Number(data.totalRevenue_NoofTalentStr || 0).toFixed(2)) * 100).toFixed(2)}%
-            </strong>
-          );
-        }
-
+      if (data?.isTotalRow) {
+  const nr = sumVisibleAbove(props, rowNR);
+  return <strong>{((nr / 6000) * 100).toFixed(2)}%</strong>;
+}
         return  data.totalRevenue_NoofTalent?.toLocaleString("en-US")
       }
     },
@@ -2359,7 +2430,7 @@ return  [
       cellRenderer: (props) => {
         const { data } = props;
         if (data?.isTotalRow) {
-          return <strong>{data.activeTR}</strong>;
+         return <strong>{sumVisibleAbove(props, (d) => parseFloat(d.activeTR) || 0)}</strong>;
         }
         return data.activeTR;
       },
@@ -2857,17 +2928,13 @@ return  [
       cellRenderer: (props) => {
         const { data } = props;
 
-        if (props.node.rowPinned === "bottom") {
-          return data.revenue_On10PerCTCStr?.toLocaleString('en-US');
-        }
+       if (props.node.rowPinned === "bottom") {
+  return sumFilteredRows(props.api, rowNR).toLocaleString('en-US');
+}
 
-        if (data?.isTotalRow) {
-          return (
-            <strong>
-              {data.revenue_On10PerCTCStr?.toLocaleString("en-US")}
-            </strong>
-          );
-        }
+       if (data?.isTotalRow) {
+  return <strong>{sumVisibleAbove(props, rowNR).toLocaleString("en-US")}</strong>;
+}
 
         // NR (USD) = Bill Rate - Talent Pay Rate, per row
         const billRate = parseFloat(
@@ -2901,13 +2968,10 @@ return  [
       cellRenderer: (props) => {
         const { data } = props;
 
-        if (data?.isTotalRow) {
-          return (
-            <strong>
-              {((Number(data.totalRevenue_NoofTalentStr || 0).toFixed(2)) * 100).toFixed(2)}%
-            </strong>
-          );
-        }
+     if (data?.isTotalRow) {
+  const nr = sumVisibleAbove(props, rowNR);
+  return <strong>{((nr / 6000) * 100).toFixed(2)}%</strong>;
+}
 
         return (
           <ControlledAmountCell
@@ -2949,7 +3013,7 @@ return  [
       cellRenderer: (props) => {
         const { data } = props;
         if (data?.isTotalRow) {
-          return <strong>{data.activeTR}</strong>;
+         return <strong>{sumVisibleAbove(props, (d) => parseFloat(d.activeTR) || 0)}</strong>;
         }
         return data.activeTR;
       },
@@ -3130,10 +3194,9 @@ return  [
   ];
 
   const columnDefs = useMemo(() => gridColumns(), [TaListData]);
-
-  const pinnedBottomRowData = useMemo((par) => {
-    return [getTotalRow(TaListData, gridColumns())];
-  }, [TaListData]);
+const pinnedBottomRowData = useMemo(() => {
+  return [getTotalRow(TaListData, gridColumns())];
+}, [TaListData]);
 
 
   const scrumDefaultColDef = {
@@ -3415,7 +3478,7 @@ return  [
       </div>
       <div className={`${taStylesNew["table-container"]} ${gridStyles["grid-wrapper"]}`} style={{ marginTop: '20px' }}>
         {isLoading ? <TableSkeleton /> : <div style={{ height: 500 }} ><AgGridReact
-          //  onGridReady={onGridReady}
+            onGridReady={onGridReady}
           // onFirstDataRendered={params => updatePinnedTotalRow(params.api)}
           //  theme={scrumGridTheme}
           rowData={TaListData}
@@ -3433,7 +3496,11 @@ return  [
           // rowHeight={"auto"}
           onColumnMoved={onColumnMoved}
           onColumnResized={onColumnResized}
-          pinnedBottomRowData={pinnedBottomRowData}
+         pinnedBottomRowData={pinnedBottomRowData}
+
+  isExternalFilterPresent={() => true}
+  doesExternalFilterPass={doesExternalFilterPass}
+  onFilterChanged={handleFilterChanged}
           getRowStyle={(params) => {
             if (params.node.rowPinned) {
               return {

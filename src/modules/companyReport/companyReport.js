@@ -946,33 +946,8 @@ const sumVisibleAbove = (props, field) => {
     }
     return sum;
 };
-<<<<<<< HEAD
-=======
 
-// Column that shows the normal value on data rows and the company total on the total row
-const sumCol = (headerName, field, width = 100) => ({
-    headerName,
-    field,
-    width,
-    sortable: false,
-    suppressMovable: true,
-    cellStyle: (params) => ({
-        textAlign: 'center',
-        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC', fontWeight: 600 } : {}),
-    }),
-    cellRenderer: (props) => {
-        const { data, value } = props;
-        const display = data?.isTotalRow
-            ? (sumVisibleAbove(props, field) || '')
-            : (value ? value : '');
-        return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                {display}
-            </div>
-        );
-    },
-});
->>>>>>> new-html-design-imp
+
 
 // Column that shows the normal value on data rows and the company total on the total row
 const sumCol = (headerName, field, width = 100) => ({
@@ -1171,11 +1146,7 @@ const sumCol = (headerName, field, width = 100) => ({
                             //     params.api.redrawRows();
                             // }}
                              isExternalFilterPresent={() => true}
-<<<<<<< HEAD
-    doesExternalFilterPass={doesExternalFilterPass}
-=======
                                 doesExternalFilterPass={doesExternalFilterPass}
->>>>>>> new-html-design-imp
                              onFilterChanged={handleFilterChanged} 
                             onFirstDataRendered={handleFirstDataRendered}
                         />}
