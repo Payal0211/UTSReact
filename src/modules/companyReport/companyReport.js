@@ -112,7 +112,8 @@ const handleFilterChanged = (params) => {
         'offerSignedCount',
         'r1InterviewRejected',
         'r2InterviewRejected',
-        'r3InterviewRejected'
+        'r3InterviewRejected',
+        'totalTR'
     ],
     force: true,
 });
@@ -511,23 +512,7 @@ const doesExternalFilterPass = (node) => {
 
             //     }
             // },
-            
-            {
-                headerName: 'TRs',
-                field: 'totalTR',
-                width: 80,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
+             sumCol('TRs', 'totalTR', 80), 
             {
                 headerName: 'HR Created Date',
                 field: 'hrCreatedDate',
