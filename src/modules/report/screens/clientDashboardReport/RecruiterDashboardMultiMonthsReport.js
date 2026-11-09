@@ -1089,10 +1089,10 @@ export default function RecruiterDashboardMultiMonthsReport() {
              
             //   }}
             >
-              {text ? text : ''}
+              {text ? `${text} %` : ''}
             </p>
           ) : (
-            text ? text : ''
+            text ? `${text} %` : ''
           );
         } 
       },
@@ -1440,47 +1440,6 @@ export default function RecruiterDashboardMultiMonthsReport() {
              setColTextVal(text)
               setIsCarryForwardPipelineClicked(false);
               }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        } 
-      },
-      {
-        title: <>Profile to <br/> R1 Ratio</>,
-        dataIndex: "profileToR1Ratio",
-        key: "profileToR1Ratio",
-        align: "center",
-        width: "100px",
-       render: (text, result) => {
-           if (result.recruiter === 'Total') {
-            return <p
-            //   style={{
-            //     fontWeight: "bold",
-            //     textDecoration: "underline",
-            //     cursor: "pointer",
-            //   }}
-            //   onClick={() => {
-            //     getTalentProfilesDetailsfromTable(result, 'T_PR1');
-            //   }}
-            >
-              {result.total_profileToR1Ratio ? result.total_profileToR1Ratio : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-            //   style={{
-            //     color: "blue",
-            //     fontWeight: "bold",
-            //     textDecoration: "underline",
-            //     cursor: "pointer",
-            //   }}
-            //   onClick={() => {
-            //     getTalentProfilesDetailsfromTable(result,'PR1');
-             
-            //   }}
             >
               {text ? text : ''}
             </p>
