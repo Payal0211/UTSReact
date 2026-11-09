@@ -1867,7 +1867,8 @@ export default function RecruiterDashboardMultiMonthsReport() {
     if (apiResult?.statusCode === 200) {        
       setClientData(groupByRowSpan(apiResult.responseBody, "recruiterHead") );      
       setListDataCount(apiResult.responseBody?.length);      
-    } else if (apiResult?.statusCode === 404) {
+    } 
+    if (apiResult?.statusCode === 404) {
         setClientData([]);
         setListDataCount(0);     
     }
@@ -2058,11 +2059,14 @@ const getColumnTitle = (title) => {
 
  useEffect(()=>{   
          if(contractUsers.includes(+userData?.UserId) && pODList.length){
-            setHRModal("Contract");
+          setTimeout(()=>{
+              setHRModal("Contract");
               let val = pODList.find(
                     (i) => i.dd_text === "Orion"
                   )?.dd_value;
                   setSelectedHead(val);
+          },500)
+           
          }
     },[pODList,userData])
 
