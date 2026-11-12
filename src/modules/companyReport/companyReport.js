@@ -80,78 +80,78 @@ function CompanyReport() {
         getHeads();
     }, []);
 
-const handleFilterChanged = (params) => {
-    const api = params.api;
+    const handleFilterChanged = (params) => {
+        const api = params.api;
 
-    // Which companies still have visible (non-total) rows?
-    const next = new Set();
-    api.forEachNodeAfterFilter((node) => {
-        if (node.data && !node.data.isTotalRow) next.add(node.data.groupKey);
-    });
+        // Which companies still have visible (non-total) rows?
+        const next = new Set();
+        api.forEachNodeAfterFilter((node) => {
+            if (node.data && !node.data.isTotalRow) next.add(node.data.groupKey);
+        });
 
-    const prev = visibleGroupsRef.current;
-    const changed = next.size !== prev.size || [...next].some((k) => !prev.has(k));
+        const prev = visibleGroupsRef.current;
+        const changed = next.size !== prev.size || [...next].some((k) => !prev.has(k));
 
-    if (changed) {
-        visibleGroupsRef.current = next;
-        api.onFilterChanged();   // re-run so the total rows are re-evaluated (runs once, then stabilises)
-        return;
+        if (changed) {
+            visibleGroupsRef.current = next;
+            api.onFilterChanged();   // re-run so the total rows are re-evaluated (runs once, then stabilises)
+            return;
+        }
+
+        api.refreshCells({
+            columns: [
+                'companyName',
+                'joinedRevenueStr',
+                'negotiationStartRevenueStr',
+                'profilesShared',
+                'r1InterviewCompleted',
+                'r2InterviewCompleted',
+                'r3InterviewCompleted',
+                'offerDropout',
+                'offerBackout',
+                'offerSignedCount',
+                'r1InterviewRejected',
+                'r2InterviewRejected',
+                'r3InterviewRejected',
+                'totalTR'
+            ],
+            force: true,
+        });
+    };
+    const getListData = async () => {
+        setLoading(true)
+
+        let query = `?pod_id=${selectedHead}&monthstr=${(endDate && startDate) ? "" : +moment(monthDate).format("M")}&yearstr=${(endDate && startDate) ? "" : +moment(monthDate).format("YYYY")}&search=${search}&fromDate=${startDate ? startDate.toLocaleDateString("en-US") : ''}&toDate=${endDate ? endDate.toLocaleDateString("en-US") : ''}`
+
+        let req = await TaDashboardDAO.getCompanyReportRequestDAO(query);
+        setLoading(false)
+
+        if (req.statusCode === HTTPStatusCode.OK) {
+            const rows = groupByRowSpan(req.responseBody, 'companyName');
+
+            // 👇 new: remember which companies have rows, so total/gap rows show on first render
+            visibleGroupsRef.current = new Set(
+                rows.filter(r => !r.isTotalRow).map(r => r.groupKey)
+            );
+
+            setCompanyList(rows);
+
+        } else if (req.statusCode === HTTPStatusCode.NOT_FOUND) {
+            visibleGroupsRef.current = new Set();   // 👈 reset
+            setCompanyList([]);
+
+        } else if (req?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
+            return navigate(UTSRoutes.LOGINROUTE);
+
+        } else if (req?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
+            return navigate(UTSRoutes.SOMETHINGWENTWRONG);
+
+        } else {
+            visibleGroupsRef.current = new Set();   // 👈 reset
+            setCompanyList([]);
+            return "NO DATA FOUND";
+        }
     }
-
-   api.refreshCells({
-    columns: [
-        'companyName',
-        'joinedRevenueStr',
-        'negotiationStartRevenueStr',
-        'profilesShared',
-        'r1InterviewCompleted',
-        'r2InterviewCompleted',
-        'r3InterviewCompleted',
-        'offerDropout',
-        'offerBackout',
-        'offerSignedCount',
-        'r1InterviewRejected',
-        'r2InterviewRejected',
-        'r3InterviewRejected',
-        'totalTR'
-    ],
-    force: true,
-});
-};
-   const getListData = async () => {
-    setLoading(true)
-
-    let query = `?pod_id=${selectedHead}&monthstr=${(endDate && startDate) ? "" : +moment(monthDate).format("M")}&yearstr=${(endDate && startDate) ? "" : +moment(monthDate).format("YYYY")}&search=${search}&fromDate=${startDate ? startDate.toLocaleDateString("en-US") : ''}&toDate=${endDate ? endDate.toLocaleDateString("en-US") : ''}`
-
-    let req = await TaDashboardDAO.getCompanyReportRequestDAO(query);
-    setLoading(false)
-
-    if (req.statusCode === HTTPStatusCode.OK) {
-        const rows = groupByRowSpan(req.responseBody, 'companyName');
-
-        // 👇 new: remember which companies have rows, so total/gap rows show on first render
-        visibleGroupsRef.current = new Set(
-            rows.filter(r => !r.isTotalRow).map(r => r.groupKey)
-        );
-
-        setCompanyList(rows);
-
-    } else if (req.statusCode === HTTPStatusCode.NOT_FOUND) {
-        visibleGroupsRef.current = new Set();   // 👈 reset
-        setCompanyList([]);
-
-    } else if (req?.statusCode === HTTPStatusCode.UNAUTHORIZED) {
-        return navigate(UTSRoutes.LOGINROUTE);
-
-    } else if (req?.statusCode === HTTPStatusCode.INTERNAL_SERVER_ERROR) {
-        return navigate(UTSRoutes.SOMETHINGWENTWRONG);
-
-    } else {
-        visibleGroupsRef.current = new Set();   // 👈 reset
-        setCompanyList([]);
-        return "NO DATA FOUND";
-    }
-}
 
 
     useEffect(() => {
@@ -193,7 +193,7 @@ const handleFilterChanged = (params) => {
             rows.forEach((row, index) => {
                 finalData.push({
                     ...row,
-                     groupKey: key,  
+                    groupKey: key,
                     rowSpan: index === 0 ? rows.length : 0,
                     isTotalRow: false,
                 });
@@ -202,13 +202,13 @@ const handleFilterChanged = (params) => {
             // Calculate TA wise totals
 
 
-           
+
 
             // Add TA Total Row
             finalData.push({
                 [groupField]: ``,
                 id: `total-${key}`,
-                 groupKey: key,
+                groupKey: key,
                 // talent_AnnualCTC_Budget_INRValueStr: totalTalentPayRate,
                 // joinedRevenueStr: +totalJoinedRevenue ? getformatedTotal(totalJoinedRevenue) : '',
                 // negotiationStartRevenueStr : +totalNegotiationRevenue ? getformatedTotal(totalNegotiationRevenue) : '',
@@ -243,35 +243,35 @@ const handleFilterChanged = (params) => {
         ];
     }, [companyList]);
     // { companyName: [status, status, ...] }
-const groupStatuses = useMemo(() => {
-    const map = {};
-    companyList.forEach((item) => {
-        if (item.isTotalRow || !item.hrStatus) return;
-        if (!map[item.groupKey]) map[item.groupKey] = new Set();
-        map[item.groupKey].add(item.hrStatus);
-    });
-    return map;
-}, [companyList]);
+    const groupStatuses = useMemo(() => {
+        const map = {};
+        companyList.forEach((item) => {
+            if (item.isTotalRow || !item.hrStatus) return;
+            if (!map[item.groupKey]) map[item.groupKey] = new Set();
+            map[item.groupKey].add(item.hrStatus);
+        });
+        return map;
+    }, [companyList]);
 
-const gridApiRef = useRef(null);
-const visibleGroupsRef = useRef(new Set());  
+    const gridApiRef = useRef(null);
+    const visibleGroupsRef = useRef(new Set());
 
-const doesExternalFilterPassold = (node) => {
-    const d = node.data;
-    if (!d?.isTotalRow) return true;                     // normal rows: column filter decides
+    const doesExternalFilterPassold = (node) => {
+        const d = node.data;
+        if (!d?.isTotalRow) return true;                     // normal rows: column filter decides
 
-    const selected = gridApiRef.current?.getFilterModel()?.hrStatus?.values;
-    if (!selected || selected.length === 0) return true; // no status filter: show all gaps/totals
+        const selected = gridApiRef.current?.getFilterModel()?.hrStatus?.values;
+        if (!selected || selected.length === 0) return true; // no status filter: show all gaps/totals
 
-    const statuses = groupStatuses[d.groupKey];
-    return !!statuses && selected.some((s) => statuses.has(s));
-};
+        const statuses = groupStatuses[d.groupKey];
+        return !!statuses && selected.some((s) => statuses.has(s));
+    };
 
-const doesExternalFilterPass = (node) => {
-    const d = node.data;
-    if (!d?.isTotalRow) return true;
-    return visibleGroupsRef.current.has(d.groupKey);
-};
+    const doesExternalFilterPass = (node) => {
+        const d = node.data;
+        if (!d?.isTotalRow) return true;
+        return visibleGroupsRef.current.has(d.groupKey);
+    };
 
     const defaultSelectedStatuses = useMemo(() => {
         return availableStatuses.filter(
@@ -342,56 +342,61 @@ const doesExternalFilterPass = (node) => {
 
     const gridColumns = () => {
         return [
-      {
-    headerName: 'Company',
-    field: 'companyName',
-    width: 140,
-    pinned: 'left',
-    sortable: false,
-    suppressMovable: true,
-  cellRenderer: (props) => {
-    const { data, api, node } = props;
+            {
+                headerName: 'Company',
+                field: 'companyName',
+                width: 140,
+                pinned: 'left',
+                sortable: false,
+                suppressMovable: true,
+                filter: MultiConditionTextFilter,
+                filterParams: {
+                    type: 'status',
+                    list: Array.from(new Set(companyList?.filter(item => !item.isTotalRow)?.map(i => i.companyName)))?.map(v => ({ data: v }))
+                },
+                cellRenderer: (props) => {
+                    const { data, api, node } = props;
 
-    if (!data || data.isTotalRow || node.rowPinned === 'bottom') return <div />;
+                    if (!data || data.isTotalRow || node.rowPinned === 'bottom') return <div />;
 
-    let i = node.rowIndex - 1;
-    while (i >= 0) {
-        const prev = api.getDisplayedRowAtIndex(i);
-        if (prev?.data && !prev.data.isTotalRow) {
-            if (prev.data.companyName === data.companyName) {
-                return <div />;
-            }
-            break;
-        }
-        i--;
-    }
+                    let i = node.rowIndex - 1;
+                    while (i >= 0) {
+                        const prev = api.getDisplayedRowAtIndex(i);
+                        if (prev?.data && !prev.data.isTotalRow) {
+                            if (prev.data.companyName === data.companyName) {
+                                return <div />;
+                            }
+                            break;
+                        }
+                        i--;
+                    }
 
-    return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', height: '100%' }}>
-            <Tooltip title={data.companyName}>
-                <span
-                    className={stylesOBj["company-name"]}
-                    style={{
-                        display: 'block',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        fontWeight: 500,
-                        fontSize: '10px',
-                        lineHeight: '10px',
-                        width: '70%',
-                        cursor: 'pointer',
-                        textDecoration: 'underline',
-                    }}
-                    onClick={() => window.open(`/viewCompanyDetails/${data.companyID}`, "_blank")}
-                >
-                    {data.companyName}
-                </span>
-            </Tooltip>
-        </div>
-    );
-},
-},
+                    return (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', height: '100%' }}>
+                            <Tooltip title={data.companyName}>
+                                <span
+                                    className={stylesOBj["company-name"]}
+                                    style={{
+                                        display: 'block',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                        fontWeight: 500,
+                                        fontSize: '10px',
+                                        lineHeight: '10px',
+                                        width: '70%',
+                                        cursor: 'pointer',
+                                        textDecoration: 'underline',
+                                    }}
+                                    onClick={() => window.open(`/viewCompanyDetails/${data.companyID}`, "_blank")}
+                                >
+                                    {data.companyName}
+                                </span>
+                            </Tooltip>
+                        </div>
+                    );
+                },
+            },
             {
                 headerName: 'HR ID',
                 field: 'hR_Number',
@@ -399,6 +404,11 @@ const doesExternalFilterPass = (node) => {
                 suppressMovable: true,
                 pinned: 'left',
                 autoHeight: true,
+                filter: MultiConditionTextFilter,
+                filterParams: {
+                    type: 'status',
+                    list: Array.from(new Set(companyList?.filter(item => !item.isTotalRow)?.map(i => i.hR_Number)))?.map(v => ({ data: v }))
+                },
                 cellRenderer: (props) => {
                     const { data } = props;
                     return (
@@ -432,6 +442,11 @@ const doesExternalFilterPass = (node) => {
                 suppressMovable: true,
                 pinned: 'left',
                 autoHeight: true,
+                filter: MultiConditionTextFilter,
+                filterParams: {
+                    type: 'status',
+                    list: Array.from(new Set(companyList?.filter(item => !item.isTotalRow)?.map(i => i.hR_Title)))?.map(v => ({ data: v }))
+                },
                 cellRenderer: (props) => {
                     const { data } = props;
                     return (
@@ -464,7 +479,7 @@ const doesExternalFilterPass = (node) => {
                     );
                 },
             },
-{
+            {
                 headerName: 'Status',
                 field: 'hrStatus',
                 width: 140,
@@ -490,6 +505,11 @@ const doesExternalFilterPass = (node) => {
                 width: 140,
                 sortable: false,
                 suppressMovable: true,
+                filter: MultiConditionTextFilter,
+                filterParams: {
+                    type: 'status',
+                    list: Array.from(new Set(companyList?.filter(item => !item.isTotalRow)?.map(i => i.pocName)))?.map(v => ({ data: v }))
+                },
             },
             {
                 headerName: 'TA',
@@ -497,6 +517,19 @@ const doesExternalFilterPass = (node) => {
                 width: 140,
                 sortable: false,
                 suppressMovable: true,
+                filter: MultiConditionTextFilter,
+                filterParams: {
+                    type: 'status',
+                    list: Array.from(new Set(companyList?.filter(item => {
+                        if (item.isTotalRow) {
+                            return false
+                        }
+                        if (item.taName === null || item.taName === ' ' || item.taName === undefined) {
+                            return false
+                        }
+                        return true
+                    })?.map(i => i.taName)))?.map(v => ({ data: v }))
+                },
             },
             // {
             //     headerName: 'Status',
@@ -512,13 +545,18 @@ const doesExternalFilterPass = (node) => {
 
             //     }
             // },
-             sumCol('TRs', 'totalTR', 80), 
+            sumCol('TRs', 'totalTR', 80),
             {
                 headerName: 'HR Created Date',
                 field: 'hrCreatedDate',
                 width: 100,
                 sortable: false,
                 suppressMovable: true,
+                filter: MultiConditionTextFilter,
+                filterParams: {
+                    type: 'status',
+                    list: Array.from(new Set(companyList?.filter(item => !item.isTotalRow)?.map(i => i.hrCreatedDate)))?.map(v => ({ data: v }))
+                },
                 cellRenderer: (props) => {
                     const { data, ind, value } = props;
 
@@ -535,6 +573,11 @@ const doesExternalFilterPass = (node) => {
                 width: 100,
                 sortable: false,
                 suppressMovable: true,
+                filter: MultiConditionTextFilter,
+                filterParams: {
+                    type: 'status',
+                    list: Array.from(new Set(companyList?.filter(item => !item.isTotalRow)?.map(i => i.openSince)))?.map(v => ({ data: v }))
+                },
                 cellRenderer: (props) => {
                     const { data, ind, value } = props;
 
@@ -545,24 +588,10 @@ const doesExternalFilterPass = (node) => {
                     );
                 },
             },
-         sumCol('# profile Shared', 'profilesShared', 80), 
-            {
-                headerName: 'Assessment Reject',
-                field: 'assessmentReject',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
+            sumCol('# profile Shared', 'profilesShared', 80),
+            sumCol('Assessment Reject', 'assessmentReject', 100),
 
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
-           sumCol('R1 Interview Completed', 'r1InterviewCompleted'),
+            sumCol('R1 Interview Completed', 'r1InterviewCompleted'),
             {
                 headerName: 'Profile to R1 Ratio',
                 field: 'profileToR1Ratio',
@@ -580,29 +609,15 @@ const doesExternalFilterPass = (node) => {
                 },
             },
             sumCol('R1 Interview Rejected', 'r1InterviewRejected'),
-           
-         sumCol('R2 Interview Completed', 'r2InterviewCompleted'),
-            sumCol('R2 Interview Rejected', 'r2InterviewRejected'),
-             sumCol('R3 Interview Completed', 'r3InterviewCompleted'),
-              sumCol('R3 Interview Rejected', 'r3InterviewRejected'),
-             sumCol('No. of Talents rejected in interview', 'noOfTalentRejectInterview'),
-            {
-                headerName: 'Negotiation Start Count',
-                field: 'negotiationStartCount',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
 
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
-            sumCurrencyCol('Negotiation Start Revenue','negotiationStartRevenueStr','negotiationStartRevenueValue'),
+            sumCol('R2 Interview Completed', 'r2InterviewCompleted'),
+            sumCol('R2 Interview Rejected', 'r2InterviewRejected'),
+            sumCol('R3 Interview Completed', 'r3InterviewCompleted'),
+            sumCol('R3 Interview Rejected', 'r3InterviewRejected'),
+            sumCol('No. of Talents rejected in interview', 'noOfTalentRejectInterview'),
+            sumCol('Negotiation Start Count', 'negotiationStartCount'),
+
+            sumCurrencyCol('Negotiation Start Revenue', 'negotiationStartRevenueStr', 'negotiationStartRevenueValue'),
             {
                 headerName: 'R1 to R2 Ratio',
                 field: 'r1ToR2Ratio',
@@ -619,10 +634,10 @@ const doesExternalFilterPass = (node) => {
                     );
                 },
             },
-             sumCol('Dropout', 'offerDropout'),
-              sumCol('Backout', 'offerBackout'),
-               sumCol('Offer Signed Talent', 'offerSignedCount'),
-           
+            sumCol('Dropout', 'offerDropout'),
+            sumCol('Backout', 'offerBackout'),
+            sumCol('Offer Signed Talent', 'offerSignedCount'),
+
             {
                 headerName: 'R1 to Selected (I2S %)',
                 field: 'r1ToSelected',
@@ -639,55 +654,10 @@ const doesExternalFilterPass = (node) => {
                     );
                 },
             },
-            {
-                headerName: 'Offer Signed Revenue',
-                field: 'offerSignedRevenueValueStr',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
-            {
-                headerName: 'Joined Talents',
-                field: 'joinedTalent',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
-            sumCurrencyCol('Joined Revenue','joinedRevenueStr','joinedRevenue'),
-            {
-                headerName: 'Current Active profiles',
-                field: 'currentActiveProfile',
-                width: 100,
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
-
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {value ? value : ""}
-                        </div>
-                    );
-                },
-            },
+            sumCurrencyCol('Offer Signed Revenue', 'offerSignedRevenueValueStr', 'offerSignedRevenueValue'),
+            sumCol('Joined Talents', 'joinedTalent'),
+            sumCurrencyCol('Joined Revenue', 'joinedRevenueStr', 'joinedRevenue'),
+            sumCol('Current Active profiles', 'currentActiveProfile'),
         ]
     }
 
@@ -753,96 +723,114 @@ const doesExternalFilterPass = (node) => {
 
         downloadToExcel(formattedData, 'company Report')
     }
-// Sums `field` over the visible rows of this company, directly above the total row
-const sumVisibleAbove = (props, field) => {
-    const { data, api, node } = props;
-    let sum = 0;
-    let i = node.rowIndex - 1;
-    while (i >= 0) {
-        const prev = api.getDisplayedRowAtIndex(i);
-        if (!prev?.data || prev.data.isTotalRow || prev.data.groupKey !== data.groupKey) break;
-        sum += parseFloat(prev.data[field]) || 0;
-        i--;
-    }
-    return sum;
-};
+    // Sums `field` over the visible rows of this company, directly above the total row
+    const sumVisibleAbove = (props, field) => {
+        const { data, api, node } = props;
+        let sum = 0;
+        let i = node.rowIndex - 1;
+        while (i >= 0) {
+            const prev = api.getDisplayedRowAtIndex(i);
+            if (!prev?.data || prev.data.isTotalRow || prev.data.groupKey !== data.groupKey) break;
+            sum += parseFloat(prev.data[field]) || 0;
+            i--;
+        }
+        return sum;
+    };
 
-const currencySumVisibleAbove =(props,field)=>{
-     const { data, api, node } = props;
-    let sum = 0;
-    let i = node.rowIndex - 1;
-    while (i >= 0) {
-        const prev = api.getDisplayedRowAtIndex(i);
-        if (!prev?.data || prev.data.isTotalRow || prev.data.groupKey !== data.groupKey) break;
-        sum += parseFloat(prev.data[field]) || 0;          
-        i--;
-    }
-     const getformatedTotal = (totalJoinedRevenue) => {
-                if (hrModal === 'DP') {
-                    return totalJoinedRevenue?.toLocaleString('en-IN', {
-                        style: 'currency', currency: 'INR', minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    })
-                } else {
-
-                } return totalJoinedRevenue?.toLocaleString('en-US', {
-                    style: 'currency', currency: 'USD', minimumFractionDigits: 2,
+    const currencySumVisibleAbove = (props, field) => {
+        const { data, api, node } = props;
+        let sum = 0;
+        let i = node.rowIndex - 1;
+        while (i >= 0) {
+            const prev = api.getDisplayedRowAtIndex(i);
+            if (!prev?.data || prev.data.isTotalRow || prev.data.groupKey !== data.groupKey) break;
+            sum += parseFloat(prev.data[field]) || 0;
+            i--;
+        }
+        const getformatedTotal = (totalJoinedRevenue) => {
+            if (hrModal === 'DP') {
+                return totalJoinedRevenue?.toLocaleString('en-IN', {
+                    style: 'currency', currency: 'INR', minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 })
-            }
-    return sum ? getformatedTotal(sum) : '';
-}
+            } else {
 
-// Column that shows the normal value on data rows and the company total on the total row
-const sumCol = (headerName, field, width = 100) => ({
-    headerName,
-    field,
-    width,
-    sortable: false,
-    suppressMovable: true,
-    cellStyle: (params) => ({
-        textAlign: 'center',
-        ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC', fontWeight: 600 } : {}),
-    }),
-    cellRenderer: (props) => {
-        const { data, value } = props;
-        const display = data?.isTotalRow
-            ? (sumVisibleAbove(props, field) || '')
-            : (value ? value : '');
-        return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                {display}
-            </div>
-        );
-    },
-});
+            } return totalJoinedRevenue?.toLocaleString('en-US', {
+                style: 'currency', currency: 'USD', minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })
+        }
+        return sum ? getformatedTotal(sum) : '';
+    }
 
-const sumCurrencyCol = (headerName, field, valueField,width = 100)=>(
-     {
-                headerName,
-                field,
-                width,
-                cellStyle: (params) => ({
-                    textAlign: 'center',
-                    ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
-                }),
-                sortable: false,
-                suppressMovable: true,
-                cellRenderer: (props) => {
-                    const { data, ind, value } = props;
+    // Column that shows the normal value on data rows and the company total on the total row
+    const sumCol = (headerName, field, width = 100) => ({
+        headerName,
+        field,
+        width,
+        sortable: false,
+        suppressMovable: true,
+        filter: MultiConditionTextFilter,
+        filterParams: {
+            type: 'status',
+            list: Array.from(new Set(companyList?.filter(item => {
+                if(item.isTotalRow){
+                    return false
+                } 
+                if(item[field] === 0){
+                    return false
+                }
+                return true
+            })?.map(i => i[field])))?.map(v => ({ data: v }))
+        },
+        cellStyle: (params) => ({
+            textAlign: 'center',
+            ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC', fontWeight: 600 } : {}),
+        }),
+        cellRenderer: (props) => {
+            const { data, value } = props;
+            const display = data?.isTotalRow
+                ? (sumVisibleAbove(props, field) || '')
+                : (value ? value : '');
+            return (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    {display}
+                </div>
+            );
+        },
+    });
+
+    const sumCurrencyCol = (headerName, field, valueField, width = 100) => (
+        {
+            headerName,
+            field,
+            width,
+            filter: MultiConditionTextFilter,
+            filterParams: {
+                type: 'status',
+                list: Array.from(new Set(companyList?.filter(item => !item.isTotalRow)?.map(i => i[field])))?.map(v => ({ data: v }))
+            },
+            cellStyle: (params) => ({
+                textAlign: 'center',
+                ...(params.data?.isTotalRow ? { backgroundColor: '#D6CDEC' } : {}),   // 👈 merged with existing textAlign
+            }),
+            sortable: false,
+            suppressMovable: true,
+            cellRenderer: (props) => {
+                const { data, ind, value } = props;
 
                 const display = data?.isTotalRow
-                        ? (currencySumVisibleAbove(props, valueField) || '')
-                        : (value ? value : '');
+                    ? (currencySumVisibleAbove(props, valueField) || '')
+                    : (value ? value : '');
 
-                    return (
-                        <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
-                            {display}
-                        </div>
-                    );
-                },
-            }
-)
+                return (
+                    <div style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
+                        {display}
+                    </div>
+                );
+            },
+        }
+    )
 
     return (
         <div className={`${stylesOBj["dashboard-container"]}`}>
@@ -1017,9 +1005,9 @@ const sumCurrencyCol = (headerName, field, valueField,width = 100)=>(
                             //     params.api.refreshCells({ force: true });
                             //     params.api.redrawRows();
                             // }}
-                             isExternalFilterPresent={() => true}
-                                doesExternalFilterPass={doesExternalFilterPass}
-                             onFilterChanged={handleFilterChanged} 
+                            isExternalFilterPresent={() => true}
+                            doesExternalFilterPass={doesExternalFilterPass}
+                            onFilterChanged={handleFilterChanged}
                             onFirstDataRendered={handleFirstDataRendered}
                         />}
 
