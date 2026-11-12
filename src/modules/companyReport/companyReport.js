@@ -29,7 +29,7 @@ function CompanyReport() {
     const [selectedHead, setSelectedHead] = useState(presistHeaddata ? +presistHeaddata : '');
     const [pODList, setPODList] = useState([]);
     const today = new Date();
-
+    const isSortedRef = useRef(false);
 
     const firstDayOfMonth = new Date();
     firstDayOfMonth.setDate(1);
@@ -99,22 +99,7 @@ function CompanyReport() {
         }
 
         api.refreshCells({
-            columns: [
-                'companyName',
-                'joinedRevenueStr',
-                'negotiationStartRevenueStr',
-                'profilesShared',
-                'r1InterviewCompleted',
-                'r2InterviewCompleted',
-                'r3InterviewCompleted',
-                'offerDropout',
-                'offerBackout',
-                'offerSignedCount',
-                'r1InterviewRejected',
-                'r2InterviewRejected',
-                'r3InterviewRejected',
-                'totalTR'
-            ],
+            
             force: true,
         });
     };
@@ -268,9 +253,10 @@ function CompanyReport() {
     };
 
     const doesExternalFilterPass = (node) => {
-        const d = node.data;
-        if (!d?.isTotalRow) return true;
-        return visibleGroupsRef.current.has(d.groupKey);
+       const d = node.data;
+    if (!d?.isTotalRow) return true;
+    if (isSortedRef.current) return false;   // hide total rows while a sort is active
+    return visibleGroupsRef.current.has(d.groupKey);
     };
 
     const defaultSelectedStatuses = useMemo(() => {
@@ -338,6 +324,11 @@ function CompanyReport() {
             });
         }
     };
+
+    const handleSortChanged = (params) => {
+    isSortedRef.current = params.api.getColumnState().some((c) => !!c.sort);
+    params.api.onFilterChanged();   // re-run the external filter so total rows show/hide
+};
 
 
     const gridColumns = () => {
@@ -571,7 +562,7 @@ function CompanyReport() {
                 headerName: 'Open Since',
                 field: 'openSince',
                 width: 100,
-                sortable: false,
+                sortable: true,
                 suppressMovable: true,
                 filter: MultiConditionTextFilter,
                 filterParams: {
@@ -1009,6 +1000,8 @@ function CompanyReport() {
                             doesExternalFilterPass={doesExternalFilterPass}
                             onFilterChanged={handleFilterChanged}
                             onFirstDataRendered={handleFirstDataRendered}
+    onSortChanged={handleSortChanged}
+  
                         />}
 
 
