@@ -35,7 +35,9 @@ const QOQOverview = React.lazy(() =>
 	import('modules/WeeklyWCGR/QOQOverview'),
 )
 
-
+const QOQNEWOverview = React.lazy(() =>
+	import('modules/WeeklyWCGR/QOQNEWOverview'),
+)
 const RecruiterReport = React.lazy(() =>
 	import('modules/report/screens/recruiterReport/recruiterReport'),
 );
@@ -353,6 +355,7 @@ export default class UTSRoutes {
 	static Weekly_WCGR = '/weeklyWCGR';
 	static MOM_OVERVIEW = '/MOMOverview';
 	static QOQ_OVERVIEW = '/QOQOverview';
+	static QOQ_NEWOVERVIEW = '/QOQNEWOverview';
 	static RECRUITER_DASHBOARD_REPORT = '/RevenueDashboardReport';
 	static RECRUITER_DASHBOARD_MULTI_MONTH_REPORT = '/RevenueDashboardMonthsReport';
 	static CLIENT_DASHBOARD_REPORT = '/clientDashboardReport';
@@ -663,6 +666,12 @@ export const navigateToComponent = {
 			<QOQOverview />
 		</Suspense>
 	),
+	[UTSRoutes.QOQ_NEWOVERVIEW]:(
+		<Suspense>
+			<QOQNEWOverview />
+		</Suspense>
+	),
+
 [UTSRoutes.DASHBOARD]:(
 	<Suspense>
 			<DashboardScreen />

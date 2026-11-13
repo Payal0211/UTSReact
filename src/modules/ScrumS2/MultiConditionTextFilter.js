@@ -400,12 +400,12 @@ export default function MultiConditionTextFilter({
 
     const doesFilterPass = useCallback(
   (params) => {
+
+     if (params.data?.isTotalRow) return true;  
+
     // =========================================================
     // STATUS CHECKBOX FILTER
-    // =========================================================
-
-    if (params.data?.isTotalRow) return true;  
-   
+    // =========================================================   
 
     if (isStatusFilter) {
       if (selectedStatuses.length === 0) {
