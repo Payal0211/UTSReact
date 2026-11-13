@@ -19,6 +19,7 @@ import NewTADashboard from 'modules/taDashboard/n_taDashboard';
 import ScrumStructure2 from 'modules/ScrumS2/ScrumStructure';
 import CompanyReportPage from 'modules/companyReport/companyReport'
 import TAplayground from 'modules/taDashboard/dashboard/ta_playground';
+import QOQNEWOverview from 'modules/WeeklyWCGR/QOQNEWOverview';
 // import TempScrumStructure from 'modules/scrumStructure/sctemp';
 
 const Login = React.lazy(() =>
@@ -199,6 +200,13 @@ function App() {
 							path={UTSRoutes.TASCRUMSTRUCTURE + "temp"}
 							element={<ScrumStructure />}
 						/> */}
+
+						<Route
+							exact
+							key={UTSRoutes.QOQ_OVERVIEW}
+							path={UTSRoutes.QOQ_NEWOVERVIEW}
+							element={<QOQNEWOverview />}
+						/>
 
 					</Route>
 

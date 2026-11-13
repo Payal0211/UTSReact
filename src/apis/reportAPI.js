@@ -251,6 +251,23 @@ export const ReportAPI = {
 			return errorDebug(error, 'ReportAPI.getQOQReportDataRequest');
 		}
 	},
+	getQOQNewReportDataRequest: async function (reportData) {
+		let httpService = new HttpServices();
+		httpService.URL =
+			NetworkInfo.NETWORK +
+			'UTSReports/' +
+			'Get_QOQCGR_AllFTE_Report_New' +
+			reportData;
+		httpService.setAuthRequired = true;
+		// httpService.dataToSend = reportData;
+		httpService.setAuthToken = UserSessionManagementController.getAPIKey();
+		try {
+			let response = await httpService.sendGetRequest();
+			return response;
+		} catch (error) {
+			return errorDebug(error, 'ReportAPI.getQOQReportDataRequest');
+		}
+	},
 	teamDemandFunnelFilters: async function () {
 		let httpService = new HttpServices();
 		httpService.URL =
