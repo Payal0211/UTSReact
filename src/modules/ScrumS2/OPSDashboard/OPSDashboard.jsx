@@ -590,7 +590,15 @@ function OPSDashboard({ selectedHead }) {
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
-
+  {
+                        title: <span style={popupSellHeadStyle}>TA</span>,
+                        dataIndex: "taName",
+                        key: "taName",
+                        width: "100px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
                     {
                         title: <span style={popupSellHeadStyle}>Slot/Remark</span>,
                         dataIndex: "remarks",
@@ -663,7 +671,15 @@ function OPSDashboard({ selectedHead }) {
                             return <span style={popupSellStyle}>{text}</span>
                         }
                     },
-
+  {
+                        title: <span style={popupSellHeadStyle}>TA</span>,
+                        dataIndex: "taName",
+                        key: "taName",
+                        width: "100px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
                     {
                         title: <span style={popupSellHeadStyle}>Revenue</span>,
                         dataIndex: "revenueStr",
@@ -755,7 +771,15 @@ function OPSDashboard({ selectedHead }) {
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
-
+  {
+                        title: <span style={popupSellHeadStyle}>TA</span>,
+                        dataIndex: "taName",
+                        key: "taName",
+                        width: "100px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
                 {
                     title: <span style={popupSellHeadStyle}>HR Status</span>,
                     dataIndex: "hrStatus",
@@ -826,7 +850,15 @@ function OPSDashboard({ selectedHead }) {
                         return <span style={popupSellStyle}>{text}</span>
                     }
                 },
-
+  {
+                        title: <span style={popupSellHeadStyle}>TA</span>,
+                        dataIndex: "taName",
+                        key: "taName",
+                        width: "100px",
+                        render: (text) => {
+                            return <span style={popupSellStyle}>{text}</span>
+                        }
+                    },
                 {
                     title: <span style={popupSellHeadStyle}>HR Status</span>,
                     dataIndex: "hrStatus",

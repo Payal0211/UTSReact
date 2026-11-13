@@ -1089,10 +1089,10 @@ export default function RecruiterDashboardMultiMonthsReport() {
              
             //   }}
             >
-              {text ? text : ''}
+              {text ? `${text} %` : ''}
             </p>
           ) : (
-            text ? text : ''
+            text ? `${text} %` : ''
           );
         } 
       },
@@ -1440,47 +1440,6 @@ export default function RecruiterDashboardMultiMonthsReport() {
              setColTextVal(text)
               setIsCarryForwardPipelineClicked(false);
               }}
-            >
-              {text ? text : ''}
-            </p>
-          ) : (
-            text ? text : ''
-          );
-        } 
-      },
-      {
-        title: <>Profile to <br/> R1 Ratio</>,
-        dataIndex: "profileToR1Ratio",
-        key: "profileToR1Ratio",
-        align: "center",
-        width: "100px",
-       render: (text, result) => {
-           if (result.recruiter === 'Total') {
-            return <p
-            //   style={{
-            //     fontWeight: "bold",
-            //     textDecoration: "underline",
-            //     cursor: "pointer",
-            //   }}
-            //   onClick={() => {
-            //     getTalentProfilesDetailsfromTable(result, 'T_PR1');
-            //   }}
-            >
-              {result.total_profileToR1Ratio ? result.total_profileToR1Ratio : ''}
-            </p>
-          }
-          return +text > 0 ? (
-            <p
-            //   style={{
-            //     color: "blue",
-            //     fontWeight: "bold",
-            //     textDecoration: "underline",
-            //     cursor: "pointer",
-            //   }}
-            //   onClick={() => {
-            //     getTalentProfilesDetailsfromTable(result,'PR1');
-             
-            //   }}
             >
               {text ? text : ''}
             </p>
@@ -1908,7 +1867,8 @@ export default function RecruiterDashboardMultiMonthsReport() {
     if (apiResult?.statusCode === 200) {        
       setClientData(groupByRowSpan(apiResult.responseBody, "recruiterHead") );      
       setListDataCount(apiResult.responseBody?.length);      
-    } else if (apiResult?.statusCode === 404) {
+    } 
+    if (apiResult?.statusCode === 404) {
         setClientData([]);
         setListDataCount(0);     
     }
@@ -2099,11 +2059,14 @@ const getColumnTitle = (title) => {
 
  useEffect(()=>{   
          if(contractUsers.includes(+userData?.UserId) && pODList.length){
-            setHRModal("Contract");
+          setTimeout(()=>{
+              setHRModal("Contract");
               let val = pODList.find(
                     (i) => i.dd_text === "Orion"
                   )?.dd_value;
                   setSelectedHead(val);
+          },500)
+           
          }
     },[pODList,userData])
 

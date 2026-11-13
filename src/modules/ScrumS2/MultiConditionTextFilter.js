@@ -405,12 +405,7 @@ export default function MultiConditionTextFilter({
 
     // =========================================================
     // STATUS CHECKBOX FILTER
-    // =========================================================
-
-    // if(window.location.pathname === '/companyReport'){
-    //      if (params.data?.isTotalRow) return true;  
-    // }
-   
+    // =========================================================   
 
     if (isStatusFilter) {
       if (selectedStatuses.length === 0) {
