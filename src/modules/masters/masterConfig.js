@@ -70,18 +70,6 @@ export const MasterConfig = {
 				key: 'usD_BaseValue',
 				align: 'left',
 			},
-				{
-				title: <div >Any Currency to <br/>USD (Multiply)</div>,
-				dataIndex: 'usD_BaseValue',
-				key: 'usD_BaseValue',
-				align: 'left',
-			},
-			{
-				title: <div >Any Currency to <br/>USD (Multiply)</div>,
-				dataIndex: 'usD_BaseValue',
-				key: 'usD_BaseValue',
-				align: 'left',
-			},
 			{
 				title: "Last Updated Date",
 				dataIndex: 'lastUpdatedDate',
