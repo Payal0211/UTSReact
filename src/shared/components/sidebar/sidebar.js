@@ -29,7 +29,6 @@ import HRLOSTReoprt from 'assets/svg/hrLostReport.svg'
 import HandShake from 'assets/svg/postStepIconInterview.svg'
 import TADashboardIcon from 'assets/svg/ta-dashboard.svg'
 import ClientCompIcon from 'assets/clientCompany.png'
-import ADDHRSVG from 'assets/svg/addHR.svg'
 import SLAReport from 'assets/svg/slaReport.svg';
 import AMReportIcon from 'assets/svg/amreport.svg';
 import InvoiceIcon from 'assets/invoice.png';
@@ -318,7 +317,7 @@ const isAccess = (ID, title, ShowRevenueRelatedData) =>{
 		return isVisible		
 	}
 	 if(title === 'Hiring Request' || title === "MasterReports" || title === 'PODDashboardReport' || title ==='AllFTEDASHBOARD' || title === "WeeklyWCGR" || title === "MOMOverview" ||
-	  title === 'Users'  || title === 'QOQOverview' ||
+	  title === 'Users'  || title === 'QOQOverview' || title === 'QOQNEWOverview' ||
 	   title === 'Analytics' || title === 'Documents/SLA' || title === 'Tracking Reports' ||
 	 title === 'Engagement' || title === 'Reports' ||
 	 title === 'Demand Funnel' ||
@@ -482,10 +481,18 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					id: 'QOQOverview',
 					title: 'QOQ Overview',
 					isActive: false,
-					navigateTo: UTSRoutes.QOQ_OVERVIEW,
-					isVisible: isAccess(usertypeID, 'QOQOverview'),
+					navigateTo: UTSRoutes.QOQ_NEWOVERVIEW,
+					isVisible: isAccess(usertypeID, 'QOQ_NEWOVERVIEW'),
 					isChildren : false					
 				}),
+				// new SideBarModels({
+				// 	id: 'QOQNEWOverview',
+				// 	title: 'QOQ NEW',
+				// 	isActive: false,
+				// 	navigateTo: UTSRoutes.QOQ_NEWOVERVIEW,
+				// 	isVisible: isAccess(usertypeID, 'QOQNEWOverview'),
+				// 	isChildren : false					
+				// }),
                 // new SideBarModels({
 				// 	id: 'AllFTEDASHBOARD',
 				// 	title: 'Multi-Month POD Dashboard',

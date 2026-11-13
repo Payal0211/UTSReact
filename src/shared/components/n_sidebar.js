@@ -184,7 +184,8 @@ export default function N_sidebar() {
                             <li><Link to={UTSRoutes.POD_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.POD_DASHBOARD_REPORT) ? stylesOBj['active'] : ''}`}>POD Dashboard</Link></li>
                             <li><Link to={UTSRoutes.Weekly_WCGR} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.Weekly_WCGR) ? stylesOBj['active'] : ''}`}>WCGR</Link></li>
                               <li><Link to={UTSRoutes.MOM_OVERVIEW} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.MOM_OVERVIEW) ? stylesOBj['active'] : ''}`}>MOM Overview</Link></li>
-                              <li><Link to={UTSRoutes.QOQ_OVERVIEW} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.QOQ_OVERVIEW) ? stylesOBj['active'] : ''}`}>QOQ Overview</Link></li>
+                              {/* <li><Link to={UTSRoutes.QOQ_OVERVIEW} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.QOQ_OVERVIEW) ? stylesOBj['active'] : ''}`}>QOQ Overview</Link></li> */}
+                                <li><Link to={UTSRoutes.QOQ_NEWOVERVIEW} className={`${stylesOBj['nav-subitem']} ${isActive(UTSRoutes.QOQ_NEWOVERVIEW) ? stylesOBj['active'] : ''}`}>QOQ Overview</Link></li>
                             {/* <li><Link to={UTSRoutes.ALL_FTE_DASHBOARD_REPORT} className={`${stylesOBj['nav-subitem']}`}>Multi-month POD Dashboard</Link></li> */}
                         </ul>
                     </div>
