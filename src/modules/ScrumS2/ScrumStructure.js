@@ -680,7 +680,7 @@ const canMoveDown = (record) => {
         }
     };
 
-    const getHRLISTForComapny = async (id) => {
+    const getHRLISTForComapny = async (id,hrid) => {
         const pl = {
             companyID: id,
             tAHeadID: newTAHeadUservalue ? newTAHeadUservalue : selectedHead
@@ -694,6 +694,14 @@ const canMoveDown = (record) => {
                     id: item.hrid,
                 }))
             );
+
+            if(hrid){
+               let hrDetails = response?.responseBody?.find(i=> i.hrid === hrid)
+               if(hrDetails.hrNumber){
+                 setTRAllData({...hrDetails, value: hrDetails.hrNumber,
+                    id: hrDetails.hrid,}); 
+               }              
+            }
 
         } else if (
             response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
@@ -3859,6 +3867,7 @@ return
         setHRTalentListFourCount,
         AddComment,
         openAlertDetail,
+        setNewTAHRValue,
         isHistory
     };
 
