@@ -482,7 +482,7 @@ const getSideBar = (usertypeID,EmployeeID,ShowRevenueRelatedData) => {
 					title: 'QOQ Overview',
 					isActive: false,
 					navigateTo: UTSRoutes.QOQ_NEWOVERVIEW,
-					isVisible: isAccess(usertypeID, 'QOQ_NEWOVERVIEW'),
+					isVisible: isAccess(usertypeID, 'QOQNEWOverview'),
 					isChildren : false					
 				}),
 				// new SideBarModels({
