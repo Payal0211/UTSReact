@@ -26,6 +26,7 @@ function CompanyCell(props) {
         getCompanySuggestionHandler,
         setselectedCompanyID,
         getHRLISTForComapny,
+        setNewTAHRValue,
         isHistory
     } = props.context;
 
@@ -132,7 +133,8 @@ function CompanyCell(props) {
                             setNewTAHeadUserValue(selectedHead);
                             getCompanySuggestionHandler(data.tA_UserID);
                             setselectedCompanyID(data?.company_ID);
-                            getHRLISTForComapny(data?.company_ID);
+                            setNewTAHRValue(data?.hiringRequest_ID)
+                            getHRLISTForComapny(data?.company_ID,data?.hiringRequest_ID);
                         }}
                     >
                         <svg width="10" height="10" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">

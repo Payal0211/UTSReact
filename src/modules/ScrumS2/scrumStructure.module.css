@@ -306,6 +306,18 @@ body {
     color: #999;
 }
 
+
+.HRINFOCOntainer{
+    display: grid;
+    grid-template-columns: auto auto;
+    padding: 5px;
+}
+
+.HRINFOCOntainer span{
+font-weight: 500;
+}
+
+
 /* ===================== */
 /* Data Table            */
 /* ===================== */

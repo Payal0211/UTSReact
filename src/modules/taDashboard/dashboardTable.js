@@ -37,7 +37,7 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
   const navigate = useNavigate()
   const { setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails, startTargetDate, setStartTargetDate, setShowProfileTarget,
     editTAforTask, handleRemoveTask, getTalentProfilesDetailsfromTable, setTalentToMove, setProfileStatusID, setHRTalentListFourCount, setGoalList, setLoadingTalentProfile, getTalentProfilesDetailsfromGoalsTable,
-    today, setMonthDate, monthDate, TabTitle, setTabTitle
+    today, setMonthDate, monthDate, TabTitle, setTabTitle,newTAHRvalue,setNewTAHRValue
   } = hooks;
   const [TaListData, setTaListData] = useState([]);
   const [isLoading, setIsLoading] = useState(false)
@@ -2619,7 +2619,8 @@ function DashboardTableComp({ searchText, tableFilteredState, selectedHead, filt
                       setNewTAHeadUserValue(selectedHead);
                       getCompanySuggestionHandler(data.tA_UserID);
                       setselectedCompanyID(data?.company_ID);
-                      getHRLISTForComapny(data?.company_ID, data?.tA_Head_UserID);
+                      setNewTAHRValue(data?.hiringRequest_ID)
+                      getHRLISTForComapny({id:data?.company_ID, headID:data?.tA_Head_UserID,hrid:data?.hiringRequest_ID});
                     }}
                   >
                     <svg width="12" height="12" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -869,7 +869,7 @@ const [TabTitle, setTabTitle] = useState('A')
         }
     };
 
-    const getHRLISTForComapny = async (id, headID) => {
+    const getHRLISTForComapny = async ({id, headID,hrid}) => {
         const pl = {
             companyID: id,
             tAHeadID:  headID ? headID : newTAHeadUservalue
@@ -883,6 +883,14 @@ const [TabTitle, setTabTitle] = useState('A')
                     id: item.hrid,
                 }))
             );
+
+            if(hrid){
+               let hrDetails = response?.responseBody?.find(i=> i.hrid === hrid)
+               if(hrDetails.hrNumber){
+                 setTRAllData({...hrDetails, value: hrDetails.hrNumber,
+                    id: hrDetails.hrid,}); 
+               }              
+            }
 
         } else if (
             response?.statusCode === HTTPStatusCode.BAD_REQUEST ||
@@ -1286,7 +1294,7 @@ const [TabTitle, setTabTitle] = useState('A')
     const editTAforTask = (task) => {
         setShowEditTATask(true);
         getCompanySuggestionHandler(task.tA_UserID);
-        getHRLISTForComapny(task.company_ID,task.tA_Head_UserID);
+        getHRLISTForComapny({id:task.company_ID, headID:task.tA_Head_UserID});
         setNewTAHeadUserValue(selectedHead);
         setEditTATaskData(task);
     };
@@ -1680,7 +1688,7 @@ const [TabTitle, setTabTitle] = useState('A')
 
                         {activeTable === 'Dashboard' && <DashboardTableComp selectedHead={selectedHead} searchText={searchText} tableFilteredState={tableFilteredState} filtersList={filtersList} AddComment={AddComment}
                             hooks={{ setIsAddNewRow, setNewTAUserValue, setNewTAHeadUserValue, getCompanySuggestionHandler, setselectedCompanyID, getHRLISTForComapny, setProfileTargetDetails,setStartTargetDate,setShowProfileTarget, editTAforTask,handleRemoveTask ,TaskStatusComp,
-                                getTalentProfilesDetailsfromTable,setTalentToMove,setProfileStatusID,setHRTalentListFourCount,startTargetDate,setGoalList,setLoadingTalentProfile,getTalentProfilesDetailsfromGoalsTable, today,setMonthDate,monthDate,TabTitle, setTabTitle
+                                getTalentProfilesDetailsfromTable,setTalentToMove,setProfileStatusID,setHRTalentListFourCount,startTargetDate,setGoalList,setLoadingTalentProfile,getTalentProfilesDetailsfromGoalsTable, today,setMonthDate,monthDate,TabTitle, setTabTitle,newTAHRvalue,setNewTAHRValue
                             }}
                             userData={userData} startDate={startDate}
                         />}
@@ -1930,7 +1938,7 @@ const [TabTitle, setTabTitle] = useState('A')
                                                                     setNewTAHeadUserValue(selectedHead);
                                                                     getCompanySuggestionHandler(row.tA_UserID);
                                                                     setselectedCompanyID(row?.company_ID);
-                                                                    getHRLISTForComapny(row?.company_ID);
+                                                                    getHRLISTForComapny({id:row?.company_ID});
                                                                 }}
                                                             >
                                                                 <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2910,7 +2918,7 @@ const [TabTitle, setTabTitle] = useState('A')
                                                             (i) => i.value === value
                                                         );
                                                         setselectedCompanyID(comObj?.id);
-                                                        getHRLISTForComapny(comObj?.id);
+                                                        getHRLISTForComapny({id:comObj?.id});
                                                         setNewTAHRValue("");
                                                         setTRAllData({});
                                                     }}
