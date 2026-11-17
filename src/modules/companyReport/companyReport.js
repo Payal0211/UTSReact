@@ -148,6 +148,7 @@ function CompanyReport() {
     const scrumDefaultColDef = {
         resizable: true,
         sortable: false,
+         unSortIcon: true,
         filter: false,
         suppressMovable: false, // lets users drag-reorder columns, like Excel column drag
         wrapHeaderText: true,
@@ -155,6 +156,27 @@ function CompanyReport() {
         cellClass: 'ag-cell-excel-border',
         headerClass: `${gridStyles["ag-header-center"]}`,
     };
+
+    const postSortRows = (params) => {
+    const nodes = params.nodes;
+    const groups = new Map();   // groupKey -> { rows: [], total: null }
+
+    // Companies are ordered by their first row in the sorted result
+    nodes.forEach((node) => {
+        const key = node.data?.groupKey;
+        if (!groups.has(key)) groups.set(key, { rows: [], total: null });
+        const g = groups.get(key);
+        if (node.data?.isTotalRow) g.total = node;
+        else g.rows.push(node);
+    });
+
+    // Must be changed in place
+    nodes.length = 0;
+    groups.forEach((g) => {
+        nodes.push(...g.rows);
+        if (g.total) nodes.push(g.total);
+    });
+};
 
     function groupByRowSpan(data, groupField) {
         const grouped = {};
@@ -253,11 +275,10 @@ function CompanyReport() {
     };
 
     const doesExternalFilterPass = (node) => {
-       const d = node.data;
+    const d = node.data;
     if (!d?.isTotalRow) return true;
-    if (isSortedRef.current) return false;   // hide total rows while a sort is active
-    return visibleGroupsRef.current.has(d.groupKey);
-    };
+    return visibleGroupsRef.current.has(d.groupKey);   // removed the isSortedRef check
+};
 
     const defaultSelectedStatuses = useMemo(() => {
         return availableStatuses.filter(
@@ -980,6 +1001,7 @@ function CompanyReport() {
                             onGridReady={(params) => {
                                 setGridApi(params.api);
                             }}
+                             postSortRows={postSortRows}
                             rowData={companyList}
                             theme={scrumGridTheme}
                             columnDefs={gridColumns()}
@@ -1000,8 +1022,7 @@ function CompanyReport() {
                             doesExternalFilterPass={doesExternalFilterPass}
                             onFilterChanged={handleFilterChanged}
                             onFirstDataRendered={handleFirstDataRendered}
-    onSortChanged={handleSortChanged}
-  
+   
                         />}
 
 
