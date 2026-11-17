@@ -149,6 +149,7 @@ function CompanyReport() {
         resizable: true,
         sortable: false,
          unSortIcon: true,
+         sortingOrder: ['asc', 'desc'],
         filter: false,
         suppressMovable: false, // lets users drag-reorder columns, like Excel column drag
         wrapHeaderText: true,
@@ -157,24 +158,22 @@ function CompanyReport() {
         headerClass: `${gridStyles["ag-header-center"]}`,
     };
 
-    const postSortRows = (params) => {
+ const postSortRows = (params) => {
     const nodes = params.nodes;
-    const groups = new Map();   // groupKey -> { rows: [], total: null }
+    const groups = new Map();
+    const totals = new Map();
 
-    // Companies are ordered by their first row in the sorted result
     nodes.forEach((node) => {
         const key = node.data?.groupKey;
-        if (!groups.has(key)) groups.set(key, { rows: [], total: null });
-        const g = groups.get(key);
-        if (node.data?.isTotalRow) g.total = node;
-        else g.rows.push(node);
+        if (node.data?.isTotalRow) { totals.set(key, node); return; }
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(node);
     });
 
-    // Must be changed in place
     nodes.length = 0;
-    groups.forEach((g) => {
-        nodes.push(...g.rows);
-        if (g.total) nodes.push(g.total);
+    groups.forEach((rows, key) => {
+        nodes.push(...rows);
+        if (totals.has(key)) nodes.push(totals.get(key));
     });
 };
 
@@ -345,11 +344,23 @@ function CompanyReport() {
             });
         }
     };
+const lastSortRef = useRef(null);
 
-    const handleSortChanged = (params) => {
-    isSortedRef.current = params.api.getColumnState().some((c) => !!c.sort);
-    params.api.onFilterChanged();   // re-run the external filter so total rows show/hide
+const handleSortChanged = (params) => {
+    const sorted = params.api.getColumnState().find(c => c.sort);
+    if (sorted) {
+        lastSortRef.current = { colId: sorted.colId, sort: sorted.sort };
+    } else if (lastSortRef.current) {
+        // sort was cleared → flip to the opposite of the last direction
+        const { colId, sort } = lastSortRef.current;
+        params.api.applyColumnState({
+            state: [{ colId, sort: sort === 'asc' ? 'desc' : 'asc' }],
+            defaultState: { sort: null },
+        });
+    }
 };
+
+
 
 
     const gridColumns = () => {
@@ -584,6 +595,8 @@ function CompanyReport() {
                 field: 'openSince',
                 width: 100,
                 sortable: true,
+                 sortingOrder: ['asc', 'desc', null],
+    unSortIcon:true,
                 suppressMovable: true,
                 filter: MultiConditionTextFilter,
                 filterParams: {
