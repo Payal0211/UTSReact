@@ -320,25 +320,46 @@ function QOQNEWOverview() {
             }
             return value;
         };
-
+        
         const getQuarterFTBUValue = (record, quarterPrefix) => {
-            if (isSkipTotalStage(record)) {
-                return null;
-            }
+            if (isSkipTotalStage(record)) return null;
+
             const values = selectedHeadOptions.map((head) => {
                 const dataKey = getHeadDataKey(head.dd_text);
                 return record?.[`${quarterPrefix}_${dataKey}Str`];
             });
 
-            const isPercentRow = values.some(isPercentText);
-            if (isPercentRow) {
-                return null;
-            }
+            // ratios / % rows can't be summed
+            if (values.some(isPercentText)) return null;
 
-            return values.reduce((sum, value) => sum + parseNumber(value), 0);
+            const nonEmpty = values.filter(
+                (v) => v !== undefined && v !== null && v !== ""
+            );
+            if (!nonEmpty.length) return "";
+
+            return nonEmpty.reduce((sum, v) => sum + parseNumber(v), 0);
         };
+       
+        const renderTotalCell = (text, record, index, value, keyPar) => {
+            if (record.isSection) return { props: { colSpan: 0 } };
 
+            // can't aggregate -> fall back to API value
+            if (value === null) {
+                return <AddNoteComp text={text} record={record} keyPar={keyPar} month={record?.startMonth} index={index} />;
+            }
+            // no data for current selection
+            if (value === "") return "";
 
+            return (
+                <AddNoteComp
+                    text={formatAggregate(value, text)}
+                    record={record}
+                    keyPar={keyPar}
+                    month={record?.startMonth}
+                    index={index}
+                />
+            );
+        };
 
         const createQuarterColumns = (quarterPrefix) => {
             const quarterColumns = [
@@ -349,15 +370,13 @@ function QOQNEWOverview() {
                     width: 100,
                     align: "center",
                     className: `black-header ${uplersStyle.totalCol}`,
-                    render: (text, record, index) => {
-                        if (record.isSection) {
-                            return {
-                                props: {
-                                    colSpan: 0,
-                                },
-                            };
-                        }
-                        return text
+                    render: (text, record, index) =>
+        renderTotalCell(
+            text, record, index,
+            record.isSection ? null : getQuarterFTBUValue(record, quarterPrefix),
+            `${quarterPrefix}Str`
+        ),
+
                         // if (isPercentText(text)) {
                         //     return <AddNoteComp text={text} record={record} keyPar={`${quarterPrefix}Str`} month={record?.startMonth} index={index} />;
                         // }
@@ -367,7 +386,7 @@ function QOQNEWOverview() {
                         // }
                         // const formatted = formatAggregate(totalValue, text);
                         // return <AddNoteComp text={formatted} record={record} keyPar={`${quarterPrefix}Str`} month={record?.startMonth} index={index} />;
-                    },
+                    
                 },
             ];
 
@@ -400,20 +419,20 @@ function QOQNEWOverview() {
             Q2: { prefix: "q2", title: nextMonth, headerClass: "green-total-header" },
             Q3: { prefix: "q3", title: thirdMonth, headerClass: "purple-total-header" },
             Q4: { prefix: "q4", title: fourthMonth, headerClass: "purple-total-header" },
-        };
+        }
 
         const getYearTotalValue = (record) => {
-            const values = selectedQuarters
-                .map((quarterKey) => {
-                    const quarter = quarterConfig[quarterKey];
-                    return quarter ? getQuarterFTBUValue(record, quarter.prefix) : null;
-                })
-                .filter((value) => value !== null);
+            const values = selectedQuarters.map((quarterKey) => {
+                const quarter = quarterConfig[quarterKey];
+                return quarter ? getQuarterFTBUValue(record, quarter.prefix) : null;
+            });
 
-            if (!values.length) {
-                return null;
-            }
-            return values.reduce((sum, value) => sum + value, 0);
+            if (!values.length || values.some((v) => v === null)) return null;
+
+            const numeric = values.filter((v) => v !== "");
+            if (!numeric.length) return "";
+
+            return numeric.reduce((sum, v) => sum + v, 0);
         };
 
         const columns = [
@@ -465,15 +484,13 @@ function QOQNEWOverview() {
                 onHeaderCell: () => ({
                     className: "black-header",
                 }),
-                render: (text, record, index) => {
-                    if (record.isSection) {
-                        return {
-                            props: {
-                                colSpan: 0,
-                            },
-                        };
-                    }
-                    return text
+               render: (text, record, index) =>
+                renderTotalCell(
+                    text, record, index,
+                    record.isSection ? null : getYearTotalValue(record),
+                    "yearlyTotalStr"
+                ),
+                
                     // if (isPercentText(text)) {
                     //     return <AddNoteComp text={text} record={record} keyPar="yearlyTotalStr" month={record?.startMonth} index={index} />;
                     // }
@@ -483,7 +500,7 @@ function QOQNEWOverview() {
                     // }
                     // const formatted = formatAggregate(totalValue, text);
                     // return <AddNoteComp text={formatted} record={record} keyPar="yearlyTotalStr" month={record?.startMonth} index={index} />;
-                },
+            
             },
         ];
 
