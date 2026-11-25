@@ -228,6 +228,8 @@ function MOMOverview() {
             Shivam: "Shivam",
             NOVA: "NOVA",
             Orion: "Orion",
+            Kintsugi: "Kintsugi",
+           
         };
 
         const getHeadDataKey = (headText) => {
