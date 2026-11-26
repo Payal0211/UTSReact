@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback, Fragment, useRef } from 'react';
 import { InputType } from 'constants/application';
 import ButtonField from 'modules/user/components/buttonField/button_field';
 import useIconToggle from 'shared/hooks/useIconToggle';
+
 import {
     PasswordIconAiFillEye,
     PasswordIconAiFillEyeInvisible,
@@ -18,6 +19,9 @@ import { useForm } from 'react-hook-form';
 import UTSLogoSVG from 'assets/svg/UTSLogo.svg'
 import { useCookies } from 'react-cookie'
 import loginStyle from './n_login.module.css'
+import { getPublicIP } from 'shared/utils/ip_utils';
+import { getBrowserInfo } from 'shared/utils/browser_utils';
+
 
 const NewLoginScreen = () => {
     const navigate = useNavigate();
@@ -27,16 +31,20 @@ const NewLoginScreen = () => {
     const [userData, setUserData] = useState({ username: '', password: '', showPassword: false });
     const [isLoading, setLoading] = useState(false);
 
-
+   
     const loginHandler = async (d) => {
         if(!userData?.username || !userData?.password){
             message.error('Please enter username and password');
             return
         }
         setLoading(true);
+          const ipAddress = await getPublicIP();
+    const { browserName, browserVersion } = getBrowserInfo()
         const result = await userDAO.loginDAO({
             username: userData?.username,
             password: userData?.password,
+             ipAddress,
+            browserInfo: `${browserName} ${browserVersion}`,
         });
         setLoading(false);
         if (result.statusCode === HTTPStatusCode.OK) {
@@ -56,6 +64,8 @@ const NewLoginScreen = () => {
             // navigate(UTSRoutes.LOGINROUTE);
         }
     }
+
+
 
     return (
         <div className={`${loginStyle["login-container"]}`}>
