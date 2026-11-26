@@ -788,19 +788,19 @@ export default function UplersReport() {
           podName:pODList?.find(item=> item.dd_value === selectedHead)?.dd_text
           }} 
         />},
-       hrModal === "DP" && {
-            label:"All FTE Dashboard",
-            key: "All FTE Dashboard",
-            children:  <PodReports
-        impHooks={{
-          isTableLoading,
-          podDashboardList,
-          AddComment,
-          monthDate,
-          hrModal,
-          selectedHead,dashboardTabTitle
-        }}
-      />},
+      //  hrModal === "DP" && {
+      //       label:"All FTE Dashboard",
+      //       key: "All FTE Dashboard",
+      //       children:  <PodReports
+      //   impHooks={{
+      //     isTableLoading,
+      //     podDashboardList,
+      //     AddComment,
+      //     monthDate,
+      //     hrModal,
+      //     selectedHead,dashboardTabTitle
+      //   }}
+      // />},
          ]}
         />
 
